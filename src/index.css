@@ -65,7 +65,8 @@
     @apply bg-background text-foreground;
   }
 }
-*/ #owner a {
+*
+#owner a {
   text-decoration: none;
   color: white;
   font-family: "Caveat", cursive;
