@@ -46,10 +46,10 @@ export function useGeolocation() {
               "Location permission denied. Please enable location access.";
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = "Location information is unavailable.";
+            errorMessage = "Location information is unavailable in your Locality.";
             break;
           case error.TIMEOUT:
-            errorMessage = "Location request timed out.";
+            errorMessage = "Location request timed out cause unavailable in your Locality .";
             break;
           default:
             errorMessage = "An unknown error occurred.";
