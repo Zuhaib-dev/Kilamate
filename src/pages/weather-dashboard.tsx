@@ -103,6 +103,7 @@ export function WeatherDashboard() {
           variant="outline"
           size="icon"
           onClick={handleRefresh}
+          aria-label="Refresh Button"
           disabled={weatherQuery.isFetching || forecastQuery.isFetching}
         >
           <RefreshCw
