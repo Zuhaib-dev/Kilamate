@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://zuhaib-portfolio-tau.vercel.app/SEO.png" alt="Kilamate Banner" style="width:100%; border-radius:10px;">
+  <img src="https://www.zuhaibrashid.com/kilamate.webp" alt="Kilamate Banner" style="width:100%; border-radius:10px;">
   <h1>🌤️ Kilamate</h1>
   <p><strong>Weather Forecasting App built with Next.js, React, TypeScript, and more.</strong></p>
   <a href="https://kilamate.netlify.app" target="_blank"><strong>🔗 Live Demo</strong></a>
@@ -52,17 +52,14 @@ Frontend Web Developer | Class 12 (Medical Stream)
 
 ## 🔗 Connect With Me
 
-- 📧 Email: [xuvaxuva006@gmail.com](mailto:xuvaxuva006@gmail.com)  
+- 📧 Email: [zuhiabrashid01@gmail.com](mailto:zuhaibrashid01@gmail.com)  
 - 📞 Phone: +91 6006414088  
 - 💼 [LinkedIn](https://www.linkedin.com/in/xuhaib-rashid-661345318)  
-- 🐙 [GitHub](https://github.com/Zuhaib-dev/Projects.git)  
+- 🐙 [GitHub](https://github.com/Zuhaib-dev/)  
 - 🐦 [Twitter / X](https://x.com/xuhaib_x9)
 
 ---
 
-## 🖼️ Banner Image Credit
-
-> Photo by [NOAA](https://unsplash.com/@noaa) on [Unsplash](https://unsplash.com/photos/gray-clouds-and-blue-sky-M0bL0fTzjGU)
 
 ---
 
