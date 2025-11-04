@@ -1,5 +1,5 @@
 import React from "react";
-import { Moon, Home } from "lucide-react";
+import {  Home } from "lucide-react";
 
 const PageNotFound: React.FC = () => {
   return (
@@ -36,11 +36,6 @@ const PageNotFound: React.FC = () => {
         Take Me Home
       </a>
 
-      {/* Footer */}
-      <div className="absolute bottom-6 flex items-center gap-2 text-gray-500 text-sm">
-        <Moon size={16} />
-        <span>Dark Mode • Minimal & Elegant</span>
-      </div>
     </div>
   );
 };
