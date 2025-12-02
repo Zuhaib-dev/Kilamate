@@ -11,10 +11,17 @@ import PageNotFound from "./pages/PageNotFound";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-      retry: false,
-      refetchOnWindowFocus: false,
+      // Weather changes quickly → keep data fresh
+      staleTime: 30 * 1000,          // 30 seconds
+      // Keep cache a bit to avoid refetch spam when navigating
+      gcTime: 5 * 60 * 1000,         // 5 minutes
+      // Small retry for flaky network
+      retry: 1,
+      // Refetch when user comes back to tab
+      refetchOnWindowFocus: true,
+      // Auto‑refetch while component is mounted (dashboard open)
+      refetchInterval: 60 * 1000,    // 60 seconds
+      refetchIntervalInBackground: false,
     },
   },
 });
