@@ -68,3 +68,5 @@ Frontend Web Developer | Class 12 (Medical Stream)
 This project is licensed under the [MIT License](LICENSE).
 
 ---  
+## 🤏 Portfolio
+- ✔️ Visit: [zuhaibrashid.com](https://www.zuhaibrashid.com/) 
