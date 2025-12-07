@@ -69,4 +69,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---  
 ## 🤏 Portfolio
-- ✔️ Visit: [zuhaibrashid.com](https://www.zuhaibrashid.com/) 
+- ✔️ Visit: [zuhaibrashid.com](https://www.zuhaibrashid.com/)  
