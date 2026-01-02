@@ -82,18 +82,11 @@ export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
 
           <div className="flex flex-col items-center justify-center">
             <div className="relative flex aspect-square w-full max-w-[200px] items-center justify-center">
-              {/* Preload the weather icon */}
-              <link
-                rel="preload"
-                href={weatherIconUrl}
-                as="image"
-                type="image/png"
-              />
               <img
                 src={weatherIconUrl}
                 alt={currentWeather.description}
                 className="h-full w-full object-contain"
-                fetchpriority="high" // Priority fetching
+                fetchPriority="high"
               />
               <div className="absolute bottom-0 text-center">
                 <p className="text-sm font-medium capitalize">

@@ -61,15 +61,17 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
               key={day.date}
               className="grid grid-cols-3 items-center gap-4 rounded-lg border p-4"
             >
-              <div>
-                <p className="font-medium">
+              {/* Added min-w-0 to allow text truncation */}
+              <div className="min-w-0">
+                <p className="font-medium truncate">
                   {format(new Date(day.date * 1000), "EEE, MMM d")}
                 </p>
-                <p className="text-sm text-muted-foreground capitalize">
+                <p className="text-sm text-muted-foreground capitalize truncate">
                   {day.weather.description}
                 </p>
               </div>
 
+              {/* Temperature Column */}
               <div className="flex justify-center gap-4">
                 <span className="flex items-center text-blue-500">
                   <ArrowDown className="mr-1 h-4 w-4" />
@@ -81,7 +83,8 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
                 </span>
               </div>
 
-              <div className="flex justify-end gap-4">
+              {/* Wind/Humidity Column - Adjusted gap for mobile */}
+              <div className="flex justify-end gap-2 sm:gap-4">
                 <span className="flex items-center gap-1">
                   <Droplets className="h-4 w-4 text-blue-500" />
                   <span className="text-sm">{day.humidity}%</span>
