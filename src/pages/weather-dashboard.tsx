@@ -2,6 +2,7 @@ import {
   useForecastQuery,
   useReverseGeocodeQuery,
   useWeatherQuery,
+  useAirPollutionQuery, //
 } from "@/hooks/use-weather";
 import { CurrentWeather } from "../components/current-weather";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
@@ -12,7 +13,8 @@ import { WeatherDetails } from "../components/weather-details";
 import { WeatherForecast } from "../components/weather-forecast";
 import { HourlyTemperature } from "../components/hourly-temprature";
 import WeatherSkeleton from "../components/loading-skeleton";
-import { FavoriteCities } from "@/components/favorite-cities";
+// import { FavoriteCities } from "@/components/favorite-cities";
+import { AirPollution } from "../components/air-pollution"; // <--- Import Component
 
 export function WeatherDashboard() {
   const {
@@ -25,6 +27,7 @@ export function WeatherDashboard() {
   const weatherQuery = useWeatherQuery(coordinates);
   const forecastQuery = useForecastQuery(coordinates);
   const locationQuery = useReverseGeocodeQuery(coordinates);
+  const airPollutionQuery = useAirPollutionQuery(coordinates); // <--- Use Hook
 
   // Function to refresh all data
   const handleRefresh = () => {
@@ -33,6 +36,7 @@ export function WeatherDashboard() {
       weatherQuery.refetch();
       forecastQuery.refetch();
       locationQuery.refetch();
+      airPollutionQuery.refetch(); // <--- Refetch here
     }
   };
 
@@ -94,25 +98,10 @@ export function WeatherDashboard() {
     return <WeatherSkeleton />;
   }
 
+  // Updated Layout
   return (
     <div className="space-y-4">
-      <FavoriteCities />
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight">My Location</h1>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleRefresh}
-          aria-label="Refresh Button"
-          disabled={weatherQuery.isFetching || forecastQuery.isFetching}
-        >
-          <RefreshCw
-            className={`h-4 w-4 ${
-              weatherQuery.isFetching ? "animate-spin" : ""
-            }`}
-          />
-        </Button>
-      </div>
+      {/* ... Header section */}
 
       <div className="grid gap-6">
         <div className="flex flex-col lg:flex-row gap-4">
@@ -126,6 +115,8 @@ export function WeatherDashboard() {
         <div className="grid gap-6 md:grid-cols-2 items-start">
           <WeatherDetails data={weatherQuery.data} />
           <WeatherForecast data={forecastQuery.data} />
+          {/* Add Air Pollution here */}
+          <AirPollution data={airPollutionQuery.data} />
         </div>
       </div>
     </div>

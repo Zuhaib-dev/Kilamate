@@ -7,6 +7,7 @@ export const WEATHER_KEYS = {
   forecast: (coords: Coordinates) => ["forecast", coords] as const,
   location: (coords: Coordinates) => ["location", coords] as const,
   search: (query: string) => ["location-search", query] as const,
+  airPollution: (coords: Coordinates) => ["air-pollution", coords] as const, // <--- Add this
 } as const;
 
 export function useWeatherQuery(coordinates: Coordinates | null) {
@@ -31,6 +32,15 @@ export function useReverseGeocodeQuery(coordinates: Coordinates | null) {
     queryKey: WEATHER_KEYS.location(coordinates ?? { lat: 0, lon: 0 }),
     queryFn: () =>
       coordinates ? weatherAPI.reverseGeocode(coordinates) : null,
+    enabled: !!coordinates,
+  });
+}
+// Add this new hook:
+export function useAirPollutionQuery(coordinates: Coordinates | null) {
+  return useQuery({
+    queryKey: WEATHER_KEYS.airPollution(coordinates ?? { lat: 0, lon: 0 }),
+    queryFn: () =>
+      coordinates ? weatherAPI.getAirPollution(coordinates) : null,
     enabled: !!coordinates,
   });
 }
