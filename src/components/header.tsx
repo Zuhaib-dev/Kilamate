@@ -11,6 +11,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to={"/"}>
           <img
+          fetchPriority="high"
             src={theme === "dark" ? "/logo.webp" : "/logo2.webp"}
             alt="Klimate logo"
             className="h-14"
