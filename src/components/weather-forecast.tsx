@@ -22,12 +22,11 @@ interface DailyForecast {
 }
 
 export function WeatherForecast({ data }: WeatherForecastProps) {
-  // Group forecast by day and get daily min/max
   const dailyForecasts = data.list.reduce((acc, forecast) => {
-    const date = format(new Date(forecast.dt * 1000), "yyyy-MM-dd");
+    const dateKey = format(new Date(forecast.dt * 1000), "yyyy-MM-dd");
 
-    if (!acc[date]) {
-      acc[date] = {
+    if (!acc[dateKey]) {
+      acc[dateKey] = {
         temp_min: forecast.main.temp_min,
         temp_max: forecast.main.temp_max,
         humidity: forecast.main.humidity,
@@ -36,17 +35,21 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
         date: forecast.dt,
       };
     } else {
-      acc[date].temp_min = Math.min(acc[date].temp_min, forecast.main.temp_min);
-      acc[date].temp_max = Math.max(acc[date].temp_max, forecast.main.temp_max);
+      acc[dateKey].temp_min = Math.min(
+        acc[dateKey].temp_min,
+        forecast.main.temp_min
+      );
+      acc[dateKey].temp_max = Math.max(
+        acc[dateKey].temp_max,
+        forecast.main.temp_max
+      );
     }
 
     return acc;
   }, {} as Record<string, DailyForecast>);
 
-  // Get next 5 days
   const nextDays = Object.values(dailyForecasts).slice(1, 6);
 
-  // Format temperature
   const formatTemp = (temp: number) => `${Math.round(temp)}°`;
 
   return (
@@ -54,44 +57,49 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
       <CardHeader>
         <CardTitle>5-Day Forecast</CardTitle>
       </CardHeader>
+
       <CardContent>
-        <div className="grid gap-4">
+        <div className="space-y-4">
           {nextDays.map((day) => (
             <div
               key={day.date}
-              className="grid grid-cols-3 items-center gap-4 rounded-lg border p-4"
+              className="
+                grid grid-cols-1 gap-3
+                rounded-lg border p-4
+                sm:grid-cols-3 sm:items-center
+              "
             >
-              {/* Added min-w-0 to allow text truncation */}
-              <div className="min-w-0">
+              {/* Day + Description */}
+              <div className="min-w-0 space-y-1">
                 <p className="font-medium truncate">
                   {format(new Date(day.date * 1000), "EEE, MMM d")}
                 </p>
-                <p className="text-sm text-muted-foreground capitalize truncate">
+                <p className="text-sm text-muted-foreground capitalize line-clamp-2">
                   {day.weather.description}
                 </p>
               </div>
 
-              {/* Temperature Column */}
-              <div className="flex justify-center gap-4">
-                <span className="flex items-center text-blue-500">
-                  <ArrowDown className="mr-1 h-4 w-4" />
+              {/* Temperatures */}
+              <div className="flex items-center gap-4 sm:justify-center">
+                <span className="flex items-center gap-1 text-blue-500">
+                  <ArrowDown className="h-4 w-4" />
                   {formatTemp(day.temp_min)}
                 </span>
-                <span className="flex items-center text-red-500">
-                  <ArrowUp className="mr-1 h-4 w-4" />
+                <span className="flex items-center gap-1 text-red-500">
+                  <ArrowUp className="h-4 w-4" />
                   {formatTemp(day.temp_max)}
                 </span>
               </div>
 
-              {/* Wind/Humidity Column - Adjusted gap for mobile */}
-              <div className="flex justify-end gap-2 sm:gap-4">
+              {/* Wind & Humidity */}
+              <div className="flex flex-wrap items-center gap-3 sm:justify-end">
                 <span className="flex items-center gap-1">
                   <Droplets className="h-4 w-4 text-blue-500" />
                   <span className="text-sm">{day.humidity}%</span>
                 </span>
                 <span className="flex items-center gap-1">
                   <Wind className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm">{day.wind}m/s</span>
+                  <span className="text-sm">{day.wind} m/s</span>
                 </span>
               </div>
             </div>
