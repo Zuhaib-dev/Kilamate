@@ -93,7 +93,7 @@ export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
                 src={weatherIconUrl}
                 alt={currentWeather.description}
                 className="h-full w-full object-contain"
-                fetchPriority="high" // Priority fetching
+                fetchpriority="high" // Priority fetching
               />
               <div className="absolute bottom-0 text-center">
                 <p className="text-sm font-medium capitalize">

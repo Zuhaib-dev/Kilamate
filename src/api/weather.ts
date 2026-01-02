@@ -63,9 +63,9 @@ class WeatherAPI {
     });
     return this.fetchData<GeocodingResponse[]>(url);
   }
-  // Add this new method:
+
   async getAirPollution({ lat, lon }: Coordinates): Promise<AirPollutionResponse> {
-    const url = this.createUrl(`${API_CONFIG.BASE_URL}/air_pollution`, {
+    const url = this.createUrl(`${API_CONFIG.BASE_URL}/air_pollution/forecast`, {
       lat: lat.toString(),
       lon: lon.toString(),
     });

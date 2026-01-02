@@ -11,16 +11,11 @@ import PageNotFound from "./pages/PageNotFound";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Weather changes quickly → keep data fresh
-      staleTime: 30 * 1000,          // 30 seconds
-      // Keep cache a bit to avoid refetch spam when navigating
-      gcTime: 5 * 60 * 1000,         // 5 minutes
-      // Small retry for flaky network
+      staleTime: 30 * 1000,
+      gcTime: 5 * 60 * 1000,
       retry: 1,
-      // Refetch when user comes back to tab
       refetchOnWindowFocus: true,
-      // Auto‑refetch while component is mounted (dashboard open)
-      refetchInterval: 60 * 1000,    // 60 seconds
+      refetchInterval: 60 * 1000,
       refetchIntervalInBackground: false,
     },
   },
@@ -29,7 +24,8 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      {/* ADD THE FUTURE FLAGS HERE 👇 */}
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ThemeProvider defaultTheme="dark">
           <Layout>
             <Routes>
