@@ -14,7 +14,7 @@ export function Layout({ children }: PropsWithChildren) {
             Made with <span className="text-2xl">💗</span> by{" "}
             <span id="owner">
               <a href="https://www.zuhaibrashid.com/" target="_blank">
-                Zuhaib{" "}
+                Zuhaib Rashid
               </a>
             </span>
           </p>
