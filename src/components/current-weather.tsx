@@ -93,6 +93,10 @@ export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
                 alt={currentWeather.description}
                 className="h-full w-full object-contain"
                 fetchPriority="high"
+                loading="eager"
+                width="200"
+                height="200"
+                decoding="async"
               />
               <div className="absolute bottom-0 text-center">
                 <p className="text-sm font-medium capitalize">

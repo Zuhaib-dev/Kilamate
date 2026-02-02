@@ -1,185 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
 
-    <!-- Favicon and App Icons -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="/favicon-16x16.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="48x48"
-      href="/favicon-48x48.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="64x64"
-      href="/favicon-64x64.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="96x96"
-      href="/favicon-96x96.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="128x128"
-      href="/favicon-128x128.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="/android-chrome-192x192.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="256x256"
-      href="/favicon-256x256.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="512x512"
-      href="/android-chrome-512x512.png"
-    />
+<head>
+  <meta charset="UTF-8" />
 
-    <!-- ICO fallback -->
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <!-- Favicon and App Icons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128x128.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+  <link rel="icon" type="image/png" sizes="256x256" href="/favicon-256x256.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
 
-    <!-- Apple Touch Icons -->
-    <link
-      rel="apple-touch-icon"
-      sizes="57x57"
-      href="/apple-icon-57x57.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="60x60"
-      href="/apple-icon-60x60.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="/apple-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="76x76"
-      href="/apple-icon-76x76.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="/apple-icon-114x114.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="120x120"
-      href="/apple-icon-120x120.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="144x144"
-      href="/apple-icon-144x144.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="152x152"
-      href="/apple-icon-152x152.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/apple-icon-180x180.png"
-    />
+  <!-- ICO fallback -->
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
-    <!-- Manifest for PWA -->
-    <link rel="manifest" href="/site.webmanifest" />
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png" />
+  <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png" />
 
-    <!-- Viewport -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="/site.webmanifest" />
 
-    <title>Kilamate | Weather Forecasting App</title>
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Google Verification -->
-    <meta
-      name="google-site-verification"
-      content="PhC4G2XmPO_iZ5yQFaXvkOkJHHJEwRRJsjygMozyteA"
-    />
+  <title>Kilamate | Weather Forecasting App</title>
 
-    <!-- Primary Meta Tags -->
-    <meta
-      name="title"
-      content="Kilamate | Weather Forecast in Jammu & Kashmir Districts"
-    />
-    <meta
-      name="description"
-      content="Get accurate weather forecasts and real-time Air Quality Index (AQI) for all districts of Jammu & Kashmir including Srinagar, Budgam, Baramulla, Pulwama, Anantnag, Kupwara, Ganderbal, Shopian, Bandipora, Kulgam, Chadoora and more with Kilamate weather app."
-    />
-    <meta name="author" content="Zuhaib Rashid" />
-    <meta
-      name="keywords"
-      content="Weather in Srinagar, AQI in Srinagar, Air Quality Index Jammu Kashmir, Weather in Budgam, Weather in Chadoora, Weather in Baramulla, Weather in Pulwama, Weather in Anantnag, Weather in Kupwara, Weather in Ganderbal, Weather in Shopian, Weather in Bandipora, Weather in Kulgam, Jammu Kashmir weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, pollution levels"
-    />
-    <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0d0d0d" />
+  <!-- Google Verification -->
+  <meta name="google-site-verification" content="PhC4G2XmPO_iZ5yQFaXvkOkJHHJEwRRJsjygMozyteA" />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://kilamate.netlify.app/" />
-    <meta
-      property="og:title"
-      content="Kilamate | Weather Forecast in Jammu & Kashmir"
-    />
-    <meta
-      property="og:description"
-      content="Check live weather updates for Srinagar, Budgam, Chadoora and all districts of J&K. Accurate and beautifully designed weather forecast app created by Zuhaib Rashid."
-    />
-    <meta property="og:image" content="https://www.zuhaibrashid.com/SEO.png" />
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="Kilamate | Weather Forecast in Jammu & Kashmir Districts" />
+  <meta name="description"
+    content="Get accurate weather forecasts and real-time Air Quality Index (AQI) for all districts of Jammu & Kashmir including Srinagar, Budgam, Baramulla, Pulwama, Anantnag, Kupwara, Ganderbal, Shopian, Bandipora, Kulgam, Chadoora and more with Kilamate weather app." />
+  <meta name="author" content="Zuhaib Rashid" />
+  <meta name="keywords"
+    content="Weather in Srinagar, AQI in Srinagar, Air Quality Index Jammu Kashmir, Weather in Budgam, Weather in Chadoora, Weather in Baramulla, Weather in Pulwama, Weather in Anantnag, Weather in Kupwara, Weather in Ganderbal, Weather in Shopian, Weather in Bandipora, Weather in Kulgam, Jammu Kashmir weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, pollution levels" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0d0d0d" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://kilamate.netlify.app/" />
-    <meta
-      property="twitter:title"
-      content="Kilamate | Weather Forecast in Jammu & Kashmir"
-    />
-    <meta
-      property="twitter:description"
-      content="Get accurate weather forecasts for all districts of Jammu & Kashmir including Budgam, Chadoora, Srinagar, Pulwama, Anantnag and more."
-    />
-    <meta
-      property="twitter:image"
-      content="https://www.zuhaibrashid.com/SEO.png"
-    />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kilamate.netlify.app/" />
+  <meta property="og:title" content="Kilamate | Weather Forecast in Jammu & Kashmir" />
+  <meta property="og:description"
+    content="Check live weather updates for Srinagar, Budgam, Chadoora and all districts of J&K. Accurate and beautifully designed weather forecast app created by Zuhaib Rashid." />
+  <meta property="og:image" content="https://www.zuhaibrashid.com/SEO.png" />
 
-    <!-- LCP Fixes -->
-    <link rel="preconnect" href="https://api.openweathermap.org" crossorigin />
-    <link rel="preconnect" href="https://openweathermap.org" />
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://kilamate.netlify.app/" />
+  <meta property="twitter:title" content="Kilamate | Weather Forecast in Jammu & Kashmir" />
+  <meta property="twitter:description"
+    content="Get accurate weather forecasts for all districts of Jammu & Kashmir including Budgam, Chadoora, Srinagar, Pulwama, Anantnag and more." />
+  <meta property="twitter:image" content="https://www.zuhaibrashid.com/SEO.png" />
 
-    <!-- Canonical -->
-    <link rel="canonical" href="https://kilamate.netlify.app/" />
-  </head>
+  <!-- Canonical -->
+  <link rel="canonical" href="https://kilamate.netlify.app/" />
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <!-- Performance Optimizations -->
+  <!-- Preconnect to critical origins -->
+  <link rel="preconnect" href="https://api.openweathermap.org" crossorigin />
+  <link rel="dns-prefetch" href="https://api.openweathermap.org" />
+  <link rel="preconnect" href="https://openweathermap.org" crossorigin />
+  <link rel="dns-prefetch" href="https://openweathermap.org" />
+
+  <!-- Preload critical resources -->
+  <link rel="modulepreload" href="/src/main.tsx" />
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
 <!-- This project is made by Zuhaib Rashid for more queries please visit https://zuhaibrashid.com/ -->
