@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Coordinates } from "@/api/types";
 
 interface GeolocationState {
@@ -78,11 +78,25 @@ export function useGeolocation() {
   // But standard practice: Don't call getLocation() in useEffect.
 
   // We will REMOVE the automatic call. The UI should show a "Locate Me" button if no location is set.
-  /*
+  // Get location on component mount if permission is ALREADY granted
   useEffect(() => {
-    getLocation();
+    // Check if permission is already granted
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'granted') {
+          // If granted, fetch immediately
+          getLocation();
+        } else {
+          // If prompt or denied, setting loading to false so we don't show a skeleton indefinitely
+          // The user will see the "Enable Location" button
+          setLocationData((prev) => ({ ...prev, isLoading: false }));
+        }
+      });
+    } else {
+      // Fallback for browsers not supporting permissions API
+      setLocationData((prev) => ({ ...prev, isLoading: false }));
+    }
   }, []);
-  */
 
   return {
     ...locationData,
