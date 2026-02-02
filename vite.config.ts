@@ -84,7 +84,7 @@ export default defineConfig({
           "react-vendor": ["react", "react-dom", "react-router-dom"],
           "chart-vendor": ["recharts"],
           "query-vendor": ["@tanstack/react-query"],
-          "ui-vendor": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-select"],
+          "ui-vendor": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu"],
         },
       },
     },
