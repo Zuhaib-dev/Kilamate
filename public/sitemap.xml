@@ -1,11 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+  <!-- Homepage -->
   <url>
     <loc>https://kilamate.netlify.app/</loc>
     <lastmod>2026-02-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+
+  <!-- Major Cities in Jammu & Kashmir -->
+  
+  <!-- Srinagar -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Srinagar?lat=34.0837&lon=74.7973</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Budgam -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Budgam?lat=33.9306&lon=74.6356</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Baramulla -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Baramulla?lat=34.2095&lon=74.3426</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Pulwama -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Pulwama?lat=33.8700&lon=74.8936</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Anantnag -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Anantnag?lat=33.7311&lon=75.1480</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Kupwara -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Kupwara?lat=34.5267&lon=74.2567</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Ganderbal -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Ganderbal?lat=34.2167&lon=74.7833</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Shopian -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Shopian?lat=33.7167&lon=74.8333</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Bandipora -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Bandipora?lat=34.4167&lon=74.6333</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Kulgam -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Kulgam?lat=33.6400&lon=75.0192</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Jammu -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Jammu?lat=32.7266&lon=74.8570</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Kathua -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Kathua?lat=32.3700&lon=75.5167</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Udhampur -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Udhampur?lat=32.9167&lon=75.1333</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Rajouri -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Rajouri?lat=33.3800&lon=74.3100</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Poonch -->
+  <url>
+    <loc>https://kilamate.netlify.app/city/Poonch?lat=33.7700&lon=74.0900</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.6</priority>
   </url>
 
 </urlset>

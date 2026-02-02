@@ -17,6 +17,7 @@ import { FavoriteCities } from "@/components/favorite-cities";
 import { AirPollution } from "../components/air-pollution";
 import { WeatherAlerts } from "../components/weather-alerts";
 import { WeatherStats } from "../components/weather-stats";
+import { SEO, webApplicationSchema, organizationSchema } from "@/components/seo";
 
 export function WeatherDashboard() {
   const {
@@ -109,46 +110,55 @@ export function WeatherDashboard() {
   const locationName = locationQuery.data?.[0];
 
   return (
-    <div className="space-y-4">
-      <FavoriteCities />
+    <>
+      <SEO
+        title="Kilamate | Real-Time Weather Forecast for Jammu & Kashmir"
+        description="Get accurate, real-time weather forecasts and Air Quality Index (AQI) for all districts of Jammu & Kashmir. Track weather in Srinagar, Budgam, Baramulla, Pulwama, and more."
+        keywords="weather forecast J&K, Jammu Kashmir weather, Srinagar weather, real-time AQI, air quality index, weather app Kashmir, Kilamate"
+        structuredData={[organizationSchema, webApplicationSchema]}
+      />
 
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight">My Location</h1>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleRefresh}
-          aria-label="Refresh Button"
-          disabled={weatherQuery.isFetching || forecastQuery.isFetching}
-        >
-          <RefreshCw
-            className={`h-4 w-4 ${weatherQuery.isFetching ? "animate-spin" : ""
-              }`}
-          />
-        </Button>
-      </div>
+      <div className="space-y-4">
+        <FavoriteCities />
 
-      <div className="grid gap-6">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <CurrentWeather
-            data={weatherQuery.data}
-            locationName={locationName}
-          />
-          <HourlyTemperature data={forecastQuery.data} />
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold tracking-tight">My Location</h1>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleRefresh}
+            aria-label="Refresh weather data"
+            disabled={weatherQuery.isFetching || forecastQuery.isFetching}
+          >
+            <RefreshCw
+              className={`h-4 w-4 ${weatherQuery.isFetching ? "animate-spin" : ""
+                }`}
+            />
+          </Button>
         </div>
 
-        <WeatherAlerts data={weatherQuery.data} />
+        <div className="grid gap-6">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <CurrentWeather
+              data={weatherQuery.data}
+              locationName={locationName}
+            />
+            <HourlyTemperature data={forecastQuery.data} />
+          </div>
 
-        <WeatherStats data={weatherQuery.data} />
+          <WeatherAlerts data={weatherQuery.data} />
 
-        <div className="grid gap-6 md:grid-cols-2 items-start">
-          <WeatherDetails data={weatherQuery.data} />
-          <WeatherForecast data={forecastQuery.data} />
-          {airPollutionQuery.data && (
-            <AirPollution data={airPollutionQuery.data} />
-          )}
+          <WeatherStats data={weatherQuery.data} />
+
+          <div className="grid gap-6 md:grid-cols-2 items-start">
+            <WeatherDetails data={weatherQuery.data} />
+            <WeatherForecast data={forecastQuery.data} />
+            {airPollutionQuery.data && (
+              <AirPollution data={airPollutionQuery.data} />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
