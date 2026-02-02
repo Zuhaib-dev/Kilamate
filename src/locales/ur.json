@@ -1,0 +1,106 @@
+{
+    "common": {
+        "search": "تلاش کریں",
+        "settings": "ترتیبات",
+        "favorites": "پسندیدہ",
+        "loading": "لوڈ ہو رہا ہے...",
+        "error": "خرابی",
+        "retry": "دوبارہ کوشش کریں",
+        "close": "بند کریں",
+        "save": "محفوظ کریں",
+        "cancel": "منسوخ کریں"
+    },
+    "header": {
+        "title": "کلامیٹ موسم",
+        "searchPlaceholder": "شہر تلاش کریں...",
+        "notifications": "اطلاعات",
+        "theme": "تھیم",
+        "preferences": "ترجیحات"
+    },
+    "weather": {
+        "temperature": "درجہ حرارت",
+        "feelsLike": "محسوس ہوتا ہے",
+        "humidity": "نمی",
+        "wind": "ہوا",
+        "windSpeed": "ہوا کی رفتار",
+        "pressure": "دباؤ",
+        "visibility": "مرئیت",
+        "uvIndex": "یو وی انڈیکس",
+        "sunrise": "طلوع آفتاب",
+        "sunset": "غروب آفتاب",
+        "forecast": "5 دن کی پیشن گوئی",
+        "hourly": "گھنٹہ وار درجہ حرارت",
+        "current": "موجودہ موسم",
+        "details": "موسم کی تفصیلات",
+        "aqi": "ہوا کے معیار کا اشاریہ",
+        "pollutants": "آلودگی"
+    },
+    "alerts": {
+        "title": "موسم کی انتباہات",
+        "highWind": "تیز ہوا کی انتباہ",
+        "highWindMessage": "{{speed}} میٹر/سیکنڈ کی تیز ہوائیں پائی گئیں۔ باہر احتیاط سے رہیں۔",
+        "highHumidity": "زیادہ نمی",
+        "highHumidityMessage": "نمی {{humidity}}% ہے۔ باہر گھٹن محسوس ہو سکتی ہے۔",
+        "lowVisibility": "کم مرئیت",
+        "lowVisibilityMessage": "دھند کی صورتحال پائی گئی۔ احتیاط سے گاڑی چلائیں اور ہیڈلائٹس استعمال کریں۔",
+        "extremeHeat": "شدید گرمی",
+        "extremeHeatMessage": "درجہ حرارت {{temp}}°C ہے۔ ہائیڈریٹ رہیں اور طویل دھوپ سے بچیں۔",
+        "freezing": "منجمد درجہ حرارت",
+        "freezingMessage": "درجہ حرارت {{temp}}°C ہے۔ برف کے لیے دیکھیں اور گرم کپڑے پہنیں۔",
+        "temperaturePerception": "درجہ حرارت کا احساس",
+        "temperaturePerceptionMessage": "{{feelsLike}}°C جیسا محسوس ہوتا ہے، اصل درجہ حرارت سے مختلف۔"
+    },
+    "preferences": {
+        "title": "ترجیحات",
+        "temperature": "درجہ حرارت کی اکائی",
+        "celsius": "سیلسیس",
+        "fahrenheit": "فارن ہائیٹ",
+        "windSpeed": "ہوا کی رفتار کی اکائی",
+        "metersPerSecond": "میٹر/سیکنڈ",
+        "kilometersPerHour": "کلومیٹر/گھنٹہ",
+        "milesPerHour": "میل/گھنٹہ",
+        "language": "زبان",
+        "english": "انگریزی",
+        "hindi": "ہندی",
+        "urdu": "اردو"
+    },
+    "search": {
+        "placeholder": "شہر تلاش کریں...",
+        "noResults": "کوئی شہر نہیں ملا",
+        "recent": "حالیہ تلاشیں",
+        "favorites": "پسندیدہ شہر",
+        "addToFavorites": "پسندیدہ میں شامل کریں",
+        "removeFromFavorites": "پسندیدہ سے ہٹائیں"
+    },
+    "notifications": {
+        "enabled": "اطلاعات فعال ہیں",
+        "disabled": "اطلاعات غیر فعال ہیں",
+        "enable": "اطلاعات فعال کریں",
+        "permissionDenied": "اطلاع کی اجازت مسترد",
+        "notSupported": "اس براؤزر میں اطلاعات تعاون یافتہ نہیں ہیں"
+    },
+    "keyboard": {
+        "title": "کی بورڈ شارٹ کٹس",
+        "search": "تلاش کھولیں",
+        "theme": "تھیم ٹوگل کریں",
+        "notifications": "اطلاعات ٹوگل کریں",
+        "refresh": "موسم کا ڈیٹا ریفریش کریں",
+        "help": "کی بورڈ شارٹ کٹس دکھائیں"
+    },
+    "errors": {
+        "fetchWeather": "موسم کا ڈیٹا لانے میں ناکام",
+        "fetchForecast": "پیشن گوئی لانے میں ناکام",
+        "fetchAQI": "ہوا کے معیار کا ڈیٹا لانے میں ناکام",
+        "geolocation": "آپ کا مقام حاصل کرنے میں ناکام",
+        "network": "نیٹ ورک کی خرابی۔ براہ کرم اپنا کنکشن چیک کریں۔",
+        "apiKey": "API کلید غائب یا غلط ہے"
+    },
+    "offline": {
+        "title": "آپ آف لائن ہیں",
+        "message": "کیشڈ موسم کا ڈیٹا دکھا رہا ہے۔ اپ ڈیٹس کے لیے انٹرنیٹ سے منسلک ہوں۔"
+    },
+    "pwa": {
+        "install": "ایپ انسٹال کریں",
+        "installMessage": "فوری رسائی اور آف لائن سپورٹ کے لیے کلامیٹ انسٹال کریں"
+    }
+}

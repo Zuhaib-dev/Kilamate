@@ -3,6 +3,7 @@ import { CitySearch } from "./city-search";
 import { ThemeToggle } from "./theme-toggle";
 import { PreferencesMenu } from "./preferences-menu";
 import { NotificationSettings } from "./notification-settings";
+import { LanguageSwitcher } from "./language-switcher";
 import { useTheme } from "@/context/theme-provider";
 
 export function Header() {
@@ -21,6 +22,7 @@ export function Header() {
 
         <div className="flex gap-4">
           <CitySearch />
+          <LanguageSwitcher />
           <NotificationSettings />
           <PreferencesMenu />
           <ThemeToggle />

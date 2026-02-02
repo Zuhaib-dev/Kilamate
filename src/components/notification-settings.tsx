@@ -7,9 +7,11 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "./ui/tooltip";
+import { useTranslation } from "react-i18next";
 
 export function NotificationSettings() {
     const { permission, requestPermission, isSupported } = useNotifications();
+    const { t } = useTranslation();
 
     if (!isSupported) {
         return null;
@@ -31,7 +33,7 @@ export function NotificationSettings() {
                         variant="outline"
                         size="icon"
                         onClick={handleToggle}
-                        aria-label={isEnabled ? "Notifications enabled" : "Enable notifications"}
+                        aria-label={isEnabled ? t('notifications.enabled') : t('notifications.enable')}
                         className={isEnabled ? "bg-green-500/10 border-green-500/50" : ""}
                     >
                         {isEnabled ? (
@@ -44,8 +46,8 @@ export function NotificationSettings() {
                 <TooltipContent>
                     <p>
                         {isEnabled
-                            ? "Notifications enabled"
-                            : "Click to enable weather notifications"}
+                            ? t('notifications.enabled')
+                            : t('notifications.enable')}
                     </p>
                 </TooltipContent>
             </Tooltip>

@@ -1,61 +1,63 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Droplets, Gauge, Wind, Thermometer, Sunrise, Sunset } from "lucide-react";
 import type { WeatherData } from "@/api/types";
+import { useTranslation } from "react-i18next";
 
 interface WeatherStatsProps {
     data: WeatherData;
 }
 
 export function WeatherStats({ data }: WeatherStatsProps) {
+    const { t } = useTranslation();
     const stats = [
         {
-            title: "Feels Like",
+            title: t('weather.feelsLike'),
             value: `${Math.round(data.main.feels_like)}°`,
             icon: Thermometer,
             color: "text-orange-500",
-            description: "Perceived temperature",
+            description: t('weather.feelsLike'),
         },
         {
-            title: "Humidity",
+            title: t('weather.humidity'),
             value: `${data.main.humidity}%`,
             icon: Droplets,
             color: "text-blue-500",
-            description: "Moisture in air",
+            description: t('weather.humidity'),
         },
         {
-            title: "Pressure",
+            title: t('weather.pressure'),
             value: `${data.main.pressure} hPa`,
             icon: Gauge,
             color: "text-purple-500",
-            description: "Atmospheric pressure",
+            description: t('weather.pressure'),
         },
         {
-            title: "Wind Speed",
+            title: t('weather.windSpeed'),
             value: `${data.wind.speed} m/s`,
             icon: Wind,
             color: "text-cyan-500",
-            description: "Current wind speed",
+            description: t('weather.windSpeed'),
         },
         {
-            title: "Sunrise",
+            title: t('weather.sunrise'),
             value: new Date(data.sys.sunrise * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
             icon: Sunrise,
             color: "text-yellow-500",
-            description: "Sunrise time",
+            description: t('weather.sunrise'),
         },
         {
-            title: "Sunset",
+            title: t('weather.sunset'),
             value: new Date(data.sys.sunset * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
             icon: Sunset,
             color: "text-orange-600",
-            description: "Sunset time",
+            description: t('weather.sunset'),
         },
     ];
 
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Weather Statistics</CardTitle>
+                <CardTitle>{t('weather.details')}</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -1,0 +1,106 @@
+{
+    "common": {
+        "search": "खोजें",
+        "settings": "सेटिंग्स",
+        "favorites": "पसंदीदा",
+        "loading": "लोड हो रहा है...",
+        "error": "त्रुटि",
+        "retry": "पुनः प्रयास करें",
+        "close": "बंद करें",
+        "save": "सहेजें",
+        "cancel": "रद्द करें"
+    },
+    "header": {
+        "title": "किलामेट मौसम",
+        "searchPlaceholder": "शहर खोजें...",
+        "notifications": "सूचनाएं",
+        "theme": "थीम",
+        "preferences": "प्राथमिकताएं"
+    },
+    "weather": {
+        "temperature": "तापमान",
+        "feelsLike": "महसूस होता है",
+        "humidity": "आर्द्रता",
+        "wind": "हवा",
+        "windSpeed": "हवा की गति",
+        "pressure": "दबाव",
+        "visibility": "दृश्यता",
+        "uvIndex": "यूवी सूचकांक",
+        "sunrise": "सूर्योदय",
+        "sunset": "सूर्यास्त",
+        "forecast": "5-दिन का पूर्वानुमान",
+        "hourly": "प्रति घंटा तापमान",
+        "current": "वर्तमान मौसम",
+        "details": "मौसम विवरण",
+        "aqi": "वायु गुणवत्ता सूचकांक",
+        "pollutants": "प्रदूषक"
+    },
+    "alerts": {
+        "title": "मौसम चेतावनी",
+        "highWind": "तेज हवा की चेतावनी",
+        "highWindMessage": "{{speed}} मी/से की तेज हवाएं पाई गईं। बाहर सावधानी बरतें।",
+        "highHumidity": "उच्च आर्द्रता",
+        "highHumidityMessage": "आर्द्रता {{humidity}}% है। बाहर उमस महसूस हो सकती है।",
+        "lowVisibility": "कम दृश्यता",
+        "lowVisibilityMessage": "कोहरे की स्थिति पाई गई। सावधानी से गाड़ी चलाएं और हेडलाइट का उपयोग करें।",
+        "extremeHeat": "अत्यधिक गर्मी",
+        "extremeHeatMessage": "तापमान {{temp}}°C है। हाइड्रेटेड रहें और लंबे समय तक धूप में रहने से बचें।",
+        "freezing": "जमने वाला तापमान",
+        "freezingMessage": "तापमान {{temp}}°C है। बर्फ के लिए देखें और गर्म कपड़े पहनें।",
+        "temperaturePerception": "तापमान अनुभूति",
+        "temperaturePerceptionMessage": "{{feelsLike}}°C जैसा महसूस होता है, वास्तविक तापमान से अलग।"
+    },
+    "preferences": {
+        "title": "प्राथमिकताएं",
+        "temperature": "तापमान इकाई",
+        "celsius": "सेल्सियस",
+        "fahrenheit": "फ़ारेनहाइट",
+        "windSpeed": "हवा की गति इकाई",
+        "metersPerSecond": "मीटर/सेकंड",
+        "kilometersPerHour": "किलोमीटर/घंटा",
+        "milesPerHour": "मील/घंटा",
+        "language": "भाषा",
+        "english": "अंग्रेज़ी",
+        "hindi": "हिंदी",
+        "urdu": "उर्दू"
+    },
+    "search": {
+        "placeholder": "शहर खोजें...",
+        "noResults": "कोई शहर नहीं मिला",
+        "recent": "हाल की खोजें",
+        "favorites": "पसंदीदा शहर",
+        "addToFavorites": "पसंदीदा में जोड़ें",
+        "removeFromFavorites": "पसंदीदा से हटाएं"
+    },
+    "notifications": {
+        "enabled": "सूचनाएं सक्षम हैं",
+        "disabled": "सूचनाएं अक्षम हैं",
+        "enable": "सूचनाएं सक्षम करें",
+        "permissionDenied": "सूचना अनुमति अस्वीकृत",
+        "notSupported": "इस ब्राउज़र में सूचनाएं समर्थित नहीं हैं"
+    },
+    "keyboard": {
+        "title": "कीबोर्ड शॉर्टकट",
+        "search": "खोज खोलें",
+        "theme": "थीम टॉगल करें",
+        "notifications": "सूचनाएं टॉगल करें",
+        "refresh": "मौसम डेटा रीफ्रेश करें",
+        "help": "कीबोर्ड शॉर्टकट दिखाएं"
+    },
+    "errors": {
+        "fetchWeather": "मौसम डेटा लाने में विफल",
+        "fetchForecast": "पूर्वानुमान लाने में विफल",
+        "fetchAQI": "वायु गुणवत्ता डेटा लाने में विफल",
+        "geolocation": "आपका स्थान प्राप्त करने में विफल",
+        "network": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें।",
+        "apiKey": "API कुंजी गुम है या अमान्य है"
+    },
+    "offline": {
+        "title": "आप ऑफ़लाइन हैं",
+        "message": "कैश किया गया मौसम डेटा दिखा रहा है। अपडेट के लिए इंटरनेट से कनेक्ट करें।"
+    },
+    "pwa": {
+        "install": "ऐप इंस्टॉल करें",
+        "installMessage": "त्वरित पहुंच और ऑफ़लाइन समर्थन के लिए किलामेट इंस्टॉल करें"
+    }
+}

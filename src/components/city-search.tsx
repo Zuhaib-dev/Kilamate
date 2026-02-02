@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Search, Loader2, Clock, Star, XCircle } from "lucide-react";
 import { useLocationSearch } from "@/hooks/use-weather";
 import { useSearchHistory } from "@/hooks/use-search-history";
+import { useTranslation } from "react-i18next";
 import {
   Command,
   CommandDialog,
@@ -21,6 +22,7 @@ export function CitySearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: locations, isLoading } = useLocationSearch(query);
   const { favorites } = useFavorites();
@@ -48,15 +50,15 @@ export function CitySearch() {
         variant="outline"
         className="relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64"
         onClick={() => setOpen(true)}
-        aria-label="Search for cities"
+        aria-label={t('search.placeholder')}
       >
         <Search className="mr-2 h-4 w-4" />
-        Search cities...
+        {t('search.placeholder')}
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <Command>
           <CommandInput
-            placeholder="Search cities..."
+            placeholder={t('search.placeholder')}
             value={query}
             onValueChange={setQuery}
           />

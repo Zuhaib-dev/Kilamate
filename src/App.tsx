@@ -9,9 +9,11 @@ import { CityPage } from "./pages/city-page";
 import { ErrorBoundary } from "./components/error-boundary";
 import { useKeyboardShortcuts } from "./hooks/use-keyboard-shortcuts";
 import { KeyboardShortcutsDialog } from "./components/keyboard-shortcuts-dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useNotifications } from "./hooks/use-notifications";
+import { usePreferences } from "./hooks/use-preferences";
+import { useTranslation } from "react-i18next";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +35,15 @@ function AppContent() {
   const [showShortcuts, setShowShortcuts] = useState(false);
   const { setTheme, theme } = useTheme();
   const { requestPermission, permission } = useNotifications();
+  const { language } = usePreferences();
+  const { i18n } = useTranslation();
+
+  // Sync i18n with preferences store
+  useEffect(() => {
+    if (language && i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language, i18n]);
 
   useKeyboardShortcuts([
     {

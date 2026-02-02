@@ -1,0 +1,106 @@
+{
+    "common": {
+        "search": "Search",
+        "settings": "Settings",
+        "favorites": "Favorites",
+        "loading": "Loading...",
+        "error": "Error",
+        "retry": "Retry",
+        "close": "Close",
+        "save": "Save",
+        "cancel": "Cancel"
+    },
+    "header": {
+        "title": "Kilamate Weather",
+        "searchPlaceholder": "Search for cities...",
+        "notifications": "Notifications",
+        "theme": "Theme",
+        "preferences": "Preferences"
+    },
+    "weather": {
+        "temperature": "Temperature",
+        "feelsLike": "Feels like",
+        "humidity": "Humidity",
+        "wind": "Wind",
+        "windSpeed": "Wind Speed",
+        "pressure": "Pressure",
+        "visibility": "Visibility",
+        "uvIndex": "UV Index",
+        "sunrise": "Sunrise",
+        "sunset": "Sunset",
+        "forecast": "5-Day Forecast",
+        "hourly": "Hourly Temperature",
+        "current": "Current Weather",
+        "details": "Weather Details",
+        "aqi": "Air Quality Index",
+        "pollutants": "Pollutants"
+    },
+    "alerts": {
+        "title": "Weather Alerts",
+        "highWind": "High Wind Alert",
+        "highWindMessage": "Strong winds detected at {{speed}} m/s. Exercise caution outdoors.",
+        "highHumidity": "High Humidity",
+        "highHumidityMessage": "Humidity is at {{humidity}}%. It may feel muggy outside.",
+        "lowVisibility": "Low Visibility",
+        "lowVisibilityMessage": "Foggy conditions detected. Drive carefully and use headlights.",
+        "extremeHeat": "Extreme Heat",
+        "extremeHeatMessage": "Temperature is {{temp}}°C. Stay hydrated and avoid prolonged sun exposure.",
+        "freezing": "Freezing Temperature",
+        "freezingMessage": "Temperature is {{temp}}°C. Watch for ice and dress warmly.",
+        "temperaturePerception": "Temperature Perception",
+        "temperaturePerceptionMessage": "Feels like {{feelsLike}}°C, different from actual temperature."
+    },
+    "preferences": {
+        "title": "Preferences",
+        "temperature": "Temperature Unit",
+        "celsius": "Celsius",
+        "fahrenheit": "Fahrenheit",
+        "windSpeed": "Wind Speed Unit",
+        "metersPerSecond": "Meters/Second",
+        "kilometersPerHour": "Kilometers/Hour",
+        "milesPerHour": "Miles/Hour",
+        "language": "Language",
+        "english": "English",
+        "hindi": "Hindi",
+        "urdu": "Urdu"
+    },
+    "search": {
+        "placeholder": "Search for a city...",
+        "noResults": "No cities found",
+        "recent": "Recent Searches",
+        "favorites": "Favorite Cities",
+        "addToFavorites": "Add to Favorites",
+        "removeFromFavorites": "Remove from Favorites"
+    },
+    "notifications": {
+        "enabled": "Notifications enabled",
+        "disabled": "Notifications disabled",
+        "enable": "Enable notifications",
+        "permissionDenied": "Notification permission denied",
+        "notSupported": "Notifications are not supported in this browser"
+    },
+    "keyboard": {
+        "title": "Keyboard Shortcuts",
+        "search": "Open search",
+        "theme": "Toggle theme",
+        "notifications": "Toggle notifications",
+        "refresh": "Refresh weather data",
+        "help": "Show keyboard shortcuts"
+    },
+    "errors": {
+        "fetchWeather": "Failed to fetch weather data",
+        "fetchForecast": "Failed to fetch forecast",
+        "fetchAQI": "Failed to fetch air quality data",
+        "geolocation": "Failed to get your location",
+        "network": "Network error. Please check your connection.",
+        "apiKey": "API key is missing or invalid"
+    },
+    "offline": {
+        "title": "You're offline",
+        "message": "Showing cached weather data. Connect to internet for updates."
+    },
+    "pwa": {
+        "install": "Install App",
+        "installMessage": "Install Kilamate for quick access and offline support"
+    }
+}

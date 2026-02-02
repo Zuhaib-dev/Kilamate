@@ -3,6 +3,8 @@ import { ArrowDown, ArrowUp, Droplets, Wind } from "lucide-react";
 import type { WeatherData, GeocodingResponse } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatTemperature, formatWindSpeed } from "@/lib/units";
+import { useTranslation } from "react-i18next";
+import { translateCityName, translateStateName } from "@/lib/translate-city";
 
 interface CurrentWeatherProps {
   data: WeatherData;
@@ -10,7 +12,8 @@ interface CurrentWeatherProps {
 }
 
 export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
-  const { temperatureUnit, windSpeedUnit } = usePreferences();
+  const { temperatureUnit, windSpeedUnit, language } = usePreferences();
+  const { t } = useTranslation();
 
   const {
     weather: [currentWeather],
@@ -32,11 +35,11 @@ export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
             <div className="space-y-2">
               <div className="flex items-center">
                 <h2 className="text-2xl font-bold tracking-tight">
-                  {locationName?.name}
+                  {translateCityName(locationName?.name || '', language)}
                 </h2>
                 {locationName?.state && (
                   <span className="text-muted-foreground">
-                    , {locationName.state}
+                    , {translateStateName(locationName.state, language)}
                   </span>
                 )}
               </div>

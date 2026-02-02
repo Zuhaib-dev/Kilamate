@@ -9,10 +9,12 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { usePreferences } from "@/hooks/use-preferences";
+import { useTranslation } from "react-i18next";
 
 export function PreferencesMenu() {
     const { temperatureUnit, windSpeedUnit, setTemperatureUnit, setWindSpeedUnit } =
         usePreferences();
+    const { t } = useTranslation();
 
     return (
         <DropdownMenu>
@@ -22,47 +24,47 @@ export function PreferencesMenu() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Preferences</DropdownMenuLabel>
+                <DropdownMenuLabel>{t('preferences.title')}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
                 <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                    Temperature Unit
+                    {t('preferences.temperature')}
                 </DropdownMenuLabel>
                 <DropdownMenuItem
                     onClick={() => setTemperatureUnit("celsius")}
                     className={temperatureUnit === "celsius" ? "bg-accent" : ""}
                 >
-                    Celsius (°C)
+                    {t('preferences.celsius')} (°C)
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={() => setTemperatureUnit("fahrenheit")}
                     className={temperatureUnit === "fahrenheit" ? "bg-accent" : ""}
                 >
-                    Fahrenheit (°F)
+                    {t('preferences.fahrenheit')} (°F)
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
                 <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                    Wind Speed Unit
+                    {t('preferences.windSpeed')}
                 </DropdownMenuLabel>
                 <DropdownMenuItem
                     onClick={() => setWindSpeedUnit("kmh")}
                     className={windSpeedUnit === "kmh" ? "bg-accent" : ""}
                 >
-                    Kilometers per hour (km/h)
+                    {t('preferences.kilometersPerHour')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={() => setWindSpeedUnit("mph")}
                     className={windSpeedUnit === "mph" ? "bg-accent" : ""}
                 >
-                    Miles per hour (mph)
+                    {t('preferences.milesPerHour')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={() => setWindSpeedUnit("ms")}
                     className={windSpeedUnit === "ms" ? "bg-accent" : ""}
                 >
-                    Meters per second (m/s)
+                    {t('preferences.metersPerSecond')}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
