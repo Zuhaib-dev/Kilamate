@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Coordinates } from "@/api/types";
 
 interface GeolocationState {
