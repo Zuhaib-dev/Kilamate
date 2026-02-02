@@ -77,6 +77,7 @@
   display: inline-block;
   animation: pulse 2s infinite ease-in-out;
   transition: color 0.3s ease;
+  will-change: transform, opacity; /* Performance optimization */
 }
 
 @keyframes pulse {
@@ -100,4 +101,11 @@
 
 .dark #owner a {
   color: #e84554;
+}
+
+/* Global Font Performance */
+@font-face {
+  font-family: 'Inter';
+  font-display: swap; /* Performance optimization */
+  src: local('Inter');
 }

@@ -22,7 +22,9 @@ interface ChartData {
     feels_like: number;
 }
 
-export function HourlyTemperature({ data }: HourlyTemperatureProps) {
+import { memo } from "react";
+
+export const HourlyTemperature = memo(function HourlyTemperature({ data }: HourlyTemperatureProps) {
     const { temperatureUnit } = usePreferences();
 
     // Get today's forecast data and format for chart
@@ -109,4 +111,4 @@ export function HourlyTemperature({ data }: HourlyTemperatureProps) {
             </CardContent>
         </Card>
     );
-}
+});

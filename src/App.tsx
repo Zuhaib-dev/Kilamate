@@ -1,15 +1,18 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "./components/ui/sonner";
-import { WeatherDashboard } from "./pages/weather-dashboard";
 import { Layout } from "./components/layout";
 import { ThemeProvider, useTheme } from "./context/theme-provider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { CityPage } from "./pages/city-page";
 import { ErrorBoundary } from "./components/error-boundary";
 import { useKeyboardShortcuts } from "./hooks/use-keyboard-shortcuts";
 import { KeyboardShortcutsDialog } from "./components/keyboard-shortcuts-dialog";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
+import WeatherSkeleton from "./components/loading-skeleton";
+
+// Lazy load routes for better performance
+const WeatherDashboard = lazy(() => import("./pages/weather-dashboard").then(module => ({ default: module.WeatherDashboard })));
+const CityPage = lazy(() => import("./pages/city-page").then(module => ({ default: module.CityPage })));
 import { toast } from "sonner";
 import { useNotifications } from "./hooks/use-notifications";
 import { usePreferences } from "./hooks/use-preferences";
@@ -109,8 +112,16 @@ function AppContent() {
     <>
       <Layout>
         <Routes>
-          <Route path="/" element={<WeatherDashboard />} />
-          <Route path="/city/:cityName" element={<CityPage />} />
+          <Route path="/" element={
+            <Suspense fallback={<WeatherSkeleton />}>
+              <WeatherDashboard />
+            </Suspense>
+          } />
+          <Route path="/city/:cityName" element={
+            <Suspense fallback={<WeatherSkeleton />}>
+              <CityPage />
+            </Suspense>
+          } />
         </Routes>
       </Layout>
       <Toaster richColors />

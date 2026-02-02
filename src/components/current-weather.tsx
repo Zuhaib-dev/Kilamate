@@ -11,7 +11,9 @@ interface CurrentWeatherProps {
   locationName?: GeocodingResponse;
 }
 
-export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
+import { memo } from "react";
+
+export const CurrentWeather = memo(function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
   const { temperatureUnit, windSpeedUnit, language } = usePreferences();
   const { t } = useTranslation();
 
@@ -112,4 +114,4 @@ export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
       </CardContent>
     </Card>
   );
-}
+});

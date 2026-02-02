@@ -12,7 +12,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { WeatherDetails } from "../components/weather-details";
 import { WeatherForecast } from "../components/weather-forecast";
 import { HourlyTemperature } from "../components/hourly-temperature";
-import WeatherSkeleton from "../components/loading-skeleton";
+import { Skeleton } from "../components/ui/skeleton";
 import { FavoriteCities } from "@/components/favorite-cities";
 import { AirPollution } from "../components/air-pollution";
 import { WeatherAlerts } from "../components/weather-alerts";
@@ -42,9 +42,7 @@ export function WeatherDashboard() {
     }
   };
 
-  if (locationLoading) {
-    return <WeatherSkeleton />;
-  }
+  const locationName = locationQuery.data?.[0];
 
   if (locationError) {
     return (
@@ -62,7 +60,7 @@ export function WeatherDashboard() {
     );
   }
 
-  if (!coordinates) {
+  if (!coordinates && !locationLoading) {
     return (
       <Alert>
         <MapPin className="h-4 w-4" />
@@ -78,37 +76,6 @@ export function WeatherDashboard() {
     );
   }
 
-  const allQueriesLoading =
-    weatherQuery.isLoading ||
-    forecastQuery.isLoading ||
-    locationQuery.isLoading;
-
-  if (allQueriesLoading) {
-    return <WeatherSkeleton />;
-  }
-
-  if (weatherQuery.error || forecastQuery.error) {
-    return (
-      <Alert variant="destructive">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription className="flex flex-col gap-4">
-          <p>Failed to fetch weather data. Please try again.</p>
-          <Button onClick={handleRefresh} variant="outline" className="w-fit">
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Retry
-          </Button>
-        </AlertDescription>
-      </Alert>
-    );
-  }
-
-  if (!weatherQuery.data || !forecastQuery.data) {
-    return <WeatherSkeleton />;
-  }
-
-  const locationName = locationQuery.data?.[0];
-
   return (
     <>
       <SEO
@@ -119,6 +86,7 @@ export function WeatherDashboard() {
       />
 
       <div className="space-y-4">
+        {/* Favorite Cities - Always visible for quick access */}
         <FavoriteCities />
 
         <div className="flex items-center justify-between">
@@ -137,27 +105,65 @@ export function WeatherDashboard() {
           </Button>
         </div>
 
-        <div className="grid gap-6">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <CurrentWeather
-              data={weatherQuery.data}
-              locationName={locationName}
-            />
-            <HourlyTemperature data={forecastQuery.data} />
+        {locationLoading ? (
+          <div className="space-y-4">
+            <div className="grid gap-6 md:grid-cols-2">
+              <Skeleton className="h-[300px] w-full rounded-xl" />
+              <Skeleton className="h-[300px] w-full rounded-xl" />
+            </div>
           </div>
+        ) : (
+          <div className="grid gap-6">
+            <div className="flex flex-col lg:flex-row gap-4">
+              {weatherQuery.isLoading ? (
+                <Skeleton className="h-[300px] w-full lg:w-[50%] rounded-xl" />
+              ) : weatherQuery.data ? (
+                <CurrentWeather
+                  data={weatherQuery.data}
+                  locationName={locationName}
+                />
+              ) : null}
 
-          <WeatherAlerts data={weatherQuery.data} />
+              {forecastQuery.isLoading ? (
+                <Skeleton className="h-[300px] w-full lg:w-[50%] rounded-xl" />
+              ) : forecastQuery.data ? (
+                <HourlyTemperature data={forecastQuery.data} />
+              ) : null}
+            </div>
 
-          <WeatherStats data={weatherQuery.data} />
+            {weatherQuery.data && <WeatherAlerts data={weatherQuery.data} />}
 
-          <div className="grid gap-6 md:grid-cols-2 items-start">
-            <WeatherDetails data={weatherQuery.data} />
-            <WeatherForecast data={forecastQuery.data} />
-            {airPollutionQuery.data && (
-              <AirPollution data={airPollutionQuery.data} />
-            )}
+            {weatherQuery.isLoading ? (
+              <div className="grid gap-6 md:grid-cols-3">
+                <Skeleton className="h-24 w-full rounded-xl" />
+                <Skeleton className="h-24 w-full rounded-xl" />
+                <Skeleton className="h-24 w-full rounded-xl" />
+              </div>
+            ) : weatherQuery.data ? (
+              <WeatherStats data={weatherQuery.data} />
+            ) : null}
+
+            <div className="grid gap-6 md:grid-cols-2 items-start">
+              {weatherQuery.isLoading ? (
+                <Skeleton className="h-[400px] w-full rounded-xl" />
+              ) : weatherQuery.data ? (
+                <WeatherDetails data={weatherQuery.data} />
+              ) : null}
+
+              {forecastQuery.isLoading ? (
+                <Skeleton className="h-[400px] w-full rounded-xl" />
+              ) : forecastQuery.data ? (
+                <WeatherForecast data={forecastQuery.data} />
+              ) : null}
+
+              {airPollutionQuery.isLoading ? (
+                <Skeleton className="h-[200px] w-full rounded-xl" />
+              ) : airPollutionQuery.data ? (
+                <AirPollution data={airPollutionQuery.data} />
+              ) : null}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );
