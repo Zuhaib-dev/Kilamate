@@ -1,7 +1,7 @@
-# Serve static files first (sitemap, robots.txt, etc.)
-/sitemap.xml /sitemap.xml 200
-/robots.txt /robots.txt 200
-/site.webmanifest /site.webmanifest 200
+# Serve static files directly (don't redirect to index.html)
+/sitemap.xml /sitemap.xml 200!
+/robots.txt /robots.txt 200!
+/site.webmanifest /site.webmanifest 200!
 
-# SPA fallback - redirect all other routes to index.html
+# SPA fallback - redirect all other routes to index.html for React Router
 /* /index.html 200
