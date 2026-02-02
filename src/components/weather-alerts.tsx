@@ -4,6 +4,7 @@ import { Alert, AlertDescription } from "./ui/alert";
 import type { WeatherData } from "@/api/types";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useEffect, useRef } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface WeatherAlertsProps {
     data: WeatherData;
@@ -18,6 +19,7 @@ interface WeatherAlert {
 
 export function WeatherAlerts({ data }: WeatherAlertsProps) {
     const { sendNotification, permission } = useNotifications();
+    const [notificationsEnabled] = useLocalStorage("notifications-enabled", false);
     const notifiedAlerts = useRef<Set<string>>(new Set());
     const alerts: WeatherAlert[] = [];
 
@@ -82,7 +84,8 @@ export function WeatherAlerts({ data }: WeatherAlertsProps) {
 
     // Send notifications for new alerts
     useEffect(() => {
-        if (permission === "granted" && alerts.length > 0) {
+        // Only send notifications if permission is granted AND app setting is enabled
+        if (permission === "granted" && notificationsEnabled && alerts.length > 0) {
             alerts.forEach((alert) => {
                 const alertKey = `${alert.title}-${data.name}`;
 

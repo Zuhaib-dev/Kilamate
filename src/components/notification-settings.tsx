@@ -8,22 +8,40 @@ import {
     TooltipTrigger,
 } from "./ui/tooltip";
 import { useTranslation } from "react-i18next";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { toast } from "sonner";
 
 export function NotificationSettings() {
     const { permission, requestPermission, isSupported } = useNotifications();
     const { t } = useTranslation();
+    const [notificationsEnabled, setNotificationsEnabled] = useLocalStorage("notifications-enabled", false);
 
     if (!isSupported) {
         return null;
     }
 
     const handleToggle = async () => {
+        // If browser permission not granted, request it
         if (permission !== "granted") {
-            await requestPermission();
+            const result = await requestPermission();
+            if (result === "granted") {
+                setNotificationsEnabled(true);
+            }
+        } else {
+            // Toggle app-level notification setting
+            const newState = !notificationsEnabled;
+            setNotificationsEnabled(newState);
+
+            if (newState) {
+                toast.success(t('notifications.enabled'));
+            } else {
+                toast.info(t('notifications.disabled'));
+            }
         }
     };
 
-    const isEnabled = permission === "granted";
+    // Notifications are enabled if both browser permission is granted AND app setting is enabled
+    const isEnabled = permission === "granted" && notificationsEnabled;
 
     return (
         <TooltipProvider>
