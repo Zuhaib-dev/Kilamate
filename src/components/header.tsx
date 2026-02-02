@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { CitySearch } from "./city-search";
 import { ThemeToggle } from "./theme-toggle";
+import { PreferencesMenu } from "./preferences-menu";
+import { NotificationSettings } from "./notification-settings";
 import { useTheme } from "@/context/theme-provider";
 
 export function Header() {
@@ -19,6 +21,8 @@ export function Header() {
 
         <div className="flex gap-4">
           <CitySearch />
+          <NotificationSettings />
+          <PreferencesMenu />
           <ThemeToggle />
         </div>
       </div>

@@ -12,7 +12,7 @@ const PageNotFound: React.FC = () => {
 
       {/* Floating Background Icons */}
       <Zap className="absolute top-20 left-10 text-yellow-500/20 w-24 h-24 animate-pulse z-0" />
-      <CloudRain className="absolute bottom-20 right-10 text-blue-500/10 w-32 h-32 animate-bounce z-0 duration-[3000ms]" />
+      <CloudRain className="absolute bottom-20 right-10 text-blue-500/10 w-32 h-32 animate-bounce z-0" style={{ animationDuration: '3000ms' }} />
       <CloudOff className="absolute top-1/3 right-1/4 text-gray-600/20 w-16 h-16 animate-pulse z-0" />
 
       {/* --- Main Content Card --- */}

@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ArrowDown, ArrowUp, Droplets, Wind } from "lucide-react";
 import { format } from "date-fns";
 import type { ForecastData } from "@/api/types";
+import { usePreferences } from "@/hooks/use-preferences";
+import { formatTemperature, formatWindSpeed } from "@/lib/units";
 
 interface WeatherForecastProps {
   data: ForecastData;
@@ -22,6 +24,8 @@ interface DailyForecast {
 }
 
 export function WeatherForecast({ data }: WeatherForecastProps) {
+  const { temperatureUnit, windSpeedUnit } = usePreferences();
+
   const dailyForecasts = data.list.reduce((acc, forecast) => {
     const dateKey = format(new Date(forecast.dt * 1000), "yyyy-MM-dd");
 
@@ -50,7 +54,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
 
   const nextDays = Object.values(dailyForecasts).slice(1, 6);
 
-  const formatTemp = (temp: number) => `${Math.round(temp)}°`;
+  const formatTemp = (temp: number) => formatTemperature(temp, temperatureUnit);
 
   return (
     <Card>
@@ -99,7 +103,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
                 </span>
                 <span className="flex items-center gap-1">
                   <Wind className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm">{day.wind} m/s</span>
+                  <span className="text-sm">{formatWindSpeed(day.wind, windSpeedUnit)}</span>
                 </span>
               </div>
             </div>

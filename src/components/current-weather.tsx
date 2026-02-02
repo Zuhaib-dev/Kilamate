@@ -1,6 +1,8 @@
 import { Card, CardContent } from "./ui/card";
 import { ArrowDown, ArrowUp, Droplets, Wind } from "lucide-react";
 import type { WeatherData, GeocodingResponse } from "@/api/types";
+import { usePreferences } from "@/hooks/use-preferences";
+import { formatTemperature, formatWindSpeed } from "@/lib/units";
 
 interface CurrentWeatherProps {
   data: WeatherData;
@@ -8,14 +10,16 @@ interface CurrentWeatherProps {
 }
 
 export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
+  const { temperatureUnit, windSpeedUnit } = usePreferences();
+
   const {
     weather: [currentWeather],
     main: { temp, feels_like, temp_min, temp_max, humidity },
     wind: { speed },
   } = data;
 
-  // Format temperature
-  const formatTemp = (temp: number) => `${Math.round(temp)}°`;
+  // Format temperature with user's preferred unit
+  const formatTemp = (temp: number) => formatTemperature(temp, temperatureUnit);
 
   // Dynamically generating the image URL
   const weatherIconUrl = `https://openweathermap.org/img/wn/${currentWeather.icon}@4x.png`;
@@ -74,7 +78,9 @@ export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
                 <Wind className="h-4 w-4 text-blue-500" />
                 <div className="space-y-0.5">
                   <p className="text-sm font-medium">Wind Speed</p>
-                  <p className="text-sm text-muted-foreground">{speed} m/s</p>
+                  <p className="text-sm text-muted-foreground">
+                    {formatWindSpeed(speed, windSpeedUnit)}
+                  </p>
                 </div>
               </div>
             </div>
