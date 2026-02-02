@@ -69,10 +69,20 @@ export function useGeolocation() {
     );
   };
 
-  // Get location on component mount
+  // Get location on component mount ONLY if we don't have it and it's not a fresh load blocking UX
+  // Effectively, we want to AVOID requesting it immediately.
+  // The best practice is to require user interaction.
+
+  // However, often weather apps DO want to show local weather.
+  // A compromise: check if we have a saved preference or if we are already permitted.
+  // But standard practice: Don't call getLocation() in useEffect.
+
+  // We will REMOVE the automatic call. The UI should show a "Locate Me" button if no location is set.
+  /*
   useEffect(() => {
     getLocation();
   }, []);
+  */
 
   return {
     ...locationData,
