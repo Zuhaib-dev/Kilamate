@@ -33,15 +33,28 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.openweathermap\.org\/.*/i,
-            handler: "NetworkFirst",
+            handler: "CacheFirst", // Changed from NetworkFirst to CacheFirst for better offline
             options: {
               cacheName: "openweather-api-cache",
               expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 5 * 60, // 5 minutes
+                maxEntries: 100, // Increased from 50
+                maxAgeSeconds: 30 * 60, // 30 minutes (increased from 5)
               },
               cacheableResponse: {
                 statuses: [0, 200],
+              },
+              networkTimeoutSeconds: 10, // Fallback to cache after 10s
+            },
+          },
+          {
+            // Cache weather icons
+            urlPattern: /^https:\/\/openweathermap\.org\/img\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "weather-icons-cache",
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
               },
             },
           },

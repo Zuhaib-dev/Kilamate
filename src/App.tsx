@@ -17,12 +17,15 @@ import { useNotifications } from "./hooks/use-notifications";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 30 * 1000,
-      gcTime: 5 * 60 * 1000,
-      retry: 1,
-      refetchOnWindowFocus: true,
-      refetchInterval: 60 * 1000,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 30 * 60 * 1000, // 30 minutes (increased from 5)
+      retry: 2,
+      refetchOnWindowFocus: false, // Don't refetch when window regains focus
+      refetchOnReconnect: true, // Refetch when network reconnects
+      refetchInterval: false, // Don't auto-refetch
       refetchIntervalInBackground: false,
+      // Enable offline mode - use cached data when offline
+      networkMode: 'offlineFirst', // Try cache first, then network
     },
   },
 });
