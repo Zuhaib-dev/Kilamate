@@ -6,36 +6,10 @@ import { useEffect } from 'react';
  */
 export function usePerformanceOptimization() {
     useEffect(() => {
-        // Batch DOM reads and writes to prevent layout thrashing
-        let rafId: number;
-        const scheduledReads: Array<() => void> = [];
-        const scheduledWrites: Array<() => void> = [];
-
-        const flushReads = () => {
-            scheduledReads.forEach(read => read());
-            scheduledReads.length = 0;
-        };
-
-        const flushWrites = () => {
-            scheduledWrites.forEach(write => write());
-            scheduledWrites.length = 0;
-        };
-
-        const scheduleWork = () => {
-            if (rafId) return;
-
-            rafId = requestAnimationFrame(() => {
-                flushReads();
-                flushWrites();
-                rafId = 0;
-            });
-        };
-
-        // Cleanup
+        // Performance optimization logic can be added here
+        // This hook is available for future use
         return () => {
-            if (rafId) {
-                cancelAnimationFrame(rafId);
-            }
+            // Cleanup if needed
         };
     }, []);
 }
