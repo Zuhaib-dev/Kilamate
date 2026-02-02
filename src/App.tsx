@@ -6,7 +6,6 @@ import { Layout } from "./components/layout";
 import { ThemeProvider, useTheme } from "./context/theme-provider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CityPage } from "./pages/city-page";
-import PageNotFound from "./pages/PageNotFound";
 import { ErrorBoundary } from "./components/error-boundary";
 import { useKeyboardShortcuts } from "./hooks/use-keyboard-shortcuts";
 import { KeyboardShortcutsDialog } from "./components/keyboard-shortcuts-dialog";
@@ -101,7 +100,6 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<WeatherDashboard />} />
           <Route path="/city/:cityName" element={<CityPage />} />
-          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Layout>
       <Toaster richColors />
