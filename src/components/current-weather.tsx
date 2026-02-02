@@ -92,7 +92,7 @@ export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
                 src={weatherIconUrl}
                 alt={currentWeather.description}
                 className="h-full w-full object-contain"
-                fetchPriority="high"
+                {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
                 loading="eager"
                 width="200"
                 height="200"

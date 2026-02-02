@@ -42,7 +42,7 @@ export function usePWA() {
             navigator.serviceWorker
                 .register("/sw.js")
                 .then((registration) => {
-                    console.log("Service Worker registered:", registration);
+                    // Service worker registered successfully
 
                     // Check for updates
                     registration.addEventListener("updatefound", () => {
