@@ -13,12 +13,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useNotifications } from "./hooks/use-notifications";
 
-// Redirect to static files if accessed via React Router
-const staticFiles = ['/sitemap.xml', '/robots.txt', '/site.webmanifest'];
-if (staticFiles.includes(window.location.pathname)) {
-  window.location.href = window.location.pathname;
-}
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
