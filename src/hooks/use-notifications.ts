@@ -10,6 +10,7 @@ interface NotificationOptions {
     tag?: string;
     vibrate?: number[];
     renotify?: boolean;
+    actions?: { action: string; title: string; icon?: string }[];
 }
 
 export function useNotifications() {
@@ -68,13 +69,14 @@ export function useNotifications() {
                 navigator.serviceWorker.ready.then((registration) => {
                     registration.showNotification(options.title, {
                         body: options.body,
-                        icon: options.icon || "/logo.webp",
+                        icon: "/android-chrome-192x192.png", // Use PNG for better Android compatibility
                         tag: options.tag,
-                        badge: "/logo.webp",
+                        badge: "/favicon-96x96.png", // Use PNG badge
                         requireInteraction: false,
                         data: { url: window.location.href }, // Pass URL to open on click
-                        vibrate: [200, 100, 200], // Vibration pattern to trigger heads-up
+                        vibrate: [500, 200, 500], // Stronger vibration pattern
                         renotify: true, // Alert again even if tag exists
+                        actions: [{ action: 'view', title: 'Check Now' }] // Interaction button
                     } as any);
                 });
             } else {
