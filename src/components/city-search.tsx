@@ -48,12 +48,12 @@ export function CitySearch() {
     <>
       <Button
         variant="outline"
-        className="relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64"
+        className="relative w-full justify-center text-sm text-muted-foreground w-9 px-0 md:w-40 md:justify-start md:px-4 lg:w-64"
         onClick={() => setOpen(true)}
         aria-label={t('search.placeholder')}
       >
-        <Search className="mr-2 h-4 w-4" />
-        {t('search.placeholder')}
+        <Search className="h-4 w-4 md:mr-2" />
+        <span className="hidden md:inline">{t('search.placeholder')}</span>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <Command>
