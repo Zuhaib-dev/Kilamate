@@ -8,6 +8,8 @@ interface NotificationOptions {
     body: string;
     icon?: string;
     tag?: string;
+    vibrate?: number[];
+    renotify?: boolean;
 }
 
 export function useNotifications() {
@@ -70,8 +72,10 @@ export function useNotifications() {
                         tag: options.tag,
                         badge: "/logo.webp",
                         requireInteraction: false,
-                        data: { url: window.location.href } // Pass URL to open on click
-                    });
+                        data: { url: window.location.href }, // Pass URL to open on click
+                        vibrate: [200, 100, 200], // Vibration pattern to trigger heads-up
+                        renotify: true, // Alert again even if tag exists
+                    } as any);
                 });
             } else {
                 // Fallback for desktop/no-SW
