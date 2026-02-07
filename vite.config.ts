@@ -12,7 +12,6 @@ export default defineConfig({
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
       devOptions: {
         enabled: true,
-        type: "module",
       },
       manifest: {
         name: "Kilamate Weather",
@@ -34,7 +33,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-        globIgnores: ["**/sitemap.xml", "**/robots.txt", "**/site.webmanifest"], // Don't cache these static files
+        globIgnores: ["**/sitemap.xml", "**/robots.txt", "**/site.webmanifest", "**/custom-sw.js"], // Don't cache these static files
+        importScripts: ["custom-sw.js"], // Import our custom logic
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.openweathermap\.org\/.*/i,
