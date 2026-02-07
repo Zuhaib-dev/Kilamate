@@ -131,7 +131,7 @@ export function WeatherDashboard() {
               ) : null}
             </div>
 
-            {weatherQuery.data && <WeatherAlerts data={weatherQuery.data} />}
+            {weatherQuery.data && <WeatherAlerts data={weatherQuery.data} airPollution={airPollutionQuery.data ?? undefined} />}
 
             {weatherQuery.isLoading ? (
               <div className="grid gap-6 md:grid-cols-3">
