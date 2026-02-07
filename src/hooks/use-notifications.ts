@@ -61,21 +61,36 @@ export function useNotifications() {
         }
 
         try {
-            const notification = new Notification(options.title, {
-                body: options.body,
-                icon: options.icon || "/logo.webp",
-                tag: options.tag,
-                badge: "/logo.webp",
-                requireInteraction: false,
-            });
+            // Use Service Worker for notifications if available (better for mobile)
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.ready.then((registration) => {
+                    registration.showNotification(options.title, {
+                        body: options.body,
+                        icon: options.icon || "/logo.webp",
+                        tag: options.tag,
+                        badge: "/logo.webp",
+                        requireInteraction: false,
+                        data: { url: window.location.href } // Pass URL to open on click
+                    });
+                });
+            } else {
+                // Fallback for desktop/no-SW
+                const notification = new Notification(options.title, {
+                    body: options.body,
+                    icon: options.icon || "/logo.webp",
+                    tag: options.tag,
+                    badge: "/logo.webp",
+                    requireInteraction: false,
+                });
 
-            notification.onclick = () => {
-                window.focus();
-                notification.close();
-            };
+                notification.onclick = () => {
+                    window.focus();
+                    notification.close();
+                };
 
-            // Auto-close after 5 seconds
-            setTimeout(() => notification.close(), 5000);
+                // Auto-close after 5 seconds
+                setTimeout(() => notification.close(), 5000);
+            }
         } catch (error) {
             console.error("Error sending notification:", error);
         }
