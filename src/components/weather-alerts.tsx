@@ -6,7 +6,6 @@ import {
   Eye,
   Thermometer,
   Skull,
-  Info,
 } from "lucide-react";
 import type { WeatherData, AirPollutionResponse } from "@/api/types";
 import { useNotifications } from "@/hooks/use-notifications";

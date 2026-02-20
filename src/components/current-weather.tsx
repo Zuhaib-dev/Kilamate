@@ -13,7 +13,10 @@ interface CurrentWeatherProps {
 
 import { memo } from "react";
 
-export const CurrentWeather = memo(function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
+export const CurrentWeather = memo(function CurrentWeather({
+  data,
+  locationName,
+}: CurrentWeatherProps) {
   const { temperatureUnit, windSpeedUnit, language } = usePreferences();
   const { t } = useTranslation();
 
@@ -37,7 +40,7 @@ export const CurrentWeather = memo(function CurrentWeather({ data, locationName 
             <div className="space-y-2">
               <div className="flex items-center">
                 <h2 className="text-2xl font-bold tracking-tight">
-                  {translateCityName(locationName?.name || '', language)}
+                  {translateCityName(locationName?.name || "", language)}
                 </h2>
                 {locationName?.state && (
                   <span className="text-muted-foreground">
@@ -56,7 +59,7 @@ export const CurrentWeather = memo(function CurrentWeather({ data, locationName 
               </p>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">
-                  {t('weather.feelsLike')} {formatTemp(feels_like)}
+                  {t("weather.feelsLike")} {formatTemp(feels_like)}
                 </p>
                 <div className="flex gap-2 text-sm font-medium">
                   <span className="flex items-center gap-1 text-blue-500">
@@ -75,14 +78,16 @@ export const CurrentWeather = memo(function CurrentWeather({ data, locationName 
               <div className="flex items-center gap-2">
                 <Droplets className="h-4 w-4 text-blue-500" />
                 <div className="space-y-0.5">
-                  <p className="text-sm font-medium">{t('weather.humidity')}</p>
+                  <p className="text-sm font-medium">{t("weather.humidity")}</p>
                   <p className="text-sm text-muted-foreground">{humidity}%</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Wind className="h-4 w-4 text-blue-500" />
                 <div className="space-y-0.5">
-                  <p className="text-sm font-medium">{t('weather.windSpeed')}</p>
+                  <p className="text-sm font-medium">
+                    {t("weather.windSpeed")}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {formatWindSpeed(speed, windSpeedUnit)}
                   </p>
@@ -97,7 +102,9 @@ export const CurrentWeather = memo(function CurrentWeather({ data, locationName 
                 src={weatherIconUrl}
                 alt={currentWeather.description}
                 className="h-full w-full object-contain"
-                {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
+                {...({
+                  fetchpriority: "high",
+                } as React.ImgHTMLAttributes<HTMLImageElement>)}
                 loading="eager"
                 width="200"
                 height="200"

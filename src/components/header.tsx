@@ -18,7 +18,12 @@ export function Header() {
           <img
             src={theme === "dark" ? "/logo.webp" : "/logo2.webp"}
             alt="Klimate logo"
-            className="h-10 md:h-14"
+            className="h-10 w-auto md:h-14"
+            width="200"
+            height="56"
+            {...({
+              fetchpriority: "high",
+            } as React.ImgHTMLAttributes<HTMLImageElement>)}
           />
         </Link>
 
