@@ -48,24 +48,32 @@ export function CitySearch() {
     <>
       <Button
         variant="outline"
-        className="relative w-full justify-center text-sm text-muted-foreground w-9 px-0 md:w-40 md:justify-start md:px-4 lg:w-64"
+        className="relative justify-center text-sm text-muted-foreground w-9 px-0 md:w-40 md:justify-start md:px-4 lg:w-64"
         onClick={() => setOpen(true)}
-        aria-label={t('search.placeholder')}
+        aria-label={t("search.placeholder")}
       >
         <Search className="h-4 w-4 md:mr-2" />
-        <span className="hidden md:inline">{t('search.placeholder')}</span>
+        <span className="hidden md:inline">{t("search.placeholder")}</span>
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        open={open}
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen);
+          if (!isOpen) setQuery("");
+        }}
+      >
         <Command>
           <CommandInput
-            placeholder={t('search.placeholder')}
+            placeholder={t("search.placeholder")}
             value={query}
             onValueChange={setQuery}
           />
           <CommandList>
-            {query.length > 2 && !isLoading && (
-              <CommandEmpty>No cities found.</CommandEmpty>
-            )}
+            {query.length > 2 &&
+              !isLoading &&
+              (!locations || locations.length === 0) && (
+                <CommandEmpty>No cities found.</CommandEmpty>
+              )}
 
             {/* Favorites Section */}
             {favorites.length > 0 && (
@@ -135,15 +143,15 @@ export function CitySearch() {
             )}
 
             {/* Search Results */}
-            <CommandSeparator />
+            {query.length >= 3 && <CommandSeparator />}
+            {isLoading && (
+              <div className="flex items-center justify-center p-4">
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </div>
+            )}
             {locations && locations.length > 0 && (
               <CommandGroup heading="Suggestions">
-                {isLoading && (
-                  <div className="flex items-center justify-center p-4">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  </div>
-                )}
-                {locations?.map((location) => (
+                {locations.map((location) => (
                   <CommandItem
                     key={`${location.lat}-${location.lon}`}
                     value={`${location.lat}|${location.lon}|${location.name}|${location.country}`}
