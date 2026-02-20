@@ -54,6 +54,14 @@ function AppContent() {
     }
   }, [language, i18n]);
 
+  // Listen for custom event to open shortcuts dialog
+  useEffect(() => {
+    const handleOpenShortcuts = () => setShowShortcuts(true);
+    window.addEventListener("open-shortcuts-dialog", handleOpenShortcuts);
+    return () =>
+      window.removeEventListener("open-shortcuts-dialog", handleOpenShortcuts);
+  }, []);
+
   useKeyboardShortcuts([
     {
       key: "k",

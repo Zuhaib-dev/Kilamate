@@ -5,6 +5,8 @@ import { PreferencesMenu } from "./preferences-menu";
 import { NotificationSettings } from "./notification-settings";
 import { LanguageSwitcher } from "./language-switcher";
 import { useTheme } from "@/context/theme-provider";
+import { Button } from "./ui/button";
+import { Keyboard } from "lucide-react";
 
 export function Header() {
   const { theme } = useTheme();
@@ -26,6 +28,18 @@ export function Header() {
           <NotificationSettings />
           <PreferencesMenu />
           <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent("open-shortcuts-dialog"))
+            }
+            className="hidden md:flex"
+            title="Keyboard Shortcuts (Shift + ?)"
+          >
+            <Keyboard className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+            <span className="sr-only">Keyboard Shortcuts</span>
+          </Button>
         </div>
       </div>
     </header>
