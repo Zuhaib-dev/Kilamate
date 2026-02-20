@@ -8,14 +8,31 @@ interface GeolocationState {
 }
 
 export function useGeolocation() {
-  const [locationData, setLocationData] = useState<GeolocationState>({
-    coordinates: null,
-    error: null,
-    isLoading: true,
+  const [locationData, setLocationData] = useState<GeolocationState>(() => {
+    // Try to load cached coordinates from localStorage
+    try {
+      const cached = localStorage.getItem("coordinates");
+      if (cached) {
+        const coords = JSON.parse(cached);
+        return {
+          coordinates: coords,
+          error: null,
+          isLoading: false, // Don't show loading if we have cached data
+        };
+      }
+    } catch (e) {
+      console.error("Failed to parse cached coordinates", e);
+    }
+
+    return {
+      coordinates: null,
+      error: null,
+      isLoading: true,
+    };
   });
 
   const getLocation = () => {
-    setLocationData((prev) => ({ ...prev, isLoading: true, error: null }));
+    setLocationData((prev) => ({ ...prev, isLoading: !prev.coordinates, error: null }));
 
     if (!navigator.geolocation) {
       setLocationData({
@@ -28,15 +45,20 @@ export function useGeolocation() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
+
+        localStorage.setItem("coordinates", JSON.stringify(coords));
+
         setLocationData({
-          coordinates: {
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          },
+          coordinates: coords,
           error: null,
           isLoading: false,
         });
       },
+
       (error) => {
         let errorMessage: string;
 
