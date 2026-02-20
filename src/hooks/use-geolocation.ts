@@ -77,11 +77,11 @@ export function useGeolocation() {
             errorMessage = "An unknown error occurred.";
         }
 
-        setLocationData({
-          coordinates: null,
+        setLocationData((prev) => ({
+          coordinates: prev.coordinates,
           error: errorMessage,
           isLoading: false,
-        });
+        }));
       },
       {
         enableHighAccuracy: true,

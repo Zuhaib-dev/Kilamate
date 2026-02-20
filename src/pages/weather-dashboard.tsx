@@ -17,7 +17,11 @@ import { FavoriteCities } from "@/components/favorite-cities";
 import { AirPollution } from "../components/air-pollution";
 import { WeatherAlerts } from "../components/weather-alerts";
 import { WeatherStats } from "../components/weather-stats";
-import { SEO, webApplicationSchema, organizationSchema } from "@/components/seo";
+import {
+  SEO,
+  webApplicationSchema,
+  organizationSchema,
+} from "@/components/seo";
 
 export function WeatherDashboard() {
   const {
@@ -44,7 +48,7 @@ export function WeatherDashboard() {
 
   const locationName = locationQuery.data?.[0];
 
-  if (locationError) {
+  if (locationError && !coordinates) {
     return (
       <Alert variant="destructive">
         <AlertTriangle className="h-4 w-4" />
@@ -89,6 +93,20 @@ export function WeatherDashboard() {
         {/* Favorite Cities - Always visible for quick access */}
         <FavoriteCities />
 
+        {locationError && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Location Error</AlertTitle>
+            <AlertDescription className="flex flex-col gap-4">
+              <p>{locationError}</p>
+              <Button onClick={getLocation} variant="outline" className="w-fit">
+                <MapPin className="mr-2 h-4 w-4" />
+                Retry Location
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold tracking-tight">My Location</h1>
           <Button
@@ -99,8 +117,9 @@ export function WeatherDashboard() {
             disabled={weatherQuery.isFetching || forecastQuery.isFetching}
           >
             <RefreshCw
-              className={`h-4 w-4 ${weatherQuery.isFetching ? "animate-spin" : ""
-                }`}
+              className={`h-4 w-4 ${
+                weatherQuery.isFetching ? "animate-spin" : ""
+              }`}
             />
           </Button>
         </div>
@@ -131,7 +150,12 @@ export function WeatherDashboard() {
               ) : null}
             </div>
 
-            {weatherQuery.data && <WeatherAlerts data={weatherQuery.data} airPollution={airPollutionQuery.data ?? undefined} />}
+            {weatherQuery.data && (
+              <WeatherAlerts
+                data={weatherQuery.data}
+                airPollution={airPollutionQuery.data ?? undefined}
+              />
+            )}
 
             {weatherQuery.isLoading ? (
               <div className="grid gap-6 md:grid-cols-3">
