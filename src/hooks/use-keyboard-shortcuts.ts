@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface KeyboardShortcut {
     key: string;
@@ -10,13 +10,31 @@ interface KeyboardShortcut {
 }
 
 export function useKeyboardShortcuts(shortcuts: KeyboardShortcut[]) {
+    // Keep the latest shortcuts in a ref so the listener never becomes stale
+    // and we only register/unregister it once (no churn from inline array references).
+    const shortcutsRef = useRef(shortcuts);
+    shortcutsRef.current = shortcuts;
+
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            shortcuts.forEach((shortcut) => {
-                const ctrlMatch = shortcut.ctrl ? event.ctrlKey || event.metaKey : !event.ctrlKey && !event.metaKey;
+            // Skip shortcuts when the user is typing in an input / textarea / contenteditable
+            const target = event.target as HTMLElement;
+            const isTyping =
+                target.tagName === "INPUT" ||
+                target.tagName === "TEXTAREA" ||
+                target.isContentEditable;
+
+            shortcutsRef.current.forEach((shortcut) => {
+                // Allow search shortcut even while typing so the dialog can be opened
+                if (isTyping && !(shortcut.ctrl || shortcut.alt)) return;
+
+                const ctrlMatch = shortcut.ctrl
+                    ? event.ctrlKey || event.metaKey
+                    : !event.ctrlKey && !event.metaKey;
                 const shiftMatch = shortcut.shift ? event.shiftKey : !event.shiftKey;
                 const altMatch = shortcut.alt ? event.altKey : !event.altKey;
-                const keyMatch = event.key.toLowerCase() === shortcut.key.toLowerCase();
+                const keyMatch =
+                    event.key.toLowerCase() === shortcut.key.toLowerCase();
 
                 if (ctrlMatch && shiftMatch && altMatch && keyMatch) {
                     event.preventDefault();
@@ -27,14 +45,14 @@ export function useKeyboardShortcuts(shortcuts: KeyboardShortcut[]) {
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [shortcuts]);
+    // Empty dep array: listener registered once, reads latest shortcuts via ref
+    }, []);
 }
 
 export const KEYBOARD_SHORTCUTS = {
-    SEARCH: { key: "k", ctrl: true, description: "Open search" },
-    SETTINGS: { key: ",", ctrl: true, description: "Open settings" },
-    NOTIFICATIONS: { key: "n", ctrl: true, description: "Toggle notifications" },
-    THEME: { key: "t", ctrl: true, description: "Toggle theme" },
-    REFRESH: { key: "r", ctrl: true, description: "Refresh weather data" },
+    SEARCH: { key: "k", alt: true, description: "Open search" },
+    NOTIFICATIONS: { key: "n", alt: true, description: "Toggle notifications" },
+    THEME: { key: "t", alt: true, description: "Toggle theme" },
+    REFRESH: { key: "f5", description: "Refresh weather data" },
     HELP: { key: "?", shift: true, description: "Show keyboard shortcuts" },
 } as const;

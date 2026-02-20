@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { Search, Loader2, Clock, Star, XCircle } from "lucide-react";
@@ -27,6 +27,13 @@ export function CitySearch() {
   const { data: locations, isLoading } = useLocationSearch(query);
   const { favorites } = useFavorites();
   const { history, clearHistory, addToHistory } = useSearchHistory();
+
+  // Listen for the global keyboard shortcut event (Alt+K)
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("open-city-search", handler);
+    return () => window.removeEventListener("open-city-search", handler);
+  }, []);
 
   const handleSelect = (cityData: string) => {
     const [lat, lon, name, country] = cityData.split("|");

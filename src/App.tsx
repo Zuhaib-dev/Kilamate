@@ -11,8 +11,14 @@ import { useState, useEffect, Suspense, lazy } from "react";
 import WeatherSkeleton from "./components/loading-skeleton";
 
 // Lazy load routes for better performance
-const WeatherDashboard = lazy(() => import("./pages/weather-dashboard").then(module => ({ default: module.WeatherDashboard })));
-const CityPage = lazy(() => import("./pages/city-page").then(module => ({ default: module.CityPage })));
+const WeatherDashboard = lazy(() =>
+  import("./pages/weather-dashboard").then((module) => ({
+    default: module.WeatherDashboard,
+  })),
+);
+const CityPage = lazy(() =>
+  import("./pages/city-page").then((module) => ({ default: module.CityPage })),
+);
 import { toast } from "sonner";
 import { useNotifications } from "./hooks/use-notifications";
 import { usePreferences } from "./hooks/use-preferences";
@@ -29,7 +35,7 @@ const queryClient = new QueryClient({
       refetchInterval: false, // Don't auto-refetch
       refetchIntervalInBackground: false,
       // Enable offline mode - use cached data when offline
-      networkMode: 'offlineFirst', // Try cache first, then network
+      networkMode: "offlineFirst", // Try cache first, then network
     },
   },
 });
@@ -54,17 +60,8 @@ function AppContent() {
       alt: true,
       description: "Open search",
       callback: () => {
-        const searchButton = document.querySelector('[aria-label="Search for cities"]') as HTMLButtonElement;
-        if (searchButton) {
-          searchButton.click();
-          setTimeout(() => {
-            const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-            if (searchInput) {
-              searchInput.focus();
-            }
-          }, 100);
-          toast.info("Search opened");
-        }
+        // Dispatch a custom event that CitySearch listens to
+        window.dispatchEvent(new CustomEvent("open-city-search"));
       },
     },
     {
@@ -90,8 +87,8 @@ function AppContent() {
       },
     },
     {
-      key: "r",
-      ctrl: true,
+      // F5 refreshes data without conflicting with the browser's Ctrl+R reload
+      key: "F5",
       description: "Refresh weather data",
       callback: () => {
         queryClient.invalidateQueries();
@@ -112,20 +109,29 @@ function AppContent() {
     <>
       <Layout>
         <Routes>
-          <Route path="/" element={
-            <Suspense fallback={<WeatherSkeleton />}>
-              <WeatherDashboard />
-            </Suspense>
-          } />
-          <Route path="/city/:cityName" element={
-            <Suspense fallback={<WeatherSkeleton />}>
-              <CityPage />
-            </Suspense>
-          } />
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<WeatherSkeleton />}>
+                <WeatherDashboard />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/city/:cityName"
+            element={
+              <Suspense fallback={<WeatherSkeleton />}>
+                <CityPage />
+              </Suspense>
+            }
+          />
         </Routes>
       </Layout>
       <Toaster richColors />
-      <KeyboardShortcutsDialog open={showShortcuts} onOpenChange={setShowShortcuts} />
+      <KeyboardShortcutsDialog
+        open={showShortcuts}
+        onOpenChange={setShowShortcuts}
+      />
     </>
   );
 }
@@ -135,7 +141,9 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         {/* ADD THE FUTURE FLAGS HERE 👇 */}
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <BrowserRouter
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
           <ThemeProvider defaultTheme="dark">
             <AppContent />
           </ThemeProvider>
