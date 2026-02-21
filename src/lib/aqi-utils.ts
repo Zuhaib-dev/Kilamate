@@ -125,49 +125,49 @@ export function calculateAQI(pollutants: PollutantData): number {
 export function getAQIDescription(aqi: number) {
     if (aqi <= 50) {
         return {
-            label: "Good",
+            labelKey: "aqi.good",
             color: "text-green-500",
             bg: "bg-green-500",
-            desc: "Air quality is satisfactory, and air pollution poses little or no risk.",
+            descKey: "aqi.goodDesc",
         };
     }
     if (aqi <= 100) {
         return {
-            label: "Moderate",
+            labelKey: "aqi.moderate",
             color: "text-yellow-500",
             bg: "bg-yellow-500",
-            desc: "Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.",
+            descKey: "aqi.moderateDesc",
         };
     }
     if (aqi <= 150) {
         return {
-            label: "Unhealthy for Sensitive Groups",
+            labelKey: "aqi.unhealthySensitive",
             color: "text-orange-500",
             bg: "bg-orange-500",
-            desc: "Members of sensitive groups may experience health effects. The general public is less likely to be affected.",
+            descKey: "aqi.unhealthySensitiveDesc",
         };
     }
     if (aqi <= 200) {
         return {
-            label: "Unhealthy",
+            labelKey: "aqi.unhealthy",
             color: "text-red-500",
             bg: "bg-red-500",
-            desc: "Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.",
+            descKey: "aqi.unhealthyDesc",
         };
     }
     if (aqi <= 300) {
         return {
-            label: "Very Unhealthy",
+            labelKey: "aqi.veryUnhealthy",
             color: "text-purple-500",
             bg: "bg-purple-500",
-            desc: "Health alert: The risk of health effects is increased for everyone.",
+            descKey: "aqi.veryUnhealthyDesc",
         };
     }
     return {
-        label: "Hazardous",
+        labelKey: "aqi.hazardous",
         color: "text-red-900",
         bg: "bg-red-900",
-        desc: "Health warning of emergency conditions: everyone is more likely to be affected.",
+        descKey: "aqi.hazardousDesc",
     };
 }
 

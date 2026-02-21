@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import type { ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatTemperature, formatWindSpeed } from "@/lib/units";
+import { useTranslation } from "react-i18next";
 
 interface WeatherForecastProps {
   data: ForecastData;
@@ -25,32 +26,36 @@ interface DailyForecast {
 
 export function WeatherForecast({ data }: WeatherForecastProps) {
   const { temperatureUnit, windSpeedUnit } = usePreferences();
+  const { t } = useTranslation();
 
-  const dailyForecasts = data.list.reduce((acc, forecast) => {
-    const dateKey = format(new Date(forecast.dt * 1000), "yyyy-MM-dd");
+  const dailyForecasts = data.list.reduce(
+    (acc, forecast) => {
+      const dateKey = format(new Date(forecast.dt * 1000), "yyyy-MM-dd");
 
-    if (!acc[dateKey]) {
-      acc[dateKey] = {
-        temp_min: forecast.main.temp_min,
-        temp_max: forecast.main.temp_max,
-        humidity: forecast.main.humidity,
-        wind: forecast.wind.speed,
-        weather: forecast.weather[0],
-        date: forecast.dt,
-      };
-    } else {
-      acc[dateKey].temp_min = Math.min(
-        acc[dateKey].temp_min,
-        forecast.main.temp_min
-      );
-      acc[dateKey].temp_max = Math.max(
-        acc[dateKey].temp_max,
-        forecast.main.temp_max
-      );
-    }
+      if (!acc[dateKey]) {
+        acc[dateKey] = {
+          temp_min: forecast.main.temp_min,
+          temp_max: forecast.main.temp_max,
+          humidity: forecast.main.humidity,
+          wind: forecast.wind.speed,
+          weather: forecast.weather[0],
+          date: forecast.dt,
+        };
+      } else {
+        acc[dateKey].temp_min = Math.min(
+          acc[dateKey].temp_min,
+          forecast.main.temp_min,
+        );
+        acc[dateKey].temp_max = Math.max(
+          acc[dateKey].temp_max,
+          forecast.main.temp_max,
+        );
+      }
 
-    return acc;
-  }, {} as Record<string, DailyForecast>);
+      return acc;
+    },
+    {} as Record<string, DailyForecast>,
+  );
 
   const nextDays = Object.values(dailyForecasts).slice(1, 6);
 
@@ -59,7 +64,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>5-Day Forecast</CardTitle>
+        <CardTitle>{t("weather.forecast")}</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -103,7 +108,9 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
                 </span>
                 <span className="flex items-center gap-1">
                   <Wind className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm">{formatWindSpeed(day.wind, windSpeedUnit)}</span>
+                  <span className="text-sm">
+                    {formatWindSpeed(day.wind, windSpeedUnit)}
+                  </span>
                 </span>
               </div>
             </div>

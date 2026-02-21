@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Sunrise, Sunset, Compass, Gauge } from "lucide-react";
 import { format } from "date-fns";
 import type { WeatherData } from "@/api/types";
+import { useTranslation } from "react-i18next";
 
 interface WeatherDetailsProps {
   data: WeatherData;
@@ -9,6 +10,7 @@ interface WeatherDetailsProps {
 
 export function WeatherDetails({ data }: WeatherDetailsProps) {
   const { wind, main, sys } = data;
+  const { t } = useTranslation();
 
   // Format time using date-fns
   const formatTime = (timestamp: number) => {
@@ -25,25 +27,25 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
 
   const details = [
     {
-      title: "Sunrise",
+      title: t("weather.sunrise"),
       value: formatTime(sys.sunrise),
       icon: Sunrise,
       color: "text-orange-500",
     },
     {
-      title: "Sunset",
+      title: t("weather.sunset"),
       value: formatTime(sys.sunset),
       icon: Sunset,
       color: "text-blue-500",
     },
     {
-      title: "Wind Direction",
+      title: t("weather.windDirection"),
       value: `${getWindDirection(wind.deg)} (${wind.deg}°)`,
       icon: Compass,
       color: "text-green-500",
     },
     {
-      title: "Pressure",
+      title: t("weather.pressure"),
       value: `${main.pressure} hPa`,
       icon: Gauge,
       color: "text-purple-500",
@@ -53,7 +55,7 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Weather Details</CardTitle>
+        <CardTitle>{t("weather.details")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid gap-6 sm:grid-cols-2">

@@ -23,6 +23,7 @@
         "humidity": "Humidity",
         "wind": "Wind",
         "windSpeed": "Wind Speed",
+        "windDirection": "Wind Direction",
         "pressure": "Pressure",
         "visibility": "Visibility",
         "uvIndex": "UV Index",
@@ -102,5 +103,21 @@
     "pwa": {
         "install": "Install App",
         "installMessage": "Install Kilamate for quick access and offline support"
+    },
+    "aqi": {
+        "good": "Good",
+        "goodDesc": "Air quality is satisfactory, and air pollution poses little or no risk.",
+        "moderate": "Moderate",
+        "moderateDesc": "Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.",
+        "unhealthySensitive": "Unhealthy for Sensitive Groups",
+        "unhealthySensitiveDesc": "Members of sensitive groups may experience health effects. The general public is less likely to be affected.",
+        "unhealthy": "Unhealthy",
+        "unhealthyDesc": "Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.",
+        "veryUnhealthy": "Very Unhealthy",
+        "veryUnhealthyDesc": "Health alert: The risk of health effects is increased for everyone.",
+        "hazardous": "Hazardous",
+        "hazardousDesc": "Health warning of emergency conditions: everyone is more likely to be affected.",
+        "standardAqi": "Standard AQI (US EPA)",
+        "forecast24h": "24-Hour Forecast"
     }
 }
