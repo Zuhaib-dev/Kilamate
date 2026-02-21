@@ -44,7 +44,7 @@ function AppContent() {
   const [showShortcuts, setShowShortcuts] = useState(false);
   const { setTheme, theme } = useTheme();
   const { requestPermission, permission } = useNotifications();
-  const { language } = usePreferences();
+  const { language, setLanguage } = usePreferences();
   const { i18n } = useTranslation();
 
   // Sync i18n with preferences store
@@ -101,6 +101,20 @@ function AppContent() {
       callback: () => {
         queryClient.invalidateQueries();
         toast.success("Weather data refreshed!");
+      },
+    },
+    {
+      key: "l",
+      alt: true,
+      description: "Toggle language",
+      callback: () => {
+        const langs: ("en" | "hi" | "ur")[] = ["en", "hi", "ur"];
+        const currentIndex = langs.indexOf(language as "en" | "hi" | "ur");
+        const nextLang = langs[(currentIndex + 1) % langs.length];
+        setLanguage(nextLang);
+        i18n.changeLanguage(nextLang);
+        const langNames = { en: "English", hi: "हिंदी", ur: "اردو" };
+        toast.success(`Language changed to ${langNames[nextLang]}`);
       },
     },
     {
