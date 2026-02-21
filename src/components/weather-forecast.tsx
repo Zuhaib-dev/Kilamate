@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ArrowDown, ArrowUp, Droplets, Wind } from "lucide-react";
 import { format } from "date-fns";
+import { enUS, hi } from "date-fns/locale";
 import type { ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatTemperature, formatWindSpeed } from "@/lib/units";
@@ -25,8 +26,57 @@ interface DailyForecast {
 }
 
 export function WeatherForecast({ data }: WeatherForecastProps) {
-  const { temperatureUnit, windSpeedUnit } = usePreferences();
+  const { temperatureUnit, windSpeedUnit, language } = usePreferences();
   const { t } = useTranslation();
+
+  // Determine the correct locale for date-fns
+  const getDateLocale = () => {
+    switch (language) {
+      case "hi":
+        return hi;
+      case "ur":
+        // ur locale isn't available in date-fns v4 by default, use enUS as fallback
+        return enUS;
+      default:
+        return enUS;
+    }
+  };
+  const currentLocale = getDateLocale();
+
+  // Helper function to format Urdu days manually if language is Urdu
+  const formatUrduDate = (date: Date) => {
+    // Simple manual translation for Urdu days to provide localized feel
+    const urduDays: Record<string, string> = {
+      Mon: "پیر",
+      Tue: "منگل",
+      Wed: "بدھ",
+      Thu: "جمعرات",
+      Fri: "جمعہ",
+      Sat: "ہفتہ",
+      Sun: "اتوار",
+    };
+
+    const urduMonths: Record<string, string> = {
+      Jan: "جنوری",
+      Feb: "فروری",
+      Mar: "مارچ",
+      Apr: "اپریل",
+      May: "مئی",
+      Jun: "جون",
+      Jul: "جولائی",
+      Aug: "اگست",
+      Sep: "ستمبر",
+      Oct: "اکتوبر",
+      Nov: "نومبر",
+      Dec: "دسمبر",
+    };
+
+    const day = format(date, "EEE", { locale: enUS });
+    const month = format(date, "MMM", { locale: enUS });
+    const dayOfMonth = format(date, "d", { locale: enUS });
+
+    return `${urduDays[day] || day}, ${urduMonths[month] || month} ${dayOfMonth}`;
+  };
 
   const dailyForecasts = data.list.reduce(
     (acc, forecast) => {
@@ -80,8 +130,12 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
             >
               {/* Day + Description */}
               <div className="min-w-0 space-y-1">
-                <p className="font-medium truncate">
-                  {format(new Date(day.date * 1000), "EEE, MMM d")}
+                <p className="font-medium truncate text-base">
+                  {language === "ur"
+                    ? formatUrduDate(new Date(day.date * 1000))
+                    : format(new Date(day.date * 1000), "EEE, d MMM", {
+                        locale: currentLocale,
+                      })}
                 </p>
                 <p className="text-sm text-muted-foreground capitalize line-clamp-2">
                   {day.weather.description}
