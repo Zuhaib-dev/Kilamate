@@ -12,6 +12,7 @@ import { useNotifications } from "@/hooks/use-notifications";
 import { useEffect } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { calculateAQI, getAQIDescription } from "@/lib/aqi-utils";
+import { useTranslation } from "react-i18next";
 
 // How long to suppress the same alert before re-notifying (24 hours)
 const ALERT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
@@ -41,6 +42,7 @@ interface WeatherAlert {
 
 export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
   const { sendNotification, permission } = useNotifications();
+  const { t } = useTranslation();
   const [notificationsEnabled] = useLocalStorage(
     "notifications-enabled",
     false,
@@ -122,7 +124,7 @@ export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
         severity: "high",
         icon: Skull,
         title: "Hazardous Air Quality",
-        message: `AQI is ${currentAQI}. ${aqiInfo.desc}`,
+        message: `AQI is ${currentAQI}. ${t(aqiInfo.descKey)}`,
         color: "text-red-700",
       });
     } else if (currentAQI > 200) {
@@ -131,7 +133,7 @@ export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
         severity: "high",
         icon: AlertTriangle,
         title: "Very Unhealthy Air",
-        message: `AQI is ${currentAQI}. ${aqiInfo.desc}`,
+        message: `AQI is ${currentAQI}. ${t(aqiInfo.descKey)}`,
         color: "text-red-600",
       });
     } else if (currentAQI > 150) {
@@ -140,7 +142,7 @@ export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
         severity: "high",
         icon: AlertTriangle,
         title: "Unhealthy Air Quality",
-        message: `AQI is ${currentAQI}. ${aqiInfo.desc}`,
+        message: `AQI is ${currentAQI}. ${t(aqiInfo.descKey)}`,
         color: "text-red-500",
       });
     } else if (currentAQI > 100) {
