@@ -1,7 +1,7 @@
 # 🌤️ Kilamate - Advanced Weather & Air Quality App
 
 <div align="center">
-  <img src="https://www.zuhaibrashid.com/kilamate.webp" alt="Kilamate Banner" style="width:100%; border-radius:10px;">
+  <img src="https://www.zuhaibrashid.com/Kilamate.png" alt="Kilamate Banner" style="width:100%; border-radius:10px;">
   
   <p><strong>Advanced Weather & Air Quality Forecasting App built with React, Vite, TypeScript, and Shadcn UI.</strong></p>
 
