@@ -25,7 +25,7 @@ export function Footer() {
 
         <div className="flex items-center gap-5">
           <a
-            href="https://github.com/zuhaib-r"
+            href="https://github.com/zuhaib-dev"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300 relative group"
@@ -36,7 +36,7 @@ export function Footer() {
             <span className="sr-only">GitHub</span>
           </a>
           <a
-            href="https://x.com/zuhaibrashid_"
+            href="https://x.com/xuhaibx9"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300 relative group"
@@ -47,7 +47,7 @@ export function Footer() {
             <span className="sr-only">Twitter</span>
           </a>
           <a
-            href="https://www.linkedin.com/in/zuhaibrashid/"
+            href="https://www.linkedin.com/in/zuhaib-rashid-661345318/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300 relative group"
