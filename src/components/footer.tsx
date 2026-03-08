@@ -36,7 +36,7 @@ export function Footer() {
             <span className="sr-only">GitHub</span>
           </a>
           <a
-            href="https://x.com/xuhaibx9"
+            href="https://x.com/xuhaib_x9"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300 relative group"
