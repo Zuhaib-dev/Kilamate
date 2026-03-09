@@ -65,7 +65,6 @@ function AppContent() {
   useKeyboardShortcuts([
     {
       key: "k",
-      alt: true,
       description: "Open search",
       callback: () => {
         // Dispatch a custom event that CitySearch listens to
@@ -74,7 +73,6 @@ function AppContent() {
     },
     {
       key: "t",
-      alt: true,
       description: "Toggle theme",
       callback: () => {
         const newTheme = theme === "dark" ? "light" : "dark";
@@ -84,7 +82,6 @@ function AppContent() {
     },
     {
       key: "n",
-      alt: true,
       description: "Toggle notifications",
       callback: () => {
         if (permission === "granted") {
@@ -105,7 +102,6 @@ function AppContent() {
     },
     {
       key: "l",
-      alt: true,
       description: "Toggle language",
       callback: () => {
         const langs: ("en" | "hi" | "ur")[] = ["en", "hi", "ur"];

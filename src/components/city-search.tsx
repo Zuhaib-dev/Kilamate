@@ -61,6 +61,7 @@ export function CitySearch() {
       >
         <Search className="h-4 w-4 md:mr-2" />
         <span className="hidden md:inline">{t("search.placeholder")}</span>
+        <kbd className="hidden md:inline-flex ml-auto h-5 items-center gap-1 rounded border bg-muted px-1.5 font-sans text-[10px] font-medium text-muted-foreground opacity-100">K</kbd>
       </Button>
       <CommandDialog
         open={open}

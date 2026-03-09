@@ -41,10 +41,10 @@ export function KeyboardShortcutsDialog({
   onOpenChange,
 }: KeyboardShortcutsDialogProps) {
   const shortcuts = [
-    { keys: ["Alt", "K"], description: "Open search" },
-    { keys: ["Alt", "T"], description: "Toggle theme" },
-    { keys: ["Alt", "N"], description: "Toggle notifications" },
-    { keys: ["Alt", "L"], description: "Toggle language" },
+    { keys: ["K"], description: "Open search" },
+    { keys: ["T"], description: "Toggle theme" },
+    { keys: ["N"], description: "Toggle notifications" },
+    { keys: ["L"], description: "Toggle language" },
     { keys: ["F5"], description: "Refresh weather data" },
     { keys: ["Shift", "?"], description: "Show this help" },
     { keys: ["Esc"], description: "Close dialogs" },

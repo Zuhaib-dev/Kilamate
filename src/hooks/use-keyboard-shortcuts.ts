@@ -50,9 +50,10 @@ export function useKeyboardShortcuts(shortcuts: KeyboardShortcut[]) {
 }
 
 export const KEYBOARD_SHORTCUTS = {
-    SEARCH: { key: "k", alt: true, description: "Open search" },
-    NOTIFICATIONS: { key: "n", alt: true, description: "Toggle notifications" },
-    THEME: { key: "t", alt: true, description: "Toggle theme" },
+    SEARCH: { key: "k", description: "Open search" },
+    NOTIFICATIONS: { key: "n", description: "Toggle notifications" },
+    THEME: { key: "t", description: "Toggle theme" },
+    LANGUAGE: { key: "l", description: "Toggle language" },
     REFRESH: { key: "f5", description: "Refresh weather data" },
     HELP: { key: "?", shift: true, description: "Show keyboard shortcuts" },
 } as const;
