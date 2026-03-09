@@ -45,6 +45,7 @@ export function KeyboardShortcutsDialog({
     { keys: ["T"], description: "Toggle theme" },
     { keys: ["N"], description: "Toggle notifications" },
     { keys: ["L"], description: "Toggle language" },
+    { keys: ["S"], description: "Toggle settings" },
     { keys: ["F5"], description: "Refresh weather data" },
     { keys: ["Shift", "?"], description: "Show this help" },
     { keys: ["Esc"], description: "Close dialogs" },

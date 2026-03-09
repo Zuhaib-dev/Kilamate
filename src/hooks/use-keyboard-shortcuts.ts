@@ -54,6 +54,7 @@ export const KEYBOARD_SHORTCUTS = {
     NOTIFICATIONS: { key: "n", description: "Toggle notifications" },
     THEME: { key: "t", description: "Toggle theme" },
     LANGUAGE: { key: "l", description: "Toggle language" },
+    SETTINGS: { key: "s", description: "Toggle settings" },
     REFRESH: { key: "f5", description: "Refresh weather data" },
     HELP: { key: "?", shift: true, description: "Show keyboard shortcuts" },
 } as const;

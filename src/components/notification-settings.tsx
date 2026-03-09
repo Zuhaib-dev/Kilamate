@@ -66,7 +66,7 @@ export function NotificationSettings() {
                         {isEnabled
                             ? t('notifications.enabled')
                             : t('notifications.enable')}
-                        <kbd className="ml-2 px-1 bg-muted rounded text-xs font-sans">N</kbd>
+                        <kbd className="ml-2 px-1 py-0.5 text-[10px] uppercase font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">N</kbd>
                     </p>
                 </TooltipContent>
             </Tooltip>

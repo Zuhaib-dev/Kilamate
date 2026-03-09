@@ -47,7 +47,7 @@ export function LanguageSwitcher() {
                         </DropdownMenuTrigger>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>Toggle language <kbd className="ml-2 px-1 bg-muted rounded text-xs font-sans">L</kbd></p>
+                        <p>Toggle language <kbd className="ml-2 px-1 py-0.5 text-[10px] uppercase font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">L</kbd></p>
                     </TooltipContent>
                     <DropdownMenuContent align="end">
                 {languages.map((lang) => (

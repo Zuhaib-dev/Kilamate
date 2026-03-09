@@ -114,6 +114,13 @@ function AppContent() {
       },
     },
     {
+      key: "s",
+      description: "Toggle settings",
+      callback: () => {
+        window.dispatchEvent(new CustomEvent("open-settings"));
+      },
+    },
+    {
       key: "?",
       shift: true,
       description: "Show keyboard shortcuts",

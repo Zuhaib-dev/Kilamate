@@ -30,7 +30,7 @@ export function ThemeToggle() {
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Toggle theme <kbd className="ml-2 px-1 bg-muted rounded text-xs font-sans">T</kbd></p>
+          <p>Toggle theme <kbd className="ml-2 px-1 py-0.5 text-[10px] uppercase font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">T</kbd></p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
