@@ -88,39 +88,43 @@ export function WeatherStats({ data }: WeatherStatsProps) {
                 <CardTitle>{t('weather.details')}</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {validStats.map((stat) => (
                         <div
                             key={stat.title}
-                            className="group relative overflow-hidden rounded-lg border p-4 transition-all hover:shadow-md hover:scale-[1.03]"
+                            className="group relative overflow-hidden rounded-xl border p-4 transition-all hover:shadow-md hover:scale-[1.02]"
                         >
-                            <div className="flex items-start justify-between">
-                                <div className="space-y-1 min-w-0">
-                                    <p className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
-                                        {stat.title}
-                                    </p>
-                                    <p className="text-2xl font-bold leading-none tracking-tight">
-                                        {stat.primary}
-                                        {stat.unit && (
-                                            <span className="text-base font-medium text-muted-foreground ml-0.5">
-                                                {stat.unit}
-                                            </span>
-                                        )}
+                            <div className="flex items-center justify-between gap-3">
+                                <div className="space-y-1.5 min-w-0 flex-1">
+                                    <div className="flex items-center gap-1.5 overflow-hidden">
+                                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-80 truncate">
+                                            {stat.title}
+                                        </p>
                                         {stat.title === t('weather.windSpeed') && (
-                                            <span className="text-xs font-bold text-muted-foreground/60 ml-2 uppercase tracking-tighter">
+                                            <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-primary/10 text-primary uppercase tracking-tighter shrink-0">
                                                 {getWindDirection(data.wind.deg || 0)}
                                             </span>
                                         )}
-                                    </p>
+                                    </div>
+                                    <div className="flex items-baseline gap-1 overflow-hidden">
+                                        <span className="text-xl font-black leading-none tracking-tight truncate">
+                                            {stat.primary}
+                                        </span>
+                                        {stat.unit && (
+                                            <span className="text-[10px] font-bold text-muted-foreground leading-none shrink-0">
+                                                {stat.unit}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className={`flex items-center justify-center rounded-lg p-2 transition-transform duration-500 ${stat.iconBg} ${stat.title === t('weather.windSpeed') ? 'group-hover:rotate-0' : ''}`}>
+                                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl p-2 transition-all duration-500 ${stat.iconBg} ${stat.title === t('weather.windSpeed') ? 'hover:bg-primary/5' : ''}`}>
                                     {stat.title === t('weather.windSpeed') ? (
                                         <div 
-                                            className="relative flex items-center justify-center transition-transform duration-1000 ease-in-out"
+                                            className="relative flex items-center justify-center w-full h-full transition-transform duration-1000 ease-in-out"
                                             style={{ transform: `rotate(${data.wind.deg || 0}deg)` }}
                                         >
-                                            <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                                            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-3 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+                                            <stat.icon className={`h-5 w-5 ${stat.color} opacity-80`} />
+                                            <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-0.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(var(--primary),0.6)]" />
                                         </div>
                                     ) : (
                                         <stat.icon className={`h-5 w-5 ${stat.color}`} />

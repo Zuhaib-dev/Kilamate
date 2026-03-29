@@ -29,25 +29,34 @@ const CityWeatherCard = memo(({ cityName, lat, lon }: { cityName: string; lat: n
   const condition = data.weather[0].main;
 
   return (
-    <Link to={`/city/${cityName}?lat=${lat}&lon=${lon}`}>
-      <div className="group relative flex items-center justify-between p-3.5 rounded-xl border bg-card/50 hover:bg-muted/50 transition-all hover:shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+    <Link to={`/city/${cityName}?lat=${lat}&lon=${lon}`} className="block w-full min-w-0">
+      <div className="group relative flex flex-col justify-between p-5 rounded-2xl border bg-card/40 backdrop-blur-sm border-white/5 hover:bg-muted/30 transition-all hover:shadow-lg h-full min-w-0">
+        <div className="flex items-center gap-3 min-w-0 mb-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
             <MapPin className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <h4 className="font-bold text-sm truncate">{cityName}</h4>
-            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{condition}</p>
+            <h4 className="font-black text-sm uppercase tracking-tight">{cityName}</h4>
+            <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em]">{condition}</p>
           </div>
         </div>
-        <div className="text-right">
-          <p className="text-xl font-black tracking-tight">
+        
+        <div className="flex items-end justify-between mt-auto">
+          <p className="text-2xl font-black tracking-tighter leading-none text-primary/90">
             {formatTemperature(temp, temperatureUnit)}
           </p>
-          <div className="flex items-center justify-end gap-1 text-[10px] text-muted-foreground font-bold">
-            <Wind className="h-3 w-3" />
-            <span>{Math.round(data.wind.speed)}m/s</span>
+          <div className="flex flex-col items-end gap-1 text-[10px] text-muted-foreground font-black uppercase tracking-tighter">
+            <div className="flex items-center gap-1">
+              <Wind className="h-3 w-3 opacity-60" />
+              <span>{Math.round(data.wind.speed)}m/s</span>
+            </div>
           </div>
+        </div>
+        
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="bg-primary/10 p-1 rounded-full">
+                <Cloud className="h-3 w-3 text-primary" />
+            </div>
         </div>
       </div>
     </Link>
@@ -56,16 +65,20 @@ const CityWeatherCard = memo(({ cityName, lat, lon }: { cityName: string; lat: n
 
 export function RegionalOverview() {
   return (
-    <Card className="border-none shadow-none bg-transparent mb-6">
-      <CardHeader className="px-0 pt-0 pb-4">
+    <Card className="border-none shadow-none bg-transparent mb-8">
+      <CardHeader className="px-0 pt-0 pb-6">
         <div className="flex items-center gap-2">
-            <Cloud className="h-5 w-5 text-primary" />
-            <CardTitle className="text-lg font-black tracking-tight uppercase">J&K Regional Overview</CardTitle>
+            <div className="bg-primary/10 p-2 rounded-lg">
+                <Cloud className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+                <CardTitle className="text-xl font-black tracking-tight uppercase leading-none">J&K Districts</CardTitle>
+                <p className="text-xs text-muted-foreground font-medium mt-1">Real-time weather highlights across the region</p>
+            </div>
         </div>
-        <p className="text-xs text-muted-foreground">Quick glance at weather across major districts</p>
       </CardHeader>
       <CardContent className="px-0 pb-0">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {REGIONAL_CITIES.map((city) => (
             <CityWeatherCard
               key={city.name}
