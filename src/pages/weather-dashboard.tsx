@@ -108,7 +108,7 @@ export function WeatherDashboard() {
       />
 
       <div className="space-y-4">
-        {/* Favorite Cities - Always visible for quick access */}
+        {/* Favorite Cities - Restored to Top */}
         <FavoriteCities />
 
         {locationError && (
@@ -164,98 +164,91 @@ export function WeatherDashboard() {
             </div>
           </div>
         ) : (
-          <div className="grid gap-6">
-            <div className="flex flex-col lg:flex-row gap-4">
-              {weatherQuery.isLoading ? (
-                <Skeleton className="h-[300px] w-full lg:w-[50%] rounded-xl" />
-              ) : weatherQuery.data ? (
-                <CurrentWeather
-                  data={weatherQuery.data}
-                  locationName={locationName}
-                  forecast={forecastQuery.data ?? undefined}
-                />
-              ) : null}
-
-              {forecastQuery.isLoading ? (
-                <Skeleton className="h-[300px] w-full lg:w-[50%] rounded-xl" />
-              ) : forecastQuery.data ? (
-                <HourlyTemperature data={forecastQuery.data} />
-              ) : null}
-            </div>
-
-            {weatherQuery.data && (
-              <WeatherAlerts
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+            {/* ROW 1: TOP 2 CARDS */}
+            {weatherQuery.isLoading ? (
+              <Skeleton className="h-[350px] w-full rounded-xl" />
+            ) : weatherQuery.data ? (
+              <CurrentWeather
                 data={weatherQuery.data}
-                airPollution={airPollutionQuery.data ?? undefined}
+                locationName={locationName}
+                forecast={forecastQuery.data ?? undefined}
               />
+            ) : null}
+
+            {forecastQuery.isLoading ? (
+              <Skeleton className="h-[350px] w-full rounded-xl" />
+            ) : forecastQuery.data ? (
+              <HourlyTemperature data={forecastQuery.data} />
+            ) : null}
+
+            {/* FULL WIDTH ALERTS IF PRESENT */}
+            {weatherQuery.data && (
+              <div className="col-span-full">
+                <WeatherAlerts
+                  data={weatherQuery.data}
+                  airPollution={airPollutionQuery.data ?? undefined}
+                />
+              </div>
             )}
 
-            {/* Weather Detail Stats - Full Width Row 2 */}
-            {weatherQuery.isLoading ? (
-              <div className="grid gap-6 md:grid-cols-3">
-                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
+            {/* ROW 2: WEATHER STATS (FULL WIDTH) */}
+            {weatherQuery.data && (
+              <div className="col-span-full">
+                <WeatherStats data={weatherQuery.data} />
               </div>
-            ) : weatherQuery.data ? (
-              <WeatherStats data={weatherQuery.data} />
-            ) : null}
+            )}
 
-            {/* Second Row of 2 Cards - Row 3 */}
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-              {/* Sun Tracker */}
-              {weatherQuery.isLoading ? (
-                <Skeleton className="h-[320px] w-full rounded-xl" />
-              ) : weatherQuery.data ? (
-                <SunTracker data={weatherQuery.data} />
-              ) : null}
-
-              {/* Daily Outlook */}
-              {weatherQuery.isLoading ? (
-                <Skeleton className="h-[320px] w-full rounded-xl" />
-              ) : weatherQuery.data ? (
-                <DailyOutlook
-                  weather={weatherQuery.data}
-                  forecast={forecastQuery.data ?? null}
-                  airPollution={airPollutionQuery.data ?? null}
-                />
-              ) : null}
-            </div>
-
-            {/* Weather Details (Detailed Card) - Full Width Row 4 */}
+            {/* ROW 3: SUN TRACKER & DAILY OUTLOOK (2 CARDS) */}
             {weatherQuery.isLoading ? (
-              <Skeleton className="h-[400px] w-full rounded-xl" />
+              <Skeleton className="h-[350px] w-full rounded-xl" />
             ) : weatherQuery.data ? (
-              <WeatherDetails data={weatherQuery.data} />
+              <SunTracker data={weatherQuery.data} />
             ) : null}
 
-            {/* Third Row of 2 Cards - Row 5 */}
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-              {/* Clothing & Activity Advisor */}
-              {weatherQuery.data && (
-                <ClothingAdvisor data={weatherQuery.data} />
-              )}
-              {forecastQuery.data && (
-                <ActivityPlanner data={forecastQuery.data} />
-              )}
-            </div>
+            {weatherQuery.isLoading ? (
+              <Skeleton className="h-[350px] w-full rounded-xl" />
+            ) : weatherQuery.data ? (
+              <DailyOutlook
+                weather={weatherQuery.data}
+                forecast={forecastQuery.data ?? null}
+                airPollution={airPollutionQuery.data ?? null}
+              />
+            ) : null}
 
-            {/* Forecast Card - Full Width Row 6 */}
-            {forecastQuery.isLoading ? (
-              <Skeleton className="h-[400px] w-full rounded-xl" />
-            ) : forecastQuery.data ? (
-              <div className="w-full">
+            {/* ROW 4: WEATHER DETAILS (FULL WIDTH) */}
+            {weatherQuery.data && (
+              <div className="col-span-full">
+                <WeatherDetails data={weatherQuery.data} />
+              </div>
+            )}
+
+            {/* ROW 5: ADVISORS (2 CARDS) */}
+            {weatherQuery.data && (
+              <ClothingAdvisor data={weatherQuery.data} />
+            )}
+            {forecastQuery.data && (
+              <ActivityPlanner data={forecastQuery.data} />
+            )}
+
+            {/* ROW 6: FORECAST (FULL WIDTH) */}
+            {forecastQuery.data && (
+              <div className="col-span-full">
                 <WeatherForecast data={forecastQuery.data} />
               </div>
-            ) : null}
+            )}
 
-            {/* Regional Overview - J&K Highlights */}
-            <RegionalOverview />
+            {/* ROW 7: REGIONAL OVERVIEW (FULL WIDTH) */}
+            <div className="col-span-full">
+              <RegionalOverview />
+            </div>
 
-            {/* AQI - Last full width */}
-            {airPollutionQuery.isLoading ? (
-              <Skeleton className="h-[200px] w-full rounded-xl" />
-            ) : airPollutionQuery.data ? (
-              <AirPollution data={airPollutionQuery.data} />
-            ) : null}
+            {/* ROW 8: AQI (FULL WIDTH) */}
+            {airPollutionQuery.data && (
+              <div className="col-span-full">
+                <AirPollution data={airPollutionQuery.data} />
+              </div>
+            )}
           </div>
         )}
       </div>
