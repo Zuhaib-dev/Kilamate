@@ -10,6 +10,9 @@ import { WeatherStats } from "../components/weather-stats";
 import { SunTracker } from "../components/sun-tracker";
 import { DailyOutlook } from "../components/daily-outlook";
 import { AirPollution } from "../components/air-pollution";
+import { WeatherAlerts } from "../components/weather-alerts";
+import { FavoriteCities } from "../components/favorite-cities";
+import { RegionalOverview } from "../components/regional-overview";
 import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favorite-button";
 import { ActivityPlanner } from "../components/activity-planner";
@@ -58,51 +61,76 @@ export function CityPage() {
         structuredData={createCitySchema(cityName, lat, lon)}
       />
 
-      <div className="space-y-6">
+      <div className="space-y-4">
+        {/* Favorite Cities - Added to match Dashboard */}
+        <FavoriteCities />
+
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">
-            {cityName}, {country}
-          </h1>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold tracking-tight">
+              {cityName}, {country}
+            </h1>
+          </div>
+          <div className="flex items-center gap-2">
             <FavoriteButton
               data={{ ...weatherQuery.data, name: cityName }}
             />
           </div>
         </div>
 
-        <div className="grid gap-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <CurrentWeather
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+          {/* ROW 1: TOP 2 CARDS */}
+          <CurrentWeather
+            data={weatherQuery.data}
+            locationName={{ name: cityName, country, state: "" } as any}
+            forecast={forecastQuery.data ?? undefined}
+          />
+          <HourlyTemperature data={forecastQuery.data} />
+
+          {/* FULL WIDTH ALERTS */}
+          <div className="col-span-full">
+            <WeatherAlerts
               data={weatherQuery.data}
-              forecast={forecastQuery.data ?? undefined}
-            />
-            <HourlyTemperature data={forecastQuery.data} />
-          </div>
-
-          <WeatherStats data={weatherQuery.data} />
-
-          {/* Sun Tracker + Daily Outlook side by side */}
-          <div className="grid gap-6 md:grid-cols-2">
-            <SunTracker data={weatherQuery.data} />
-            <DailyOutlook
-              weather={weatherQuery.data}
-              forecast={forecastQuery.data}
-              airPollution={airPollutionQuery.data}
+              airPollution={airPollutionQuery.data ?? undefined}
             />
           </div>
 
-          {/* Premium Widgets - Clothing & Activities */}
-          <div className="grid gap-6 md:grid-cols-2">
-            <ClothingAdvisor data={weatherQuery.data} />
-            <ActivityPlanner data={forecastQuery.data} />
+          {/* ROW 2: WEATHER STATS (FULL WIDTH) */}
+          <div className="col-span-full">
+            <WeatherStats data={weatherQuery.data} />
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          {/* ROW 3: SUN TRACKER & DAILY OUTLOOK (2 CARDS) */}
+          <SunTracker data={weatherQuery.data} />
+          <DailyOutlook
+            weather={weatherQuery.data}
+            forecast={forecastQuery.data}
+            airPollution={airPollutionQuery.data}
+          />
+
+          {/* ROW 4: WEATHER DETAILS (FULL WIDTH) */}
+          <div className="col-span-full">
             <WeatherDetails data={weatherQuery.data} />
+          </div>
+
+          {/* ROW 5: ADVISORS (2 CARDS) */}
+          <ClothingAdvisor data={weatherQuery.data} />
+          <ActivityPlanner data={forecastQuery.data} />
+
+          {/* ROW 6: FORECAST (FULL WIDTH) */}
+          <div className="col-span-full">
             <WeatherForecast data={forecastQuery.data} />
           </div>
 
-          <AirPollution data={airPollutionQuery.data} />
+          {/* ROW 7: REGIONAL OVERVIEW (FULL WIDTH) - Added for consistency */}
+          <div className="col-span-full">
+            <RegionalOverview />
+          </div>
+
+          {/* ROW 8: AQI (FULL WIDTH) */}
+          <div className="col-span-full">
+            <AirPollution data={airPollutionQuery.data} />
+          </div>
         </div>
       </div>
     </>
