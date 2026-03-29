@@ -190,7 +190,7 @@ export function WeatherDashboard() {
               />
             )}
 
-            {/* Weather Detail Stats - Full Width */}
+            {/* Weather Detail Stats - Full Width Row 2 */}
             {weatherQuery.isLoading ? (
               <div className="grid gap-6 md:grid-cols-3">
                 {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
@@ -199,8 +199,8 @@ export function WeatherDashboard() {
               <WeatherStats data={weatherQuery.data} />
             ) : null}
 
-            {/* Major Widgets Grid - 2 or 3 cards per row on larger screens */}
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {/* Second Row of 2 Cards - Row 3 */}
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
               {/* Sun Tracker */}
               {weatherQuery.isLoading ? (
                 <Skeleton className="h-[320px] w-full rounded-xl" />
@@ -218,7 +218,17 @@ export function WeatherDashboard() {
                   airPollution={airPollutionQuery.data ?? null}
                 />
               ) : null}
+            </div>
 
+            {/* Weather Details (Detailed Card) - Full Width Row 4 */}
+            {weatherQuery.isLoading ? (
+              <Skeleton className="h-[400px] w-full rounded-xl" />
+            ) : weatherQuery.data ? (
+              <WeatherDetails data={weatherQuery.data} />
+            ) : null}
+
+            {/* Third Row of 2 Cards - Row 5 */}
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
               {/* Clothing & Activity Advisor */}
               {weatherQuery.data && (
                 <ClothingAdvisor data={weatherQuery.data} />
@@ -226,23 +236,16 @@ export function WeatherDashboard() {
               {forecastQuery.data && (
                 <ActivityPlanner data={forecastQuery.data} />
               )}
-
-              {/* Secondary Details */}
-              {weatherQuery.isLoading ? (
-                <Skeleton className="h-[400px] w-full rounded-xl" />
-              ) : weatherQuery.data ? (
-                <WeatherDetails data={weatherQuery.data} />
-              ) : null}
-
-              {/* Forecast Card - Since it's tall, manually spans lg grid if needed, but let's see how it fits */}
-              {forecastQuery.isLoading ? (
-                <Skeleton className="h-[400px] w-full rounded-xl" />
-              ) : forecastQuery.data ? (
-                <div className="lg:col-span-1">
-                    <WeatherForecast data={forecastQuery.data} />
-                </div>
-              ) : null}
             </div>
+
+            {/* Forecast Card - Full Width Row 6 */}
+            {forecastQuery.isLoading ? (
+              <Skeleton className="h-[400px] w-full rounded-xl" />
+            ) : forecastQuery.data ? (
+              <div className="w-full">
+                <WeatherForecast data={forecastQuery.data} />
+              </div>
+            ) : null}
 
             {/* Regional Overview - J&K Highlights */}
             <RegionalOverview />
