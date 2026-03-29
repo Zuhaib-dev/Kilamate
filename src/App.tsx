@@ -161,6 +161,8 @@ function AppContent() {
   );
 }
 
+import { WeatherThemeProvider } from "./context/weather-theme-provider";
+
 function App() {
   return (
     <ErrorBoundary>
@@ -170,7 +172,9 @@ function App() {
           future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
         >
           <ThemeProvider defaultTheme="dark">
-            <AppContent />
+            <WeatherThemeProvider>
+              <AppContent />
+            </WeatherThemeProvider>
           </ThemeProvider>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />

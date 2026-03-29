@@ -222,5 +222,32 @@
         "daylightPercent": "{{percent}}% दिन की रोशनी",
         "nighttime": "रात का समय",
         "dayLength": "दिन की अवधि"
+    },
+    "clothing": {
+        "title": "क्या पहनें",
+        "items": {
+            "heavyCoat": "भारी कोट",
+            "thermal": "थर्मल परत",
+            "gloves": "दस्ताने",
+            "jacket": "जैकेट",
+            "pants": "लंबी पैंट",
+            "hoodie": "हुडी",
+            "tshirt": "टी-शर्ट",
+            "shorts": "शॉर्ट्स",
+            "umbrella": "छाता",
+            "windbreaker": "विंडब्रेकर",
+            "sunglasses": "धूप का चश्मा",
+            "sunscreen": "सनस्क्रीन"
+        }
+    },
+    "activity": {
+        "title": "दैनिक योजनाकार",
+        "types": {
+            "running": "दौड़ना",
+            "cycling": "साइकिल चलाना",
+            "picnic": "पिकनिक",
+            "carwash": "कार धोना",
+            "gardening": "बागवानी"
+        }
     }
 }

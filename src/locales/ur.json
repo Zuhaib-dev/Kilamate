@@ -222,5 +222,32 @@
         "daylightPercent": "دن کی روشنی کا {{percent}}٪",
         "nighttime": "رات کا وقت",
         "dayLength": "دن کی لمبائی"
+    },
+    "clothing": {
+        "title": "کیا پہنیں",
+        "items": {
+            "heavyCoat": "بھاری کوٹ",
+            "thermal": "تھرمل تہہ",
+            "gloves": "دستانے",
+            "jacket": "جیکٹ",
+            "pants": "لمبی پتلون",
+            "hoodie": "ہوڈی",
+            "tshirt": "ٹی شرٹ",
+            "shorts": "شارٹس",
+            "umbrella": "چھتری",
+            "windbreaker": "ونڈ بریکر",
+            "sunglasses": "دھوپ کا چشمہ",
+            "sunscreen": "سن اسکرین"
+        }
+    },
+    "activity": {
+        "title": "روزانہ کا منصوبہ",
+        "types": {
+            "running": "دوڑنا",
+            "cycling": "سائیکلنگ",
+            "picnic": "پکینک",
+            "carwash": "گاڑی دھونا",
+            "gardening": "باغبانی"
+        }
     }
 }

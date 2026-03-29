@@ -15,10 +15,13 @@ import { HourlyTemperature } from "../components/hourly-temperature";
 import { Skeleton } from "../components/ui/skeleton";
 import { FavoriteCities } from "@/components/favorite-cities";
 import { AirPollution } from "../components/air-pollution";
+import { useWeatherTheme } from "@/context/weather-theme-provider";
+import { useEffect } from "react";
 import { WeatherAlerts } from "../components/weather-alerts";
 import { WeatherStats } from "../components/weather-stats";
 import { SunTracker } from "../components/sun-tracker";
 import { DailyOutlook } from "../components/daily-outlook";
+import { ClothingAdvisor } from "../components/clothing-advisor";
 import {
   SEO,
   webApplicationSchema,
@@ -37,6 +40,17 @@ export function WeatherDashboard() {
   const forecastQuery = useForecastQuery(coordinates);
   const locationQuery = useReverseGeocodeQuery(coordinates);
   const airPollutionQuery = useAirPollutionQuery(coordinates);
+
+  const { setThemeByCondition } = useWeatherTheme();
+
+  // Update global weather theme when data changes
+  useEffect(() => {
+    if (weatherQuery.data) {
+      const isDay = weatherQuery.data.dt >= weatherQuery.data.sys.sunrise && 
+                    weatherQuery.data.dt <= weatherQuery.data.sys.sunset;
+      setThemeByCondition(weatherQuery.data.weather[0].id, isDay);
+    }
+  }, [weatherQuery.data, setThemeByCondition]);
 
   const handleRefresh = () => {
     getLocation();
@@ -204,6 +218,11 @@ export function WeatherDashboard() {
               ) : null}
             </div>
 
+            {/* Clothing Advisor - Separate stable row */}
+            {weatherQuery.data && (
+              <ClothingAdvisor data={weatherQuery.data} />
+            )}
+
             <div className="grid gap-6 md:grid-cols-2">
               {weatherQuery.isLoading ? (
                 <Skeleton className="h-[400px] w-full rounded-xl" />
@@ -216,13 +235,13 @@ export function WeatherDashboard() {
               ) : forecastQuery.data ? (
                 <WeatherForecast data={forecastQuery.data} />
               ) : null}
-
-              {airPollutionQuery.isLoading ? (
-                <Skeleton className="h-[200px] w-full rounded-xl" />
-              ) : airPollutionQuery.data ? (
-                <AirPollution data={airPollutionQuery.data} />
-              ) : null}
             </div>
+
+            {airPollutionQuery.isLoading ? (
+              <Skeleton className="h-[200px] w-full rounded-xl" />
+            ) : airPollutionQuery.data ? (
+              <AirPollution data={airPollutionQuery.data} />
+            ) : null}
           </div>
         )}
       </div>

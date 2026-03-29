@@ -12,6 +12,8 @@ import { DailyOutlook } from "../components/daily-outlook";
 import { AirPollution } from "../components/air-pollution";
 import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favorite-button";
+import { ActivityPlanner } from "../components/activity-planner";
+import { ClothingAdvisor } from "../components/clothing-advisor";
 import { SEO, createCitySchema } from "@/components/seo";
 
 export function CityPage() {
@@ -86,11 +88,18 @@ export function CityPage() {
             />
           </div>
 
+          {/* Clothing Advisor - Separate stable row */}
+          <ClothingAdvisor data={weatherQuery.data} />
+
           <div className="grid gap-6 md:grid-cols-2">
             <WeatherDetails data={weatherQuery.data} />
             <WeatherForecast data={forecastQuery.data} />
-            <AirPollution data={airPollutionQuery.data} />
           </div>
+
+          {/* Activity Planner - Separate stable row */}
+          <ActivityPlanner data={forecastQuery.data} />
+
+          <AirPollution data={airPollutionQuery.data} />
         </div>
       </div>
     </>

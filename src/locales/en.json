@@ -222,5 +222,32 @@
         "daylightPercent": "{{percent}}% of daylight",
         "nighttime": "Nighttime",
         "dayLength": "Day length"
+    },
+    "clothing": {
+        "title": "What to Wear",
+        "items": {
+            "heavyCoat": "Heavy Coat",
+            "thermal": "Thermal Layer",
+            "gloves": "Gloves",
+            "jacket": "Jacket",
+            "pants": "Long Pants",
+            "hoodie": "Hoodie",
+            "tshirt": "T-Shirt",
+            "shorts": "Shorts",
+            "umbrella": "Umbrella",
+            "windbreaker": "Windbreaker",
+            "sunglasses": "Sunglasses",
+            "sunscreen": "Sunscreen"
+        }
+    },
+    "activity": {
+        "title": "Daily Planner",
+        "types": {
+            "running": "Running",
+            "cycling": "Cycling",
+            "picnic": "Picnic",
+            "carwash": "Car Wash",
+            "gardening": "Gardening"
+        }
     }
 }
