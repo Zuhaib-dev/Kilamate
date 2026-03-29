@@ -194,8 +194,8 @@ export const DailyOutlook = memo(function DailyOutlook({
   };
 
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-3">
+    <Card className="h-full flex flex-col">
+      <CardHeader className="pb-3 flex-shrink-0">
         <CardTitle className="flex items-center justify-between">
           <span>Today's Outlook</span>
           {/* Day score badge */}
@@ -225,30 +225,30 @@ export const DailyOutlook = memo(function DailyOutlook({
         <p className="text-xs text-muted-foreground leading-relaxed">{dayInfo.desc}</p>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="flex flex-col flex-1 pb-6">
         {/* Score gradient bar */}
-        <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden mb-4">
+        <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden mb-4 flex-shrink-0">
           <div
             className={`h-full rounded-full transition-all duration-700 ${dayInfo.bg}`}
             style={{ width: `${dayInfo.score}%` }}
           />
         </div>
 
-        {/* Recommendations grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        {/* Recommendations grid — fills all remaining height */}
+        <div className="grid grid-cols-2 gap-2 flex-1" style={{ gridAutoRows: "1fr" }}>
           {displayRecs.map((rec, i) => {
             const { Icon: StatusIcon, cls } = statusIcon[rec.status];
             return (
               <div
                 key={i}
-                className="flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/40"
+                className="flex items-start gap-2.5 rounded-lg border p-3 transition-colors hover:bg-muted/40 h-full"
               >
                 <div className="flex-shrink-0 mt-0.5">
                   <rec.icon className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium leading-tight">{rec.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 leading-tight">{rec.detail}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{rec.detail}</p>
                 </div>
                 <StatusIcon className={`h-4 w-4 flex-shrink-0 mt-0.5 ${cls}`} />
               </div>
