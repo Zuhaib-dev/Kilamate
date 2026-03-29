@@ -109,19 +109,33 @@ export function WeatherDashboard() {
 
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold tracking-tight">My Location</h1>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleRefresh}
-            aria-label="Refresh weather data"
-            disabled={weatherQuery.isFetching || forecastQuery.isFetching}
-          >
-            <RefreshCw
-              className={`h-4 w-4 ${
-                weatherQuery.isFetching ? "animate-spin" : ""
-              }`}
-            />
-          </Button>
+          <div className="flex items-center gap-3">
+            {weatherQuery.dataUpdatedAt > 0 && (
+              <span className="text-xs text-muted-foreground hidden sm:block">
+                Updated {
+                  (() => {
+                    const mins = Math.floor((Date.now() - weatherQuery.dataUpdatedAt) / 60000);
+                    if (mins < 1) return "just now";
+                    if (mins === 1) return "1 min ago";
+                    return `${mins} min ago`;
+                  })()
+                }
+              </span>
+            )}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleRefresh}
+              aria-label="Refresh weather data"
+              disabled={weatherQuery.isFetching || forecastQuery.isFetching}
+            >
+              <RefreshCw
+                className={`h-4 w-4 ${
+                  weatherQuery.isFetching ? "animate-spin" : ""
+                }`}
+              />
+            </Button>
+          </div>
         </div>
 
         {locationLoading ? (

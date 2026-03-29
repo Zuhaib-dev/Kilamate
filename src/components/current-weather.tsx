@@ -110,6 +110,19 @@ export const CurrentWeather = memo(function CurrentWeather({
                 <p className="text-sm font-medium text-muted-foreground">
                   {t("weather.feelsLike")} {formatTemp(feels_like)}
                 </p>
+                {/* Contextual feels-like delta */}
+                {(() => {
+                  const delta = feels_like - temp;
+                  const absDelta = Math.abs(Math.round(delta));
+                  if (absDelta < 1) return <p className="text-xs text-muted-foreground">Feels about the same</p>;
+                  const direction = delta > 0 ? "warmer" : "cooler";
+                  const color = delta > 0 ? "text-orange-400" : "text-blue-400";
+                  return (
+                    <p className={`text-xs font-medium ${color}`}>
+                      Feels {absDelta}° {direction} than actual
+                    </p>
+                  );
+                })()}
                 <div className="flex gap-2 text-sm font-medium">
                   <span className="flex items-center gap-1 text-blue-500">
                     <ArrowDown className="h-3 w-3" />

@@ -6,6 +6,7 @@ import { CurrentWeather } from "../components/current-weather";
 import { HourlyTemperature } from "../components/hourly-temperature";
 import { WeatherDetails } from "../components/weather-details";
 import { WeatherForecast } from "../components/weather-forecast";
+import { WeatherStats } from "../components/weather-stats";
 import { AirPollution } from "../components/air-pollution";
 import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favorite-button";
@@ -66,8 +67,12 @@ export function CityPage() {
         </div>
 
         <div className="grid gap-6">
-          <CurrentWeather data={weatherQuery.data} />
+          <CurrentWeather
+            data={weatherQuery.data}
+            forecast={forecastQuery.data ?? undefined}
+          />
           <HourlyTemperature data={forecastQuery.data} />
+          <WeatherStats data={weatherQuery.data} />
           <div className="grid gap-6 md:grid-cols-2 items-start">
             <WeatherDetails data={weatherQuery.data} />
             <WeatherForecast data={forecastQuery.data} />

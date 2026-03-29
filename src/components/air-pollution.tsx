@@ -8,6 +8,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  ReferenceLine,
 } from "recharts";
 import {
   calculateAQI,
@@ -192,6 +193,12 @@ export function AirPollution({ data }: AirPollutionProps) {
                     return null;
                   }}
                 />
+                <ReferenceLine y={50}  stroke="#22c55e" strokeDasharray="3 3" strokeOpacity={0.6}
+                  label={{ value: "Good",     position: "insideTopRight", fontSize: 9, fill: "#22c55e", opacity: 0.8 }} />
+                <ReferenceLine y={100} stroke="#eab308" strokeDasharray="3 3" strokeOpacity={0.6}
+                  label={{ value: "Moderate", position: "insideTopRight", fontSize: 9, fill: "#eab308", opacity: 0.8 }} />
+                <ReferenceLine y={150} stroke="#f97316" strokeDasharray="3 3" strokeOpacity={0.6}
+                  label={{ value: "USG",      position: "insideTopRight", fontSize: 9, fill: "#f97316", opacity: 0.8 }} />
                 <Area
                   type="monotone"
                   dataKey="aqi"

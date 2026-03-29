@@ -39,7 +39,10 @@ export interface WeatherData {
     sunset: number;
     country: string;
   };
+  /** Visibility in metres (max 10 000) */
+  visibility?: number;
   name: string;
+  /** Data timestamp (Unix UTC) */
   dt: number;
 }
 

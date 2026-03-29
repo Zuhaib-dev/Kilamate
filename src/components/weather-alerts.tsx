@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { calculateAQI, getAQIDescription } from "@/lib/aqi-utils";
 import { useTranslation } from "react-i18next";
+import { usePreferences } from "@/hooks/use-preferences";
 
 // How long to suppress the same alert before re-notifying (24 hours)
 const ALERT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
@@ -43,6 +44,7 @@ interface WeatherAlert {
 export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
   const { sendNotification, permission } = useNotifications();
   const { t } = useTranslation();
+  const { temperatureUnit, windSpeedUnit } = usePreferences();
   const [notificationsEnabled] = useLocalStorage(
     "notifications-enabled",
     false,
@@ -52,16 +54,39 @@ export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
     {},
   );
 
+  // Normalise to user-facing units for display + thresholding
+  const tempC  = data.main.temp;         // API is always °C
+  const windMs = data.wind.speed;         // API is always m/s
+
+  // Temperature for display
+  const displayTemp = temperatureUnit === "fahrenheit"
+    ? Math.round(tempC * 9 / 5 + 32)
+    : Math.round(tempC);
+  const tempSymbol = temperatureUnit === "fahrenheit" ? "°F" : "°C";
+
+  // Wind for display
+  const displayWind = windSpeedUnit === "mph"
+    ? Math.round(windMs * 2.237)
+    : windSpeedUnit === "kmh"
+      ? Math.round(windMs * 3.6)
+      : Math.round(windMs);
+  const windSymbol = windSpeedUnit === "mph" ? "mph" : windSpeedUnit === "kmh" ? "km/h" : "m/s";
+
+  // Thresholds in raw metric (API units)
+  const HIGH_WIND_MS  = 10;    // ≈ 36 km/h
+  const HEAT_C        = 35;
+  const FREEZE_C      = 0;
+
   const alerts: WeatherAlert[] = [];
 
   // High wind alert
-  if (data.wind.speed > 10) {
+  if (windMs > HIGH_WIND_MS) {
     alerts.push({
       type: "warning",
       severity: "medium",
       icon: Wind,
       title: "High Wind Alert",
-      message: `Strong winds detected at ${Math.round(data.wind.speed)} m/s. Exercise caution outdoors.`,
+      message: `Strong winds at ${displayWind} ${windSymbol}. Exercise caution outdoors.`,
       color: "text-orange-500",
     });
   }
@@ -93,22 +118,22 @@ export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
   }
 
   // Extreme temperature
-  if (data.main.temp > 35) {
+  if (tempC > HEAT_C) {
     alerts.push({
       type: "warning",
       severity: "high",
       icon: Thermometer,
       title: "Extreme Heat",
-      message: `Temperature is ${Math.round(data.main.temp)}°C. Stay hydrated and avoid prolonged sun exposure.`,
+      message: `Temperature is ${displayTemp}${tempSymbol}. Stay hydrated and avoid prolonged sun exposure.`,
       color: "text-red-500",
     });
-  } else if (data.main.temp < 0) {
+  } else if (tempC < FREEZE_C) {
     alerts.push({
       type: "warning",
       severity: "high",
       icon: Thermometer,
       title: "Freezing Temperature",
-      message: `Temperature is ${Math.round(data.main.temp)}°C. Watch for ice and dress warmly.`,
+      message: `Temperature is ${displayTemp}${tempSymbol}. Watch for ice and dress warmly.`,
       color: "text-blue-500",
     });
   }
