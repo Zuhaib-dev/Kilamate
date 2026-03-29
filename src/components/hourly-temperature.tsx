@@ -2,10 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 import { format } from "date-fns";
 import { enUS, hi } from "date-fns/locale";
@@ -22,6 +25,7 @@ interface ChartData {
   time: string;
   temp: number;
   feels_like: number;
+  pop: number;
 }
 
 import { memo } from "react";
@@ -69,6 +73,7 @@ export const HourlyTemperature = memo(function HourlyTemperature({
       feels_like: Math.round(
         convertTemperature(item.main.feels_like, temperatureUnit),
       ),
+      pop: Math.round((item.pop ?? 0) * 100),
     }));
 
   const unitSymbol = temperatureUnit === "celsius" ? "°C" : "°F";
@@ -87,71 +92,118 @@ export const HourlyTemperature = memo(function HourlyTemperature({
               <span className="inline-block w-4 h-0.5 bg-slate-400 rounded-full" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #94a3b8 0, #94a3b8 4px, transparent 4px, transparent 9px)' }} />
               {t("weather.feelsLike")}
             </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-3 h-3 bg-sky-500/50 rounded-sm" />
+              {t("weather.rainChance")}
+            </span>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[200px] w-full pt-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
-              <XAxis
-                dataKey="time"
-                stroke="#888888"
-                fontSize={11}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis
-                stroke="#888888"
-                fontSize={11}
-                tickLine={false}
-                axisLine={false}
-                tickFormatter={(value) => `${value}°`}
-              />
-              <Tooltip
-                cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1, strokeDasharray: "4 4" }}
-                content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                    return (
-                      <div className="rounded-lg border bg-background p-2.5 shadow-md">
-                        <p className="text-xs text-muted-foreground mb-1.5 font-medium">{label}</p>
-                        <div className="flex flex-col gap-1">
-                          <div className="flex items-center gap-2">
-                            <span className="inline-block w-3 h-0.5 bg-blue-600 rounded-full" />
-                            <span className="text-xs text-muted-foreground">{t("weather.temperature")}</span>
-                            <span className="text-sm font-bold text-blue-600 ml-auto">{payload[0]?.value}{unitSymbol}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="inline-block w-3 h-0.5 bg-slate-400 rounded-full" />
-                            <span className="text-xs text-muted-foreground">{t("weather.feelsLike")}</span>
-                            <span className="text-sm font-bold text-slate-500 ml-auto">{payload[1]?.value}{unitSymbol}</span>
+        <div className="flex flex-col gap-0 pt-2">
+          {/* Temperature Line Chart */}
+          <div className="h-[150px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                <XAxis
+                  dataKey="time"
+                  hide
+                />
+                <YAxis
+                  stroke="#888888"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `${value}°`}
+                  domain={['dataMin - 2', 'dataMax + 2']}
+                />
+                <Tooltip
+                  cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1, strokeDasharray: "4 4" }}
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="rounded-lg border bg-background p-2.5 shadow-md">
+                          <p className="text-xs text-muted-foreground mb-1.5 font-medium">{label}</p>
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2">
+                              <span className="inline-block w-3 h-0.5 bg-blue-600 rounded-full" />
+                              <span className="text-xs text-muted-foreground">{t("weather.temperature")}</span>
+                              <span className="text-sm font-bold text-blue-600 ml-auto">{payload[0]?.value}{unitSymbol}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="inline-block w-3 h-0.5 bg-slate-400 rounded-full" />
+                              <span className="text-xs text-muted-foreground">{t("weather.feelsLike")}</span>
+                              <span className="text-sm font-bold text-slate-500 ml-auto">{payload[1]?.value}{unitSymbol}</span>
+                            </div>
+                            {payload[2] && (
+                             <div className="flex items-center gap-2 mt-1 pt-1 border-t">
+                                <span className="inline-block w-3 h-3 bg-sky-500 rounded-sm" />
+                                <span className="text-xs text-muted-foreground">{t("weather.rainChance")}</span>
+                                <span className="text-sm font-bold text-sky-600 ml-auto">{payload[2]?.value}%</span>
+                              </div>
+                            )}
                           </div>
                         </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="temp"
-                stroke="#2563eb"
-                strokeWidth={2.5}
-                dot={false}
-                activeDot={{ r: 5, strokeWidth: 0, fill: "#2563eb" }}
-              />
-              <Line
-                type="monotone"
-                dataKey="feels_like"
-                stroke="#94a3b8"
-                strokeWidth={1.5}
-                dot={false}
-                strokeDasharray="5 5"
-                activeDot={{ r: 4, strokeWidth: 0, fill: "#94a3b8" }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="temp"
+                  stroke="#2563eb"
+                  strokeWidth={2.5}
+                  dot={false}
+                  activeDot={{ r: 5, strokeWidth: 0, fill: "#2563eb" }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="feels_like"
+                  stroke="#94a3b8"
+                  strokeWidth={1.5}
+                  dot={false}
+                  strokeDasharray="5 5"
+                  activeDot={{ r: 4, strokeWidth: 0, fill: "#94a3b8" }}
+                />
+                {/* Hidden bar just to get pop data into the common tooltip */}
+                <Line dataKey="pop" hide />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Rain Probability Bar Chart */}
+          <div className="h-[60px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
+                <XAxis
+                  dataKey="time"
+                  stroke="#888888"
+                  fontSize={10}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  hide
+                  domain={[0, 100]}
+                />
+                <Bar 
+                  dataKey="pop" 
+                  radius={[2, 2, 0, 0]}
+                  fill="#0ea5e9"
+                  fillOpacity={0.4}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.pop > 20 ? "#0ea5e9" : "#94a3b8"} 
+                      fillOpacity={entry.pop > 20 ? 0.6 : 0.2}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>

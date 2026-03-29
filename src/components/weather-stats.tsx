@@ -63,7 +63,18 @@ export function WeatherStats({ data }: WeatherStatsProps) {
             color: "text-orange-600",
             iconBg: "bg-orange-600/10",
         },
+        {
+            title: t('weather.windGust'),
+            primary: `${data.wind.gust ?? data.wind.speed}`,
+            unit: " m/s",
+            icon: Wind,
+            color: "text-blue-400",
+            iconBg: "bg-blue-400/10",
+        },
     ];
+
+    // Filter out items that might not have data (though OWM usually provides these)
+    const validStats = stats.filter(s => s.primary !== "undefined");
 
     return (
         <Card>
@@ -72,7 +83,7 @@ export function WeatherStats({ data }: WeatherStatsProps) {
             </CardHeader>
             <CardContent>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {stats.map((stat) => (
+                    {validStats.map((stat) => (
                         <div
                             key={stat.title}
                             className="group relative overflow-hidden rounded-lg border p-4 transition-all hover:shadow-md hover:scale-[1.03]"

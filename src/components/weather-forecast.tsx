@@ -82,12 +82,12 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
   /** Return a human-readable rain chance label + colour class */
   const getPrecipInfo = (pop: number): { label: string; color: string; show: boolean } => {
     const pct = Math.round(pop * 100);
-    if (pop < 0.05) return { label: "Clear", color: "text-muted-foreground", show: false };
-    if (pop < 0.2)  return { label: `Light showers possible · ${pct}%`, color: "text-sky-400",  show: true };
-    if (pop < 0.4)  return { label: `Chance of rain · ${pct}%`,          color: "text-sky-500",  show: true };
-    if (pop < 0.6)  return { label: `Likely rain · ${pct}%`,              color: "text-blue-500", show: true };
-    if (pop < 0.8)  return { label: `Rain expected · ${pct}%`,            color: "text-blue-600", show: true };
-    return             { label: `Heavy rain · ${pct}%`,               color: "text-blue-700", show: true };
+    if (pop < 0.05) return { label: t("weather.precip.clear"), color: "text-muted-foreground", show: false };
+    if (pop < 0.2)  return { label: `${t("weather.precip.light")} · ${pct}%`, color: "text-sky-400",  show: true };
+    if (pop < 0.4)  return { label: `${t("weather.precip.chance")} · ${pct}%`,          color: "text-sky-500",  show: true };
+    if (pop < 0.6)  return { label: `${t("weather.precip.likely")} · ${pct}%`,              color: "text-blue-500", show: true };
+    if (pop < 0.8)  return { label: `${t("weather.precip.expected")} · ${pct}%`,            color: "text-blue-600", show: true };
+    return             { label: `${t("weather.precip.heavy")} · ${pct}%`,               color: "text-blue-700", show: true };
   };
 
   return (
@@ -166,7 +166,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
         {/* Avg wind at the bottom */}
         <div className="flex items-center gap-1.5 mt-3 pt-2.5 border-t text-xs text-muted-foreground">
           <Wind className="h-3.5 w-3.5" />
-          <span>Avg wind this week: <span className="font-medium text-foreground">{formatWindSpeed(avgWind, windSpeedUnit)}</span></span>
+          <span>{t("weather.avgWindWeek")}: <span className="font-medium text-foreground">{formatWindSpeed(avgWind, windSpeedUnit)}</span></span>
         </div>
       </CardContent>
     </Card>

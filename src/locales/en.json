@@ -34,7 +34,21 @@
         "current": "Current Weather",
         "details": "Weather Details",
         "aqi": "Air Quality Index",
-        "pollutants": "Pollutants"
+        "pollutants": "Pollutants",
+        "rainChance": "Rain Chance",
+        "windGust": "Wind Gust",
+        "avgWindWeek": "Avg wind this week",
+        "high": "High",
+        "low": "Low",
+        "extreme": "Extreme",
+        "precip": {
+            "clear": "Clear",
+            "light": "Light showers possible",
+            "chance": "Chance of rain",
+            "likely": "Likely rain",
+            "expected": "Rain expected",
+            "heavy": "Heavy rain"
+        }
     },
     "alerts": {
         "title": "Weather Alerts",

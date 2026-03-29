@@ -158,14 +158,19 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
               <span className={`text-sm font-semibold ${uviInfo.color}`}>{uviInfo.label}</span>
             </div>
             {/* UV bar */}
-            <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+            <div className="relative h-2 w-full rounded-full bg-muted overflow-hidden mt-1">
               <div
                 className={`h-full rounded-full transition-all duration-700 ${uviInfo.bar}`}
                 style={{ width: `${uviPct}%` }}
               />
+              {/* Indicator dot */}
+              <div 
+                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border border-black/20 shadow-sm transition-all duration-700"
+                style={{ left: `calc(${uviPct}% - 4px)` }}
+              />
             </div>
             <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
-              <span>0 Low</span><span>6 High</span><span>11+ Ext</span>
+              <span>0 {t("weather.low")}</span><span>6 {t("weather.high")}</span><span>11+ {t("weather.extreme")}</span>
             </div>
             {uvi > 0 && (
               <p className="text-xs text-muted-foreground mt-2 leading-relaxed">

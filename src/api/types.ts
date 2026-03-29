@@ -33,6 +33,7 @@ export interface WeatherData {
   wind: {
     speed: number;
     deg: number;
+    gust?: number;
   };
   sys: {
     sunrise: number;
