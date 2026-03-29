@@ -194,7 +194,7 @@ export const DailyOutlook = memo(function DailyOutlook({
   };
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
           <span>Today's Outlook</span>

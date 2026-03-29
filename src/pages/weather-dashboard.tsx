@@ -184,7 +184,7 @@ export function WeatherDashboard() {
               <WeatherStats data={weatherQuery.data} />
             ) : null}
 
-            <div className="grid gap-6 md:grid-cols-2 items-start">
+            <div className="grid gap-6 md:grid-cols-2">
               {/* Sun Tracker */}
               {weatherQuery.isLoading ? (
                 <Skeleton className="h-[320px] w-full rounded-xl" />
@@ -204,7 +204,7 @@ export function WeatherDashboard() {
               ) : null}
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 items-start">
+            <div className="grid gap-6 md:grid-cols-2">
               {weatherQuery.isLoading ? (
                 <Skeleton className="h-[400px] w-full rounded-xl" />
               ) : weatherQuery.data ? (

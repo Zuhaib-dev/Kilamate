@@ -77,7 +77,7 @@ export function CityPage() {
           <WeatherStats data={weatherQuery.data} />
 
           {/* Sun Tracker + Daily Outlook side by side */}
-          <div className="grid gap-6 md:grid-cols-2 items-start">
+          <div className="grid gap-6 md:grid-cols-2">
             <SunTracker data={weatherQuery.data} />
             <DailyOutlook
               weather={weatherQuery.data}
@@ -86,7 +86,7 @@ export function CityPage() {
             />
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 items-start">
+          <div className="grid gap-6 md:grid-cols-2">
             <WeatherDetails data={weatherQuery.data} />
             <WeatherForecast data={forecastQuery.data} />
             <AirPollution data={airPollutionQuery.data} />

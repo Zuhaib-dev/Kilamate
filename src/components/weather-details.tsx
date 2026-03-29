@@ -98,7 +98,7 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
   const visInfo = getVisibilityLabel(visKm);
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>{t("weather.details")}</CardTitle>
       </CardHeader>

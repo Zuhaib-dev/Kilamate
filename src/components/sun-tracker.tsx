@@ -71,7 +71,7 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
   const timeUntilSunrise = sunrise - now;
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden h-full">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
           {isDay ? (

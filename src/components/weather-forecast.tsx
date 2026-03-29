@@ -91,7 +91,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
   };
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>{t("weather.forecast")}</CardTitle>
       </CardHeader>
