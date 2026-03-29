@@ -133,5 +133,94 @@
         "hazardousDesc": "Health warning of emergency conditions: everyone is more likely to be affected.",
         "standardAqi": "Standard AQI (US EPA)",
         "forecast24h": "24-Hour Forecast"
+    },
+    "outlook": {
+        "title": "Today's Outlook",
+        "score": "Score {{score}}/100",
+        "dayType": {
+            "great": "Great Day",
+            "good": "Good Day",
+            "fair": "Fair Day",
+            "rough": "Rough Day",
+            "stay": "Stay Indoors"
+        },
+        "desc": {
+            "great": "Ideal conditions for outdoor activities.",
+            "good": "Most activities are comfortable.",
+            "fair": "Some uncomfortable conditions — plan accordingly.",
+            "rough": "Limited outdoor comfort. Take precautions.",
+            "stay": "Conditions are harsh. Minimise outdoor exposure."
+        },
+        "recs": {
+            "umbrella": {
+                "carry": "Carry umbrella",
+                "advisable": "Umbrella advisable",
+                "none": "No rain expected",
+                "detail_carry": "{{percent}}% chance of rain",
+                "detail_advisable": "{{percent}}% chance of showers",
+                "detail_none": "Clear skies ahead"
+            },
+            "exercise": {
+                "great": "Great for exercise",
+                "ok": "Light exercise ok",
+                "skip": "Skip outdoor workout",
+                "detail_great": "Temp, wind & air quality are ideal",
+                "detail_ok": "Avoid strenuous activity",
+                "detail_poor_aqi": "Poor air quality",
+                "detail_unfavourable": "Conditions unfavourable"
+            },
+            "clothing": {
+                "bundle": "Bundle up",
+                "jacket": "Wear a jacket",
+                "light": "Dress light",
+                "comfort": "Comfortable clothing",
+                "detail_bundle": "Heavy coat & layers essential",
+                "detail_jacket": "It's chilly outside",
+                "detail_light": "Light, breathable clothing",
+                "detail_comfort": "No special layering needed"
+            },
+            "drive": {
+                "careful": "Drive carefully",
+                "extra": "Allow extra travel time",
+                "good": "Good commuting conditions",
+                "detail_bad": "Reduced visibility or slippery roads",
+                "detail_caution": "Wet or windy conditions",
+                "detail_good": "Roads should be clear"
+            },
+            "photo": {
+                "perfect": "Perfect for photography",
+                "detail": "Good light & clear skies"
+            },
+            "cycling": {
+                "great": "Great for cycling",
+                "detail": "Low wind, mild temps",
+                "strong_wind": "Strong winds",
+                "detail_strong_wind": "{{speed}} km/h — avoid cycling"
+            },
+            "aqi": {
+                "limit": "Limit outdoor time",
+                "detail_bad": "AQI is {{aqi}} — unhealthy air",
+                "sensitive": "Sensitive groups: stay in",
+                "detail_caution": "AQI {{aqi}} — moderate pollution",
+                "fine": "Air quality is fine",
+                "detail_fine": "AQI {{aqi}} — safe to breathe"
+            },
+            "uv": {
+                "essential": "Sun protection essential",
+                "detail_bad": "UV index: {{uvi}} — wear SPF 50+",
+                "apply": "Apply sunscreen",
+                "detail_caution": "UV index: {{uvi}} — SPF 30 recommended"
+            }
+        }
+    },
+    "sun": {
+        "title": "Sun Tracker",
+        "sunsetIn": "Sunset in",
+        "sunHasSet": "Sun has set",
+        "sunriseIn": "Sunrise in",
+        "nextSunrise": "Next sunrise",
+        "daylightPercent": "{{percent}}% of daylight",
+        "nighttime": "Nighttime",
+        "dayLength": "Day length"
     }
 }

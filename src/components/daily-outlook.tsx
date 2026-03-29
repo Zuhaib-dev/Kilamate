@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { WeatherData, ForecastData, AirPollutionResponse } from "@/api/types";
 import { calculateAQI } from "@/lib/aqi-utils";
+import { useTranslation } from "react-i18next";
 import { memo } from "react";
 
 interface DailyOutlookProps {
@@ -57,10 +58,10 @@ function estimateUVI(conditionId: number, dt: number, sunrise: number, sunset: n
 
 function getDayScore(temp: number, pop: number, windMs: number, aqi: number, uvi: number): {
   score: number;
-  label: string;
+  labelKey: string;
   color: string;
   bg: string;
-  desc: string;
+  descKey: string;
 } {
   let score = 100;
   // Precipitation penalty
@@ -83,11 +84,11 @@ function getDayScore(temp: number, pop: number, windMs: number, aqi: number, uvi
 
   score = Math.max(0, Math.min(100, score));
 
-  if (score >= 80) return { score, label: "Great Day",   color: "text-green-500",  bg: "bg-green-500",  desc: "Ideal conditions for outdoor activities." };
-  if (score >= 60) return { score, label: "Good Day",    color: "text-lime-500",   bg: "bg-lime-500",   desc: "Most activities are comfortable." };
-  if (score >= 40) return { score, label: "Fair Day",    color: "text-yellow-500", bg: "bg-yellow-500", desc: "Some uncomfortable conditions — plan accordingly." };
-  if (score >= 20) return { score, label: "Rough Day",   color: "text-orange-500", bg: "bg-orange-500", desc: "Limited outdoor comfort. Take precautions." };
-  return                  { score, label: "Stay Indoors",color: "text-red-500",    bg: "bg-red-500",    desc: "Conditions are harsh. Minimise outdoor exposure." };
+  if (score >= 80) return { score, labelKey: "outlook.dayType.great", color: "text-green-500",  bg: "bg-green-500",  descKey: "outlook.desc.great" };
+  if (score >= 60) return { score, labelKey: "outlook.dayType.good",  color: "text-lime-500",   bg: "bg-lime-500",   descKey: "outlook.desc.good" };
+  if (score >= 40) return { score, labelKey: "outlook.dayType.fair",  color: "text-yellow-500", bg: "bg-yellow-500", descKey: "outlook.desc.fair" };
+  if (score >= 20) return { score, labelKey: "outlook.dayType.rough", color: "text-orange-500", bg: "bg-orange-500", descKey: "outlook.desc.rough" };
+  return                  { score, labelKey: "outlook.dayType.stay",  color: "text-red-500",    bg: "bg-red-500",    descKey: "outlook.desc.stay" };
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -97,91 +98,93 @@ export const DailyOutlook = memo(function DailyOutlook({
   forecast,
   airPollution,
 }: DailyOutlookProps) {
+  const { t } = useTranslation();
   const { main, wind, weather: conditions, sys, dt } = weather;
   const conditionId = conditions[0]?.id ?? 800;
   const temp = main.temp;
   const windMs = wind.speed;
   const pop = getUpcomingMaxPop(forecast);
-  const aqi = airPollution?.list?.[0]
+  const aqiValue = airPollution?.list?.[0]
     ? calculateAQI(airPollution.list[0].components)
     : 0;
-  const uvi = estimateUVI(conditionId, dt, sys.sunrise, sys.sunset);
+  const uviValue = estimateUVI(conditionId, dt, sys.sunrise, sys.sunset);
 
-  const dayInfo = getDayScore(temp, pop, windMs, aqi, uvi);
+  const dayInfo = getDayScore(temp, pop, windMs, aqiValue, uviValue);
 
   // ── Build recommendations ──────────────────────────────────────────────
   const recs: Recommendation[] = [];
 
   // Umbrella / rain
+  const popPct = Math.round(pop * 100);
   if (pop >= 0.6) {
-    recs.push({ icon: Umbrella, label: "Carry umbrella", detail: `${Math.round(pop * 100)}% chance of rain`, status: "bad" });
+    recs.push({ icon: Umbrella, label: t("outlook.recs.umbrella.carry"), detail: t("outlook.recs.umbrella.detail_carry", { percent: popPct }), status: "bad" });
   } else if (pop >= 0.25) {
-    recs.push({ icon: Umbrella, label: "Umbrella advisable", detail: `${Math.round(pop * 100)}% chance of showers`, status: "caution" });
+    recs.push({ icon: Umbrella, label: t("outlook.recs.umbrella.advisable"), detail: t("outlook.recs.umbrella.detail_advisable", { percent: popPct }), status: "caution" });
   } else {
-    recs.push({ icon: Umbrella, label: "No rain expected", detail: "Clear skies ahead", status: "good" });
+    recs.push({ icon: Umbrella, label: t("outlook.recs.umbrella.none"), detail: t("outlook.recs.umbrella.detail_none"), status: "good" });
   }
 
   // Outdoor exercise
-  const goodForExercise = temp >= 10 && temp <= 28 && windMs <= 8 && aqi <= 100 && pop < 0.3;
-  const okForExercise   = !goodForExercise && temp >= 5 && temp <= 33 && aqi <= 150 && pop < 0.5;
+  const goodForExercise = temp >= 10 && temp <= 28 && windMs <= 8 && aqiValue <= 100 && pop < 0.3;
+  const okForExercise   = !goodForExercise && temp >= 5 && temp <= 33 && aqiValue <= 150 && pop < 0.5;
   if (goodForExercise) {
-    recs.push({ icon: Dumbbell, label: "Great for exercise", detail: "Temp, wind & air quality are ideal", status: "good" });
+    recs.push({ icon: Dumbbell, label: t("outlook.recs.exercise.great"), detail: t("outlook.recs.exercise.detail_great"), status: "good" });
   } else if (okForExercise) {
-    recs.push({ icon: Footprints, label: "Light exercise ok", detail: "Avoid strenuous activity", status: "caution" });
+    recs.push({ icon: Footprints, label: t("outlook.recs.exercise.ok"), detail: t("outlook.recs.exercise.detail_ok"), status: "caution" });
   } else {
-    recs.push({ icon: Footprints, label: "Skip outdoor workout", detail: aqi > 150 ? "Poor air quality" : "Conditions unfavourable", status: "bad" });
+    recs.push({ icon: Footprints, label: t("outlook.recs.exercise.skip"), detail: aqiValue > 150 ? t("outlook.recs.exercise.detail_poor_aqi") : t("outlook.recs.exercise.detail_unfavourable"), status: "bad" });
   }
 
   // Clothing layer
   if (temp < 5) {
-    recs.push({ icon: Shirt, label: "Bundle up", detail: "Heavy coat & layers essential", status: "caution" });
+    recs.push({ icon: Shirt, label: t("outlook.recs.clothing.bundle"), detail: t("outlook.recs.clothing.detail_bundle"), status: "caution" });
   } else if (temp < 15) {
-    recs.push({ icon: Shirt, label: "Wear a jacket", detail: "It's chilly outside", status: "caution" });
+    recs.push({ icon: Shirt, label: t("outlook.recs.clothing.jacket"), detail: t("outlook.recs.clothing.detail_jacket"), status: "caution" });
   } else if (temp > 30) {
-    recs.push({ icon: Shirt, label: "Dress light", detail: "Light, breathable clothing", status: "good" });
+    recs.push({ icon: Shirt, label: t("outlook.recs.clothing.light"), detail: t("outlook.recs.clothing.detail_light"), status: "good" });
   } else {
-    recs.push({ icon: Shirt, label: "Comfortable clothing", detail: "No special layering needed", status: "good" });
+    recs.push({ icon: Shirt, label: t("outlook.recs.clothing.comfort"), detail: t("outlook.recs.clothing.detail_comfort"), status: "good" });
   }
 
   // Driving / commute
   const badDriving = windMs > 12 || pop > 0.7 || conditionId >= 600 && conditionId < 700;
   const cautionDriving = windMs > 8 || pop > 0.4;
   if (badDriving) {
-    recs.push({ icon: Car, label: "Drive carefully", detail: "Reduced visibility or slippery roads", status: "bad" });
+    recs.push({ icon: Car, label: t("outlook.recs.drive.careful"), detail: t("outlook.recs.drive.detail_bad"), status: "bad" });
   } else if (cautionDriving) {
-    recs.push({ icon: Car, label: "Allow extra travel time", detail: "Wet or windy conditions", status: "caution" });
+    recs.push({ icon: Car, label: t("outlook.recs.drive.extra"), detail: t("outlook.recs.drive.detail_caution"), status: "caution" });
   } else {
-    recs.push({ icon: Car, label: "Good commuting conditions", detail: "Roads should be clear", status: "good" });
+    recs.push({ icon: Car, label: t("outlook.recs.drive.good"), detail: t("outlook.recs.drive.detail_good"), status: "good" });
   }
 
   // Photography / outdoor leisure
-  const greatPhoto = pop < 0.15 && uvi < 8 && windMs < 6 && aqi < 80;
+  const greatPhoto = pop < 0.15 && uviValue < 8 && windMs < 6 && aqiValue < 80;
   if (greatPhoto) {
-    recs.push({ icon: Camera, label: "Perfect for photography", detail: "Good light & clear skies", status: "good" });
+    recs.push({ icon: Camera, label: t("outlook.recs.photo.perfect"), detail: t("outlook.recs.photo.detail"), status: "good" });
   }
 
   // Wind sport / cycling
-  const goodCycle = temp >= 12 && temp <= 30 && windMs <= 6 && pop < 0.2 && aqi <= 100;
+  const goodCycle = temp >= 12 && temp <= 30 && windMs <= 6 && pop < 0.2 && aqiValue <= 100;
   if (goodCycle) {
-    recs.push({ icon: Bike, label: "Great for cycling", detail: "Low wind, mild temps", status: "good" });
+    recs.push({ icon: Bike, label: t("outlook.recs.cycling.great"), detail: t("outlook.recs.cycling.detail"), status: "good" });
   } else if (windMs > 10) {
-    recs.push({ icon: Wind, label: "Strong winds", detail: `${Math.round(windMs * 3.6)} km/h — avoid cycling`, status: "bad" });
+    recs.push({ icon: Wind, label: t("outlook.recs.cycling.strong_wind"), detail: t("outlook.recs.cycling.detail_strong_wind", { speed: Math.round(windMs * 3.6) }), status: "bad" });
   }
 
   // AQI-based outdoor
-  if (aqi > 150) {
-    recs.push({ icon: ShieldAlert, label: "Limit outdoor time", detail: `AQI is ${aqi} — unhealthy air`, status: "bad" });
-  } else if (aqi > 100) {
-    recs.push({ icon: ShieldAlert, label: "Sensitive groups: stay in", detail: `AQI ${aqi} — moderate pollution`, status: "caution" });
+  if (aqiValue > 150) {
+    recs.push({ icon: ShieldAlert, label: t("outlook.recs.aqi.limit"), detail: t("outlook.recs.aqi.detail_bad", { aqi: aqiValue }), status: "bad" });
+  } else if (aqiValue > 100) {
+    recs.push({ icon: ShieldAlert, label: t("outlook.recs.aqi.sensitive"), detail: t("outlook.recs.aqi.detail_caution", { aqi: aqiValue }), status: "caution" });
   } else {
-    recs.push({ icon: TreePine, label: "Air quality is fine", detail: `AQI ${aqi} — safe to breathe`, status: "good" });
+    recs.push({ icon: TreePine, label: t("outlook.recs.aqi.fine"), detail: t("outlook.recs.aqi.detail_fine", { aqi: aqiValue }), status: "good" });
   }
 
   // UV protection
-  if (uvi > 7) {
-    recs.push({ icon: ShieldAlert, label: "Sun protection essential", detail: `UV index: ${uvi} — wear SPF 50+`, status: "bad" });
-  } else if (uvi > 3) {
-    recs.push({ icon: Coffee, label: "Apply sunscreen", detail: `UV index: ${uvi} — SPF 30 recommended`, status: "caution" });
+  if (uviValue > 7) {
+    recs.push({ icon: ShieldAlert, label: t("outlook.recs.uv.essential"), detail: t("outlook.recs.uv.detail_bad", { uvi: uviValue }), status: "bad" });
+  } else if (uviValue > 3) {
+    recs.push({ icon: Coffee, label: t("outlook.recs.uv.apply"), detail: t("outlook.recs.uv.detail_caution", { uvi: uviValue }), status: "caution" });
   }
 
   // Limit to top 6 most relevant
@@ -197,12 +200,12 @@ export const DailyOutlook = memo(function DailyOutlook({
     <Card className="h-full flex flex-col">
       <CardHeader className="pb-3 flex-shrink-0">
         <CardTitle className="flex items-center justify-between">
-          <span>Today's Outlook</span>
+          <span>{t("outlook.title")}</span>
           {/* Day score badge */}
           <div className="flex items-center gap-2">
             <div className="text-right">
-              <p className={`text-sm font-bold ${dayInfo.color}`}>{dayInfo.label}</p>
-              <p className="text-[10px] text-muted-foreground">Score {dayInfo.score}/100</p>
+              <p className={`text-sm font-bold ${dayInfo.color}`}>{t(dayInfo.labelKey)}</p>
+              <p className="text-[10px] text-muted-foreground">{t("outlook.score", { score: dayInfo.score })}</p>
             </div>
             {/* Score ring */}
             <div className="relative w-10 h-10 flex-shrink-0">
@@ -222,7 +225,7 @@ export const DailyOutlook = memo(function DailyOutlook({
             </div>
           </div>
         </CardTitle>
-        <p className="text-xs text-muted-foreground leading-relaxed">{dayInfo.desc}</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">{t(dayInfo.descKey)}</p>
       </CardHeader>
 
       <CardContent className="flex flex-col flex-1 pb-6">

@@ -219,10 +219,10 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
           <div className="space-y-0.5 border-x px-2">
             <p className="text-xs text-muted-foreground">
               {isDay
-                ? (timeUntilSunset > 0 ? "Sunset in" : "Sun has set")
+                ? (timeUntilSunset > 0 ? t("sun.sunsetIn") : t("sun.sunHasSet"))
                 : isBeforeSunrise
-                  ? "Sunrise in"
-                  : "Next sunrise"
+                  ? t("sun.sunriseIn")
+                  : t("sun.nextSunrise")
               }
             </p>
             <p className="text-sm font-bold tabular-nums text-primary">
@@ -234,7 +234,7 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
               }
             </p>
             <p className="text-[10px] text-muted-foreground">
-              {isDay ? `${Math.round(progress * 100)}% of daylight` : "Nighttime"}
+              {isDay ? t("sun.daylightPercent", { percent: Math.round(progress * 100) }) : t("sun.nighttime")}
             </p>
           </div>
 
@@ -249,7 +249,7 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
 
         {/* Day length */}
         <div className="text-center text-xs text-muted-foreground pt-1 border-t">
-          Day length: <span className="font-medium text-foreground">{formatDuration(dayLen)}</span>
+          {t("sun.dayLength")}: <span className="font-medium text-foreground">{formatDuration(dayLen)}</span>
         </div>
       </CardContent>
     </Card>
