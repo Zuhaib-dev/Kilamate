@@ -73,6 +73,12 @@ export function WeatherStats({ data }: WeatherStatsProps) {
         },
     ];
 
+    // Helper to get cardinal direction from degrees
+    const getWindDirection = (deg: number) => {
+        const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+        return directions[Math.round(deg / 45) % 8];
+    };
+
     // Filter out items that might not have data (though OWM usually provides these)
     const validStats = stats.filter(s => s.primary !== "undefined");
 
@@ -100,10 +106,25 @@ export function WeatherStats({ data }: WeatherStatsProps) {
                                                 {stat.unit}
                                             </span>
                                         )}
+                                        {stat.title === t('weather.windSpeed') && (
+                                            <span className="text-xs font-bold text-muted-foreground/60 ml-2 uppercase tracking-tighter">
+                                                {getWindDirection(data.wind.deg || 0)}
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
-                                <div className={`flex items-center justify-center rounded-lg p-2 ${stat.iconBg}`}>
-                                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                                <div className={`flex items-center justify-center rounded-lg p-2 transition-transform duration-500 ${stat.iconBg} ${stat.title === t('weather.windSpeed') ? 'group-hover:rotate-0' : ''}`}>
+                                    {stat.title === t('weather.windSpeed') ? (
+                                        <div 
+                                            className="relative flex items-center justify-center transition-transform duration-1000 ease-in-out"
+                                            style={{ transform: `rotate(${data.wind.deg || 0}deg)` }}
+                                        >
+                                            <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                                            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-3 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+                                        </div>
+                                    ) : (
+                                        <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                                    )}
                                 </div>
                             </div>
                             <div className="absolute inset-0 -z-10 bg-gradient-to-br from-transparent to-muted opacity-0 transition-opacity group-hover:opacity-100" />

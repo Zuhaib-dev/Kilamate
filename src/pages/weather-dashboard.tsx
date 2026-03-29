@@ -23,6 +23,7 @@ import { SunTracker } from "../components/sun-tracker";
 import { DailyOutlook } from "../components/daily-outlook";
 import { ClothingAdvisor } from "../components/clothing-advisor";
 import { ActivityPlanner } from "../components/activity-planner";
+import { RegionalOverview } from "../components/regional-overview";
 import {
   SEO,
   webApplicationSchema,
@@ -242,6 +243,9 @@ export function WeatherDashboard() {
                 <WeatherForecast data={forecastQuery.data} />
               ) : null}
             </div>
+
+            {/* Regional Overview - J&K Highlights */}
+            <RegionalOverview />
 
             {airPollutionQuery.isLoading ? (
               <Skeleton className="h-[200px] w-full rounded-xl" />
