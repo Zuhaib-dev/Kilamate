@@ -18,6 +18,8 @@ import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favorite-button";
 import { ActivityPlanner } from "../components/activity-planner";
 import { ClothingAdvisor } from "../components/clothing-advisor";
+import { MoonPhase } from "../components/moon-phase";
+import { ComfortLevel } from "../components/comfort-level";
 import { SEO, createCitySchema } from "@/components/seo";
 
 export function CityPage() {
@@ -101,20 +103,24 @@ export function CityPage() {
             <WeatherStats data={weatherQuery.data} />
           </div>
 
-          {/* ROW 3: SUN TRACKER & DAILY OUTLOOK (2 CARDS) */}
+          {/* ROW 3: SUN TRACKER & MOON PHASE (2 CARDS) */}
           <SunTracker data={weatherQuery.data} />
-          <DailyOutlook
-            weather={weatherQuery.data}
-            forecast={forecastQuery.data}
-            airPollution={airPollutionQuery.data}
-          />
+          <MoonPhase />
 
           {/* ROW 4: WEATHER DETAILS (FULL WIDTH) */}
           <div className="col-span-full">
             <WeatherDetails data={weatherQuery.data} />
           </div>
 
-          {/* ROW 5: ADVISORS (2 CARDS) */}
+          {/* ROW 5: DAILY OUTLOOK & COMFORT LEVEL (2 CARDS) */}
+          <DailyOutlook
+            weather={weatherQuery.data}
+            forecast={forecastQuery.data}
+            airPollution={airPollutionQuery.data}
+          />
+          <ComfortLevel data={weatherQuery.data} />
+
+          {/* ROW 6: ADVISORS (2 CARDS) */}
           <ClothingAdvisor data={weatherQuery.data} />
           <ActivityPlanner data={forecastQuery.data} />
 

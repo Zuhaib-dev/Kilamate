@@ -25,6 +25,8 @@ import { ClothingAdvisor } from "../components/clothing-advisor";
 import { ActivityPlanner } from "../components/activity-planner";
 import { RegionalOverview } from "../components/regional-overview";
 import { TravelAdvisory } from "../components/travel-advisory";
+import { MoonPhase } from "../components/moon-phase";
+import { ComfortLevel } from "../components/comfort-level";
 import {
   SEO,
   webApplicationSchema,
@@ -200,13 +202,24 @@ export function WeatherDashboard() {
               </div>
             )}
 
-            {/* ROW 3: SUN TRACKER & DAILY OUTLOOK (2 CARDS) */}
+            {/* ROW 3: SUN TRACKER & MOON PHASE (2 CARDS) */}
             {weatherQuery.isLoading ? (
               <Skeleton className="h-[350px] w-full rounded-xl" />
             ) : weatherQuery.data ? (
               <SunTracker data={weatherQuery.data} />
             ) : null}
 
+            {/* MOON PHASE TRACKER */}
+            <MoonPhase />
+
+            {/* ROW 4: WEATHER DETAILS (FULL WIDTH) */}
+            {weatherQuery.data && (
+              <div className="col-span-full">
+                <WeatherDetails data={weatherQuery.data} />
+              </div>
+            )}
+
+            {/* ROW 5: DAILY OUTLOOK & COMFORT LEVEL (2 CARDS) */}
             {weatherQuery.isLoading ? (
               <Skeleton className="h-[350px] w-full rounded-xl" />
             ) : weatherQuery.data ? (
@@ -217,11 +230,9 @@ export function WeatherDashboard() {
               />
             ) : null}
 
-            {/* ROW 4: WEATHER DETAILS (FULL WIDTH) */}
+            {/* COMFORT LEVEL (DEW POINT GAUGE) */}
             {weatherQuery.data && (
-              <div className="col-span-full">
-                <WeatherDetails data={weatherQuery.data} />
-              </div>
+              <ComfortLevel data={weatherQuery.data} />
             )}
 
             {/* ROW 5: ADVISORS (2 CARDS) */}
