@@ -71,11 +71,14 @@ export function CityPage() {
         </div>
 
         <div className="grid gap-6">
-          <CurrentWeather
-            data={weatherQuery.data}
-            forecast={forecastQuery.data ?? undefined}
-          />
-          <HourlyTemperature data={forecastQuery.data} />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <CurrentWeather
+              data={weatherQuery.data}
+              forecast={forecastQuery.data ?? undefined}
+            />
+            <HourlyTemperature data={forecastQuery.data} />
+          </div>
+
           <WeatherStats data={weatherQuery.data} />
 
           {/* Sun Tracker + Daily Outlook side by side */}
@@ -88,16 +91,16 @@ export function CityPage() {
             />
           </div>
 
-          {/* Clothing Advisor - Separate stable row */}
-          <ClothingAdvisor data={weatherQuery.data} />
+          {/* Premium Widgets - Clothing & Activities */}
+          <div className="grid gap-6 md:grid-cols-2">
+            <ClothingAdvisor data={weatherQuery.data} />
+            <ActivityPlanner data={forecastQuery.data} />
+          </div>
 
           <div className="grid gap-6 md:grid-cols-2">
             <WeatherDetails data={weatherQuery.data} />
             <WeatherForecast data={forecastQuery.data} />
           </div>
-
-          {/* Activity Planner - Separate stable row */}
-          <ActivityPlanner data={forecastQuery.data} />
 
           <AirPollution data={airPollutionQuery.data} />
         </div>

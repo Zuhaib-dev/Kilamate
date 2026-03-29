@@ -219,10 +219,15 @@ export function WeatherDashboard() {
               ) : null}
             </div>
 
-            {/* Clothing Advisor - Premium feature */}
-            {weatherQuery.data && (
-              <ClothingAdvisor data={weatherQuery.data} />
-            )}
+            {/* Premium Widgets Group */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {weatherQuery.data && (
+                <ClothingAdvisor data={weatherQuery.data} />
+              )}
+              {forecastQuery.data && (
+                <ActivityPlanner data={forecastQuery.data} />
+              )}
+            </div>
 
             <div className="grid gap-6 md:grid-cols-2">
               {weatherQuery.isLoading ? (
@@ -237,11 +242,6 @@ export function WeatherDashboard() {
                 <WeatherForecast data={forecastQuery.data} />
               ) : null}
             </div>
-
-            {/* Activity Planner - Premium feature */}
-            {forecastQuery.data && (
-              <ActivityPlanner data={forecastQuery.data} />
-            )}
 
             {airPollutionQuery.isLoading ? (
               <Skeleton className="h-[200px] w-full rounded-xl" />
