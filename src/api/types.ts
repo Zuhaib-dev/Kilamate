@@ -45,6 +45,17 @@ export interface WeatherData {
   name: string;
   /** Data timestamp (Unix UTC) */
   dt: number;
+  rain?: {
+    "1h"?: number;
+    "3h"?: number;
+  };
+  snow?: {
+    "1h"?: number;
+    "3h"?: number;
+  };
+  clouds: {
+    all: number;
+  };
 }
 
 export interface ForecastData {

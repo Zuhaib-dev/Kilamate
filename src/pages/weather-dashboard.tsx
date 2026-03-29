@@ -24,6 +24,7 @@ import { DailyOutlook } from "../components/daily-outlook";
 import { ClothingAdvisor } from "../components/clothing-advisor";
 import { ActivityPlanner } from "../components/activity-planner";
 import { RegionalOverview } from "../components/regional-overview";
+import { TravelAdvisory } from "../components/travel-advisory";
 import {
   SEO,
   webApplicationSchema,
@@ -249,6 +250,11 @@ export function WeatherDashboard() {
                 <AirPollution data={airPollutionQuery.data} />
               </div>
             )}
+
+            {/* ROW 9: TRAVEL ADVISORY (FULL WIDTH) - New Feature */}
+            <div className="col-span-full">
+              <TravelAdvisory />
+            </div>
           </div>
         )}
       </div>

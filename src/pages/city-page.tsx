@@ -13,6 +13,7 @@ import { AirPollution } from "../components/air-pollution";
 import { WeatherAlerts } from "../components/weather-alerts";
 import { FavoriteCities } from "../components/favorite-cities";
 import { RegionalOverview } from "../components/regional-overview";
+import { TravelAdvisory } from "../components/travel-advisory";
 import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favorite-button";
 import { ActivityPlanner } from "../components/activity-planner";
@@ -130,6 +131,11 @@ export function CityPage() {
           {/* ROW 8: AQI (FULL WIDTH) */}
           <div className="col-span-full">
             <AirPollution data={airPollutionQuery.data} />
+          </div>
+
+          {/* ROW 9: TRAVEL ADVISORY (FULL WIDTH) - New Feature */}
+          <div className="col-span-full">
+            <TravelAdvisory />
           </div>
         </div>
       </div>
