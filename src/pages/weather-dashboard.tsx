@@ -22,6 +22,7 @@ import { WeatherStats } from "../components/weather-stats";
 import { SunTracker } from "../components/sun-tracker";
 import { DailyOutlook } from "../components/daily-outlook";
 import { ClothingAdvisor } from "../components/clothing-advisor";
+import { ActivityPlanner } from "../components/activity-planner";
 import {
   SEO,
   webApplicationSchema,
@@ -218,7 +219,7 @@ export function WeatherDashboard() {
               ) : null}
             </div>
 
-            {/* Clothing Advisor - Separate stable row */}
+            {/* Clothing Advisor - Premium feature */}
             {weatherQuery.data && (
               <ClothingAdvisor data={weatherQuery.data} />
             )}
@@ -236,6 +237,11 @@ export function WeatherDashboard() {
                 <WeatherForecast data={forecastQuery.data} />
               ) : null}
             </div>
+
+            {/* Activity Planner - Premium feature */}
+            {forecastQuery.data && (
+              <ActivityPlanner data={forecastQuery.data} />
+            )}
 
             {airPollutionQuery.isLoading ? (
               <Skeleton className="h-[200px] w-full rounded-xl" />
