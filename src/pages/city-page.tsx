@@ -7,6 +7,8 @@ import { HourlyTemperature } from "../components/hourly-temperature";
 import { WeatherDetails } from "../components/weather-details";
 import { WeatherForecast } from "../components/weather-forecast";
 import { WeatherStats } from "../components/weather-stats";
+import { SunTracker } from "../components/sun-tracker";
+import { DailyOutlook } from "../components/daily-outlook";
 import { AirPollution } from "../components/air-pollution";
 import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favorite-button";
@@ -73,6 +75,17 @@ export function CityPage() {
           />
           <HourlyTemperature data={forecastQuery.data} />
           <WeatherStats data={weatherQuery.data} />
+
+          {/* Sun Tracker + Daily Outlook side by side */}
+          <div className="grid gap-6 md:grid-cols-2 items-start">
+            <SunTracker data={weatherQuery.data} />
+            <DailyOutlook
+              weather={weatherQuery.data}
+              forecast={forecastQuery.data}
+              airPollution={airPollutionQuery.data}
+            />
+          </div>
+
           <div className="grid gap-6 md:grid-cols-2 items-start">
             <WeatherDetails data={weatherQuery.data} />
             <WeatherForecast data={forecastQuery.data} />

@@ -17,6 +17,8 @@ import { FavoriteCities } from "@/components/favorite-cities";
 import { AirPollution } from "../components/air-pollution";
 import { WeatherAlerts } from "../components/weather-alerts";
 import { WeatherStats } from "../components/weather-stats";
+import { SunTracker } from "../components/sun-tracker";
+import { DailyOutlook } from "../components/daily-outlook";
 import {
   SEO,
   webApplicationSchema,
@@ -181,6 +183,26 @@ export function WeatherDashboard() {
             ) : weatherQuery.data ? (
               <WeatherStats data={weatherQuery.data} />
             ) : null}
+
+            <div className="grid gap-6 md:grid-cols-2 items-start">
+              {/* Sun Tracker */}
+              {weatherQuery.isLoading ? (
+                <Skeleton className="h-[320px] w-full rounded-xl" />
+              ) : weatherQuery.data ? (
+                <SunTracker data={weatherQuery.data} />
+              ) : null}
+
+              {/* Daily Outlook */}
+              {weatherQuery.isLoading ? (
+                <Skeleton className="h-[320px] w-full rounded-xl" />
+              ) : weatherQuery.data ? (
+                <DailyOutlook
+                  weather={weatherQuery.data}
+                  forecast={forecastQuery.data ?? null}
+                  airPollution={airPollutionQuery.data ?? null}
+                />
+              ) : null}
+            </div>
 
             <div className="grid gap-6 md:grid-cols-2 items-start">
               {weatherQuery.isLoading ? (
