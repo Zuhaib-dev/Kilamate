@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { ArrowDown, ArrowUp, Droplets, Wind } from "lucide-react";
+import { Droplets, Wind } from "lucide-react";
 import { format } from "date-fns";
 import { enUS, hi } from "date-fns/locale";
 import type { ForecastData } from "@/api/types";
@@ -29,59 +29,24 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
   const { temperatureUnit, windSpeedUnit, language } = usePreferences();
   const { t } = useTranslation();
 
-  // Determine the correct locale for date-fns
   const getDateLocale = () => {
     switch (language) {
-      case "hi":
-        return hi;
-      case "ur":
-        // ur locale isn't available in date-fns v4 by default, use enUS as fallback
-        return enUS;
-      default:
-        return enUS;
+      case "hi": return hi;
+      case "ur": return enUS;
+      default: return enUS;
     }
   };
   const currentLocale = getDateLocale();
 
-  // Helper function to format Urdu days manually if language is Urdu
   const formatUrduDate = (date: Date) => {
-    // Simple manual translation for Urdu days to provide localized feel
-    const urduDays: Record<string, string> = {
-      Mon: "پیر",
-      Tue: "منگل",
-      Wed: "بدھ",
-      Thu: "جمعرات",
-      Fri: "جمعہ",
-      Sat: "ہفتہ",
-      Sun: "اتوار",
-    };
-
-    const urduMonths: Record<string, string> = {
-      Jan: "جنوری",
-      Feb: "فروری",
-      Mar: "مارچ",
-      Apr: "اپریل",
-      May: "مئی",
-      Jun: "جون",
-      Jul: "جولائی",
-      Aug: "اگست",
-      Sep: "ستمبر",
-      Oct: "اکتوبر",
-      Nov: "نومبر",
-      Dec: "دسمبر",
-    };
-
+    const urduDays: Record<string, string> = { Mon: "پیر", Tue: "منگل", Wed: "بدھ", Thu: "جمعرات", Fri: "جمعہ", Sat: "ہفتہ", Sun: "اتوار" };
     const day = format(date, "EEE", { locale: enUS });
-    const month = format(date, "MMM", { locale: enUS });
-    const dayOfMonth = format(date, "d", { locale: enUS });
-
-    return `${urduDays[day] || day}, ${urduMonths[month] || month} ${dayOfMonth}`;
+    return urduDays[day] || day;
   };
 
   const dailyForecasts = data.list.reduce(
     (acc, forecast) => {
       const dateKey = format(new Date(forecast.dt * 1000), "yyyy-MM-dd");
-
       if (!acc[dateKey]) {
         acc[dateKey] = {
           temp_min: forecast.main.temp_min,
@@ -92,24 +57,23 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
           date: forecast.dt,
         };
       } else {
-        acc[dateKey].temp_min = Math.min(
-          acc[dateKey].temp_min,
-          forecast.main.temp_min,
-        );
-        acc[dateKey].temp_max = Math.max(
-          acc[dateKey].temp_max,
-          forecast.main.temp_max,
-        );
+        acc[dateKey].temp_min = Math.min(acc[dateKey].temp_min, forecast.main.temp_min);
+        acc[dateKey].temp_max = Math.max(acc[dateKey].temp_max, forecast.main.temp_max);
       }
-
       return acc;
     },
     {} as Record<string, DailyForecast>,
   );
 
   const nextDays = Object.values(dailyForecasts).slice(1, 6);
-
   const formatTemp = (temp: number) => formatTemperature(temp, temperatureUnit);
+
+  // Compute week-wide range for proportional range bars
+  const weekMin = Math.min(...nextDays.map((d) => d.temp_min));
+  const weekMax = Math.max(...nextDays.map((d) => d.temp_max));
+  const weekRange = weekMax - weekMin || 1;
+
+  const avgWind = nextDays.reduce((s, d) => s + d.wind, 0) / nextDays.length;
 
   return (
     <Card>
@@ -118,57 +82,65 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
       </CardHeader>
 
       <CardContent>
-        <div className="space-y-4">
-          {nextDays.map((day) => (
-            <div
-              key={day.date}
-              className="
-                grid grid-cols-1 gap-3
-                rounded-lg border p-4
-                sm:grid-cols-3 sm:items-center
-              "
-            >
-              {/* Day + Description */}
-              <div className="min-w-0 space-y-1">
-                <p className="font-medium truncate text-base">
-                  {language === "ur"
-                    ? formatUrduDate(new Date(day.date * 1000))
-                    : format(new Date(day.date * 1000), "EEE, d MMM", {
-                        locale: currentLocale,
-                      })}
-                </p>
-                <p className="text-sm text-muted-foreground capitalize line-clamp-2">
-                  {day.weather.description}
-                </p>
-              </div>
+        <div className="space-y-0">
+          {nextDays.map((day) => {
+            const barLeft = ((day.temp_min - weekMin) / weekRange) * 100;
+            const barWidth = Math.max(((day.temp_max - day.temp_min) / weekRange) * 100, 4);
 
-              {/* Temperatures */}
-              <div className="flex items-center gap-4 sm:justify-center">
-                <span className="flex items-center gap-1 text-blue-500">
-                  <ArrowDown className="h-4 w-4" />
+            return (
+              <div
+                key={day.date}
+                className="grid items-center gap-x-2 py-2.5 border-b last:border-b-0"
+                style={{ gridTemplateColumns: "36px 1fr 1fr 48px 48px" }}
+              >
+                {/* Weather icon */}
+                <img
+                  src={`https://openweathermap.org/img/wn/${day.weather.icon}.png`}
+                  alt={day.weather.description}
+                  width={32}
+                  height={32}
+                  className="flex-shrink-0"
+                />
+
+                {/* Day name + humidity */}
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold leading-tight">
+                    {language === "ur"
+                      ? formatUrduDate(new Date(day.date * 1000))
+                      : format(new Date(day.date * 1000), "EEE", { locale: currentLocale })}
+                  </p>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <Droplets className="h-3 w-3 text-blue-500 flex-shrink-0" />
+                    <span className="text-xs text-muted-foreground">{day.humidity}%</span>
+                  </div>
+                </div>
+
+                {/* Temperature range bar */}
+                <div className="relative h-1.5 rounded-full bg-muted overflow-hidden mx-1">
+                  <div
+                    className="absolute h-full rounded-full bg-gradient-to-r from-blue-400 to-orange-400"
+                    style={{ left: `${barLeft}%`, width: `${barWidth}%` }}
+                  />
+                </div>
+
+                {/* Min temp */}
+                <span className="text-sm text-muted-foreground tabular-nums text-right">
                   {formatTemp(day.temp_min)}
                 </span>
-                <span className="flex items-center gap-1 text-red-500">
-                  <ArrowUp className="h-4 w-4" />
+
+                {/* Max temp */}
+                <span className="text-sm font-semibold tabular-nums text-right">
                   {formatTemp(day.temp_max)}
                 </span>
               </div>
+            );
+          })}
+        </div>
 
-              {/* Wind & Humidity */}
-              <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-                <span className="flex items-center gap-1">
-                  <Droplets className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm">{day.humidity}%</span>
-                </span>
-                <span className="flex items-center gap-1">
-                  <Wind className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm">
-                    {formatWindSpeed(day.wind, windSpeedUnit)}
-                  </span>
-                </span>
-              </div>
-            </div>
-          ))}
+        {/* Avg wind at the bottom */}
+        <div className="flex items-center gap-1.5 mt-3 pt-2.5 border-t text-xs text-muted-foreground">
+          <Wind className="h-3.5 w-3.5" />
+          <span>Avg wind this week: <span className="font-medium text-foreground">{formatWindSpeed(avgWind, windSpeedUnit)}</span></span>
         </div>
       </CardContent>
     </Card>

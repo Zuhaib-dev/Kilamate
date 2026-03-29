@@ -9,48 +9,59 @@ interface WeatherStatsProps {
 
 export function WeatherStats({ data }: WeatherStatsProps) {
     const { t } = useTranslation();
-    const stats = [
+    const stats: {
+        title: string;
+        primary: string;
+        unit?: string;
+        icon: typeof Thermometer;
+        color: string;
+        iconBg: string;
+    }[] = [
         {
             title: t('weather.feelsLike'),
-            value: `${Math.round(data.main.feels_like)}°`,
+            primary: `${Math.round(data.main.feels_like)}`,
+            unit: "°",
             icon: Thermometer,
             color: "text-orange-500",
-            description: t('weather.feelsLike'),
+            iconBg: "bg-orange-500/10",
         },
         {
             title: t('weather.humidity'),
-            value: `${data.main.humidity}%`,
+            primary: `${data.main.humidity}`,
+            unit: "%",
             icon: Droplets,
             color: "text-blue-500",
-            description: t('weather.humidity'),
+            iconBg: "bg-blue-500/10",
         },
         {
             title: t('weather.pressure'),
-            value: `${data.main.pressure} hPa`,
+            primary: `${data.main.pressure}`,
+            unit: " hPa",
             icon: Gauge,
             color: "text-purple-500",
-            description: t('weather.pressure'),
+            iconBg: "bg-purple-500/10",
         },
         {
             title: t('weather.windSpeed'),
-            value: `${data.wind.speed} m/s`,
+            primary: `${data.wind.speed}`,
+            unit: " m/s",
             icon: Wind,
             color: "text-cyan-500",
-            description: t('weather.windSpeed'),
+            iconBg: "bg-cyan-500/10",
         },
         {
             title: t('weather.sunrise'),
-            value: new Date(data.sys.sunrise * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            primary: new Date(data.sys.sunrise * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
             icon: Sunrise,
             color: "text-yellow-500",
-            description: t('weather.sunrise'),
+            iconBg: "bg-yellow-500/10",
         },
         {
             title: t('weather.sunset'),
-            value: new Date(data.sys.sunset * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            primary: new Date(data.sys.sunset * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
             icon: Sunset,
             color: "text-orange-600",
-            description: t('weather.sunset'),
+            iconBg: "bg-orange-600/10",
         },
     ];
 
@@ -64,19 +75,25 @@ export function WeatherStats({ data }: WeatherStatsProps) {
                     {stats.map((stat) => (
                         <div
                             key={stat.title}
-                            className="group relative overflow-hidden rounded-lg border p-4 transition-all hover:shadow-md hover:scale-105"
+                            className="group relative overflow-hidden rounded-lg border p-4 transition-all hover:shadow-md hover:scale-[1.03]"
                         >
                             <div className="flex items-start justify-between">
-                                <div className="space-y-1">
-                                    <p className="text-sm font-medium text-muted-foreground">
+                                <div className="space-y-1 min-w-0">
+                                    <p className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
                                         {stat.title}
                                     </p>
-                                    <p className="text-2xl font-bold">{stat.value}</p>
-                                    <p className="text-xs text-muted-foreground">
-                                        {stat.description}
+                                    <p className="text-2xl font-bold leading-none tracking-tight">
+                                        {stat.primary}
+                                        {stat.unit && (
+                                            <span className="text-base font-medium text-muted-foreground ml-0.5">
+                                                {stat.unit}
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
-                                <stat.icon className={`h-8 w-8 ${stat.color} opacity-80`} />
+                                <div className={`flex items-center justify-center rounded-lg p-2 ${stat.iconBg}`}>
+                                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                                </div>
                             </div>
                             <div className="absolute inset-0 -z-10 bg-gradient-to-br from-transparent to-muted opacity-0 transition-opacity group-hover:opacity-100" />
                         </div>

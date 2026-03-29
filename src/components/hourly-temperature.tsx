@@ -75,50 +75,56 @@ export const HourlyTemperature = memo(function HourlyTemperature({
 
   return (
     <Card className="flex-1">
-      <CardHeader>
-        <CardTitle>{t("weather.hourly")}</CardTitle>
+      <CardHeader className="pb-0">
+        <div className="flex items-center justify-between">
+          <CardTitle>{t("weather.hourly")}</CardTitle>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-4 h-0.5 bg-blue-600 rounded-full" />
+              {t("weather.temperature")}
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-4 h-0.5 bg-slate-400 rounded-full" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #94a3b8 0, #94a3b8 4px, transparent 4px, transparent 9px)' }} />
+              {t("weather.feelsLike")}
+            </span>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[200px] w-full">
+        <div className="h-[200px] w-full pt-2">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
+            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
               <XAxis
                 dataKey="time"
                 stroke="#888888"
-                fontSize={12}
+                fontSize={11}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
                 stroke="#888888"
-                fontSize={12}
+                fontSize={11}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => `${value}°`}
               />
               <Tooltip
-                content={({ active, payload }) => {
+                cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1, strokeDasharray: "4 4" }}
+                content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
                     return (
-                      <div className="rounded-lg border bg-background p-2 shadow-sm">
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="flex flex-col">
-                            <span className="text-[0.70rem] uppercase text-muted-foreground">
-                              {t("weather.temperature")}
-                            </span>
-                            <span className="font-bold">
-                              {payload[0].value}
-                              {unitSymbol}
-                            </span>
+                      <div className="rounded-lg border bg-background p-2.5 shadow-md">
+                        <p className="text-xs text-muted-foreground mb-1.5 font-medium">{label}</p>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-block w-3 h-0.5 bg-blue-600 rounded-full" />
+                            <span className="text-xs text-muted-foreground">{t("weather.temperature")}</span>
+                            <span className="text-sm font-bold text-blue-600 ml-auto">{payload[0]?.value}{unitSymbol}</span>
                           </div>
-                          <div className="flex flex-col">
-                            <span className="text-[0.70rem] uppercase text-muted-foreground">
-                              {t("weather.feelsLike")}
-                            </span>
-                            <span className="font-bold">
-                              {payload[1].value}
-                              {unitSymbol}
-                            </span>
+                          <div className="flex items-center gap-2">
+                            <span className="inline-block w-3 h-0.5 bg-slate-400 rounded-full" />
+                            <span className="text-xs text-muted-foreground">{t("weather.feelsLike")}</span>
+                            <span className="text-sm font-bold text-slate-500 ml-auto">{payload[1]?.value}{unitSymbol}</span>
                           </div>
                         </div>
                       </div>
@@ -131,16 +137,18 @@ export const HourlyTemperature = memo(function HourlyTemperature({
                 type="monotone"
                 dataKey="temp"
                 stroke="#2563eb"
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
+                activeDot={{ r: 5, strokeWidth: 0, fill: "#2563eb" }}
               />
               <Line
                 type="monotone"
                 dataKey="feels_like"
-                stroke="#64748b"
-                strokeWidth={2}
+                stroke="#94a3b8"
+                strokeWidth={1.5}
                 dot={false}
                 strokeDasharray="5 5"
+                activeDot={{ r: 4, strokeWidth: 0, fill: "#94a3b8" }}
               />
             </LineChart>
           </ResponsiveContainer>
