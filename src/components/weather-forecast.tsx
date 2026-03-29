@@ -17,6 +17,7 @@ interface DailyForecast {
   temp_max: number;
   humidity: number;
   wind: number;
+  pop: number;        // max probability of precipitation for the day (0–1)
   weather: {
     id: number;
     main: string;
@@ -55,10 +56,13 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
           wind: forecast.wind.speed,
           weather: forecast.weather[0],
           date: forecast.dt,
+          pop: forecast.pop ?? 0,
         };
       } else {
         acc[dateKey].temp_min = Math.min(acc[dateKey].temp_min, forecast.main.temp_min);
         acc[dateKey].temp_max = Math.max(acc[dateKey].temp_max, forecast.main.temp_max);
+        // Keep the highest precipitation chance across all intervals of the day
+        acc[dateKey].pop = Math.max(acc[dateKey].pop, forecast.pop ?? 0);
       }
       return acc;
     },
@@ -74,6 +78,17 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
   const weekRange = weekMax - weekMin || 1;
 
   const avgWind = nextDays.reduce((s, d) => s + d.wind, 0) / nextDays.length;
+
+  /** Return a human-readable rain chance label + colour class */
+  const getPrecipInfo = (pop: number): { label: string; color: string; show: boolean } => {
+    const pct = Math.round(pop * 100);
+    if (pop < 0.05) return { label: "Clear", color: "text-muted-foreground", show: false };
+    if (pop < 0.2)  return { label: `Light showers possible · ${pct}%`, color: "text-sky-400",  show: true };
+    if (pop < 0.4)  return { label: `Chance of rain · ${pct}%`,          color: "text-sky-500",  show: true };
+    if (pop < 0.6)  return { label: `Likely rain · ${pct}%`,              color: "text-blue-500", show: true };
+    if (pop < 0.8)  return { label: `Rain expected · ${pct}%`,            color: "text-blue-600", show: true };
+    return             { label: `Heavy rain · ${pct}%`,               color: "text-blue-700", show: true };
+  };
 
   return (
     <Card>
@@ -102,17 +117,28 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
                   className="flex-shrink-0"
                 />
 
-                {/* Day name + humidity */}
+                {/* Day name + precip info */}
                 <div className="min-w-0">
                   <p className="text-sm font-semibold leading-tight">
                     {language === "ur"
                       ? formatUrduDate(new Date(day.date * 1000))
                       : format(new Date(day.date * 1000), "EEE", { locale: currentLocale })}
                   </p>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <Droplets className="h-3 w-3 text-blue-500 flex-shrink-0" />
-                    <span className="text-xs text-muted-foreground">{day.humidity}%</span>
-                  </div>
+                  {(() => {
+                    const precip = getPrecipInfo(day.pop);
+                    return precip.show ? (
+                      <div className={`flex items-center gap-1 mt-0.5 ${precip.color}`}>
+                        <Droplets className="h-3 w-3 flex-shrink-0" />
+                        <span className="text-[10px] font-medium leading-tight truncate">
+                          {precip.label}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 mt-0.5 text-muted-foreground">
+                        <span className="text-[10px]">{day.weather.description}</span>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Temperature range bar */}

@@ -140,6 +140,7 @@ export function WeatherDashboard() {
                 <CurrentWeather
                   data={weatherQuery.data}
                   locationName={locationName}
+                  forecast={forecastQuery.data ?? undefined}
                 />
               ) : null}
 

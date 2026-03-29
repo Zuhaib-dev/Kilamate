@@ -49,6 +49,8 @@ export interface ForecastData {
     main: WeatherData["main"];
     weather: WeatherData["weather"];
     wind: WeatherData["wind"];
+    /** Probability of precipitation (0–1) */
+    pop?: number;
     dt_txt: string;
   }>;
   city: {
