@@ -163,23 +163,26 @@ function AppContent() {
 
 import { WeatherThemeProvider } from "./context/weather-theme-provider";
 
+import { HelmetProvider } from "react-helmet-async";
+
 function App() {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        {/* ADD THE FUTURE FLAGS HERE 👇 */}
-        <BrowserRouter
-          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-        >
-          <ThemeProvider defaultTheme="dark">
-            <WeatherThemeProvider>
-              <AppContent />
-            </WeatherThemeProvider>
-          </ThemeProvider>
-        </BrowserRouter>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <HelmetProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          >
+            <ThemeProvider defaultTheme="dark">
+              <WeatherThemeProvider>
+                <AppContent />
+              </WeatherThemeProvider>
+            </ThemeProvider>
+          </BrowserRouter>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </HelmetProvider>
   );
 }
 
