@@ -1,16 +1,25 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { 
-  Shirt, 
-  Umbrella, 
-  Wind, 
-  Sun, 
-  ShieldCheck,
-  Zap
-} from "lucide-react";
+  PiThermometerFill, 
+  PiTShirtFill, 
+  PiHoodieFill, 
+  PiSunglassesFill, 
+  PiUmbrellaFill, 
+  PiSprayBottleFill,
+  PiWindFill
+} from "react-icons/pi";
+import { 
+  GiWinterGloves, 
+  GiShorts, 
+  GiMonclerJacket,
+  GiTrousers
+} from "react-icons/gi";
+import { TbJacket } from "react-icons/tb";
 import { useTranslation } from "react-i18next";
 import type { WeatherData } from "@/api/types";
 import { memo } from "react";
+
 
 interface ClothingAdvisorProps {
   data: WeatherData;
@@ -51,39 +60,39 @@ export const ClothingAdvisor = memo(function ClothingAdvisor({ data }: ClothingA
 
   // 1. Layering Based on Temperature
   if (temp < 5) {
-    items.push({ icon: Shirt, labelKey: "clothing.items.heavyCoat", color: "text-blue-500" });
-    items.push({ icon: Zap, labelKey: "clothing.items.thermal", color: "text-cyan-500" });
-    items.push({ icon: ShieldCheck, labelKey: "clothing.items.gloves", color: "text-slate-400" });
+    items.push({ icon: GiMonclerJacket, labelKey: "clothing.items.heavyCoat", color: "text-blue-500" });
+    items.push({ icon: PiThermometerFill, labelKey: "clothing.items.thermal", color: "text-cyan-500" });
+    items.push({ icon: GiWinterGloves, labelKey: "clothing.items.gloves", color: "text-slate-400" });
   } else if (temp < 15) {
-    items.push({ icon: Shirt, labelKey: "clothing.items.jacket", color: "text-sky-500" });
-    items.push({ icon: Shirt, labelKey: "clothing.items.pants", color: "text-slate-500" });
+    items.push({ icon: TbJacket, labelKey: "clothing.items.jacket", color: "text-sky-500" });
+    items.push({ icon: GiTrousers, labelKey: "clothing.items.pants", color: "text-slate-500" });
   } else if (temp < 22) {
-    items.push({ icon: Shirt, labelKey: "clothing.items.hoodie", color: "text-emerald-500" });
+    items.push({ icon: PiHoodieFill, labelKey: "clothing.items.hoodie", color: "text-emerald-500" });
   } else if (temp < 30) {
-    items.push({ icon: Shirt, labelKey: "clothing.items.tshirt", color: "text-orange-400" });
+    items.push({ icon: PiTShirtFill, labelKey: "clothing.items.tshirt", color: "text-orange-400" });
   } else {
-    items.push({ icon: Shirt, labelKey: "clothing.items.shorts", color: "text-red-400" });
+    items.push({ icon: GiShorts, labelKey: "clothing.items.shorts", color: "text-red-400" });
   }
 
   // 2. Weather Condition Add-ons
   if (conditionId < 600 && conditionId >= 200) {
-    items.push({ icon: Umbrella, labelKey: "clothing.items.umbrella", color: "text-indigo-500" });
+    items.push({ icon: PiUmbrellaFill, labelKey: "clothing.items.umbrella", color: "text-indigo-500" });
   }
 
   if (windMs > 8) {
-    items.push({ icon: Wind, labelKey: "clothing.items.windbreaker", color: "text-teal-500" });
+    items.push({ icon: PiWindFill, labelKey: "clothing.items.windbreaker", color: "text-teal-500" });
   }
 
   if (uvi > 6) {
-    items.push({ icon: Sun, labelKey: "clothing.items.sunglasses", color: "text-yellow-500" });
-    items.push({ icon: ShieldCheck, labelKey: "clothing.items.sunscreen", color: "text-orange-500" });
+    items.push({ icon: PiSunglassesFill, labelKey: "clothing.items.sunglasses", color: "text-yellow-500" });
+    items.push({ icon: PiSprayBottleFill, labelKey: "clothing.items.sunscreen", color: "text-orange-500" });
   }
 
   return (
     <Card className="h-full flex flex-col overflow-hidden">
       <CardHeader className="pb-3 border-b bg-muted/20">
         <CardTitle className="flex items-center gap-2 text-base font-bold">
-          <Shirt className="h-4 w-4 text-primary" />
+          <PiTShirtFill className="h-4 w-4 text-primary" />
           {t("clothing.title")}
         </CardTitle>
       </CardHeader>
