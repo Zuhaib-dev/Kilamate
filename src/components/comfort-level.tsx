@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ThermometerSun, Droplets } from "lucide-react";
+import { WeatherData } from "@/api/types";
 import { memo } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { usePreferences } from "@/hooks/use-preferences";
