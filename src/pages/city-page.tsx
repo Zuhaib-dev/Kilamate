@@ -130,6 +130,14 @@ export function CityPage() {
             <WeatherForecast data={forecastQuery.data} />
           </div>
 
+          {/* ROW 7: AGRICULTURE ADVISOR (FULL WIDTH) */}
+          <div className="col-span-full">
+            <AgricultureAdvisor 
+              weather={weatherQuery.data} 
+              forecast={forecastQuery.data} 
+            />
+          </div>
+
           {/* ROW 7: REGIONAL OVERVIEW (FULL WIDTH) - Added for consistency */}
           <div className="col-span-full">
             <RegionalOverview />
@@ -143,14 +151,6 @@ export function CityPage() {
           {/* ROW 9: TRAVEL ADVISORY (FULL WIDTH) - New Feature */}
           <div className="col-span-full">
             <TravelAdvisory />
-          </div>
-
-          {/* ROW 10: AGRICULTURE ADVISOR (FULL WIDTH) - New Feature */}
-          <div className="col-span-full">
-            <AgricultureAdvisor 
-              weather={weatherQuery.data} 
-              forecast={forecastQuery.data} 
-            />
           </div>
         </div>
       </div>

@@ -251,6 +251,16 @@ export function WeatherDashboard() {
               </div>
             )}
 
+            {/* ROW 7: AGRICULTURE ADVISOR (FULL WIDTH) */}
+            {weatherQuery.data && (
+              <div className="col-span-full">
+                <AgricultureAdvisor 
+                  weather={weatherQuery.data} 
+                  forecast={forecastQuery.data ?? undefined} 
+                />
+              </div>
+            )}
+
             {/* ROW 7: REGIONAL OVERVIEW (FULL WIDTH) */}
             <div className="col-span-full">
               <RegionalOverview />
@@ -267,16 +277,6 @@ export function WeatherDashboard() {
             <div className="col-span-full">
               <TravelAdvisory />
             </div>
-
-            {/* ROW 10: AGRICULTURE ADVISOR (FULL WIDTH) - New Feature */}
-            {weatherQuery.data && (
-              <div className="col-span-full">
-                <AgricultureAdvisor 
-                  weather={weatherQuery.data} 
-                  forecast={forecastQuery.data ?? undefined} 
-                />
-              </div>
-            )}
           </div>
         )}
       </div>
