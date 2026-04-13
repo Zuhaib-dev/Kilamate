@@ -3,6 +3,8 @@ import { ThermometerSun, Droplets } from "lucide-react";
 import { WeatherData } from "@/api/types";
 import { memo } from "react";
 import { Skeleton } from "./ui/skeleton";
+import { usePreferences } from "@/hooks/use-preferences";
+import { formatTemperature } from "@/lib/units";
 
 interface ComfortLevelProps {
   data: WeatherData;
@@ -22,6 +24,8 @@ export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
   if (isLoading) {
     return <Skeleton className="h-full w-full rounded-2xl" />;
   }
+
+  const { temperatureUnit } = usePreferences();
 
   const { temp, humidity } = data.main;
   
@@ -47,7 +51,7 @@ export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
           <div className="flex justify-between items-end">
              <div className="space-y-1">
                 <p className="text-3xl font-black tracking-tighter leading-none italic">
-                    {dewPoint}°
+                    {formatTemperature(dewPoint, temperatureUnit)}
                 </p>
                 <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em]">
                     Dew Point

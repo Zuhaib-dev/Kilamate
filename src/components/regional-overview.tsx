@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useWeatherQuery } from "@/hooks/use-weather";
 import { MapPin, Wind, Cloud } from "lucide-react";
-import { formatTemperature } from "@/lib/units";
+import { formatTemperature, formatWindSpeed } from "@/lib/units";
 import { usePreferences } from "@/hooks/use-preferences";
 import { Skeleton } from "./ui/skeleton";
 import { Link } from "react-router-dom";
@@ -17,7 +17,7 @@ const REGIONAL_CITIES = [
 
 const CityWeatherCard = memo(({ cityName, lat, lon }: { cityName: string; lat: number; lon: number }) => {
   const { data, isLoading } = useWeatherQuery({ lat, lon });
-  const { temperatureUnit } = usePreferences();
+  const { temperatureUnit, windSpeedUnit } = usePreferences();
 
   if (isLoading) {
     return <Skeleton className="h-24 w-full rounded-xl" />;
@@ -48,7 +48,7 @@ const CityWeatherCard = memo(({ cityName, lat, lon }: { cityName: string; lat: n
           <div className="flex flex-col items-end gap-1 text-[10px] text-muted-foreground font-black uppercase tracking-tighter">
             <div className="flex items-center gap-1">
               <Wind className="h-3 w-3 opacity-60" />
-              <span>{Math.round(data.wind.speed)}m/s</span>
+              <span>{formatWindSpeed(data.wind.speed, windSpeedUnit)}</span>
             </div>
           </div>
         </div>

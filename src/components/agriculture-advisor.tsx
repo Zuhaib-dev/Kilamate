@@ -11,6 +11,8 @@ import {
   AlertTriangle
 } from "lucide-react";
 import type { WeatherData, ForecastData } from "@/api/types";
+import { usePreferences } from "@/hooks/use-preferences";
+import { formatWindSpeed } from "@/lib/units";
 
 interface AgricultureAdvisorProps {
   weather: WeatherData;
@@ -18,6 +20,8 @@ interface AgricultureAdvisorProps {
 }
 
 export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProps) {
+  const { windSpeedUnit } = usePreferences();
+  
   const isKashmir = useMemo(() => {
     // Check if the current location is in Kashmir (rough check by name or coordinates)
     const name = weather.name.toLowerCase();
@@ -68,7 +72,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
       sprayStatus = "Windy";
       sprayColor = "text-yellow-500 bg-yellow-500/10 border-yellow-500/20";
       sprayIcon = Wind;
-      sprayMessage = "High winds detected. Spraying might lead to drift. Wait for calmer winds (under 10 km/h).";
+      sprayMessage = `High winds detected. Spraying might lead to drift. Wait for calmer winds (under ${formatWindSpeed(2.78, windSpeedUnit)}).`;
     }
 
     // 2. Crop Specific Advice (Tailored for Kashmir)
@@ -92,7 +96,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
       spray: { status: sprayStatus, color: sprayColor, icon: sprayIcon, message: sprayMessage },
       crops: { apple: appleAdvice, apricot: apricotAdvice }
     };
-  }, [weather, forecast]);
+  }, [weather, forecast, windSpeedUnit]);
 
   return (
     <Card className="h-full overflow-hidden relative">

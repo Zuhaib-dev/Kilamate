@@ -8,6 +8,8 @@ import { useFavorites } from "@/hooks/use-favorite";
 import { calculateAQI, getAQIDescription } from "@/lib/aqi-utils";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { usePreferences } from "@/hooks/use-preferences";
+import { formatTemperature } from "@/lib/units";
 
 interface FavoriteCityTabletProps {
   id: string;
@@ -26,6 +28,7 @@ function FavoriteCityTablet({
 }: FavoriteCityTabletProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { temperatureUnit } = usePreferences();
   const { data: weather, isLoading } = useWeatherQuery({ lat, lon });
   const { data: airPollution } = useAirPollutionQuery({ lat, lon });
 
@@ -93,20 +96,20 @@ function FavoriteCityTablet({
 
           <div className="flex flex-col items-end gap-0.5">
             <p className="text-2xl font-black tabular-nums">
-              {Math.round(weather.main.temp)}°
+              {formatTemperature(weather.main.temp, temperatureUnit)}
             </p>
             <div className="flex items-center gap-2 text-[10px] font-bold">
               <span className="flex items-center text-blue-500">
                 <ArrowDown className="h-2.5 w-2.5 mr-0.5" />
-                {Math.round(weather.main.temp_min)}°
+                {formatTemperature(weather.main.temp_min, temperatureUnit)}
               </span>
               <span className="flex items-center text-orange-500">
                 <ArrowUp className="h-2.5 w-2.5 mr-0.5" />
-                {Math.round(weather.main.temp_max)}°
+                {formatTemperature(weather.main.temp_max, temperatureUnit)}
               </span>
             </div>
             <p className="text-[10px] text-muted-foreground font-medium">
-              {t("weather.feelsLike")}: {Math.round(weather.main.feels_like)}°
+              {t("weather.feelsLike")}: {formatTemperature(weather.main.feels_like, temperatureUnit)}
             </p>
           </div>
         </>
