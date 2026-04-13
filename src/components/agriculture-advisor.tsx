@@ -13,6 +13,7 @@ import {
 import type { WeatherData, ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatWindSpeed } from "@/lib/units";
+import { useTranslation } from "react-i18next";
 
 interface AgricultureAdvisorProps {
   weather: WeatherData;
@@ -21,6 +22,7 @@ interface AgricultureAdvisorProps {
 
 export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProps) {
   const { windSpeedUnit } = usePreferences();
+  const { t } = useTranslation();
   
   const isKashmir = useMemo(() => {
     // Check if the current location is in Kashmir (rough check by name or coordinates)
@@ -105,7 +107,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDEiLz4KPHBhdGggZD0iTTAgMGg4djhIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+')] opacity-20" />
         <CardTitle className="flex items-center gap-2 text-base font-bold relative z-10 text-emerald-600 dark:text-emerald-400">
           <Sprout className="h-4 w-4" />
-          {isKashmir ? "Kashmir Farming Insights" : "Orchard & Farming Advisor"}
+          {isKashmir ? t("agricultureAdvisor.titleKashmir") : t("agricultureAdvisor.titleGeneric")}
         </CardTitle>
       </CardHeader>
       
@@ -114,7 +116,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
         <div className="space-y-3">
           <div className="flex items-center gap-2 mb-1">
             <Bug className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Spraying Conditions</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">{t("agricultureAdvisor.spraying")}</h3>
           </div>
           
           <div className={`rounded-xl border p-4 ${insights.spray.color} shadow-sm transition-all duration-300`}>
@@ -138,7 +140,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
         <div className="space-y-4">
            <div className="flex items-center gap-2">
             <Leaf className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Crop Specific Advice</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">{t("agricultureAdvisor.cropAdvice")}</h3>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">

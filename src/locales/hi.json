@@ -249,5 +249,39 @@
             "carwash": "कार धोना",
             "gardening": "बागवानी"
         }
+    },
+    "comfortLevel": {
+        "title": "आराम स्तर",
+        "dewPoint": "ओसांक",
+        "labels": {
+            "dry": "शुष्क और कुरकुरा",
+            "veryPleasant": "बहुत सुखद",
+            "comfortable": "आरामदायक",
+            "humid": "उमस भरा",
+            "sticky": "चिपचिपा",
+            "oppressive": "दमनकारी"
+        },
+        "dry": "शुष्क",
+        "neutral": "तटस्थ",
+        "moist": "नम"
+    },
+    "moonPhase": {
+        "title": "चंद्रमा के चरण",
+        "illumination": "रोशनी"
+    },
+    "travelAdvisory": {
+        "title": "यात्रा परामर्श",
+        "driving": "ड्राइविंग की स्थिति",
+        "flight": "उड़ान की स्थिति"
+    },
+    "agricultureAdvisor": {
+        "titleKashmir": "कश्मीर कृषि अंतर्दृष्टि",
+        "titleGeneric": "बाग और कृषि सलाहकार",
+        "spraying": "छिड़काव की स्थिति",
+        "cropAdvice": "फसल विशिष्ट सलाह"
+    },
+    "regionalOverview": {
+        "title": "जम्मू-कश्मीर जिले",
+        "desc": "क्षेत्र भर में वास्तविक समय की मौसम की झलकियाँ"
     }
 }

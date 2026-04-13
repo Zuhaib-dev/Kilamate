@@ -1,26 +1,27 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ThermometerSun, Droplets } from "lucide-react";
-import { WeatherData } from "@/api/types";
 import { memo } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatTemperature } from "@/lib/units";
+import { useTranslation } from "react-i18next";
 
 interface ComfortLevelProps {
   data: WeatherData;
   isLoading?: boolean;
 }
 
-const getComfortStatus = (dewPoint: number) => {
-  if (dewPoint < 10) return { label: "Dry & Crisp", color: "text-sky-400", bg: "bg-sky-400/10", percent: 20 };
-  if (dewPoint < 15) return { label: "Very Pleasant", color: "text-emerald-400", bg: "bg-emerald-400/10", percent: 45 };
-  if (dewPoint < 18) return { label: "Comfortable", color: "text-emerald-500", bg: "bg-emerald-500/10", percent: 60 };
-  if (dewPoint < 20) return { label: "Humid", color: "text-amber-400", bg: "bg-amber-400/10", percent: 75 };
-  if (dewPoint < 22) return { label: "Sticky", color: "text-orange-500", bg: "bg-orange-500/10", percent: 85 };
-  return { label: "Oppressive", color: "text-destructive", bg: "bg-destructive/10", percent: 100 };
+const getComfortStatus = (dewPoint: number, t: (key: string) => string) => {
+  if (dewPoint < 10) return { label: t("comfortLevel.labels.dry"), color: "text-sky-400", bg: "bg-sky-400/10", percent: 20 };
+  if (dewPoint < 15) return { label: t("comfortLevel.labels.veryPleasant"), color: "text-emerald-400", bg: "bg-emerald-400/10", percent: 45 };
+  if (dewPoint < 18) return { label: t("comfortLevel.labels.comfortable"), color: "text-emerald-500", bg: "bg-emerald-500/10", percent: 60 };
+  if (dewPoint < 20) return { label: t("comfortLevel.labels.humid"), color: "text-amber-400", bg: "bg-amber-400/10", percent: 75 };
+  if (dewPoint < 22) return { label: t("comfortLevel.labels.sticky"), color: "text-orange-500", bg: "bg-orange-500/10", percent: 85 };
+  return { label: t("comfortLevel.labels.oppressive"), color: "text-destructive", bg: "bg-destructive/10", percent: 100 };
 };
 
 export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
+  const { t } = useTranslation();
   if (isLoading) {
     return <Skeleton className="h-full w-full rounded-2xl" />;
   }
@@ -31,7 +32,7 @@ export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
   
   // Dew point approximation: Td = T - ((100 - RH)/5)
   const dewPoint = Math.round(temp - ((100 - humidity) / 5));
-  const { label, color, bg, percent } = getComfortStatus(dewPoint);
+  const { label, color, bg, percent } = getComfortStatus(dewPoint, t);
 
   return (
     <Card className="relative overflow-hidden group rounded-2xl border-none bg-card/20 backdrop-blur-md hover:bg-card/40 transition-all border-white/5 h-full">
@@ -40,7 +41,7 @@ export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
           <div className="bg-primary/10 p-2 rounded-lg">
             <ThermometerSun className="h-5 w-5 text-primary" />
           </div>
-          <CardTitle className="text-sm font-bold tracking-tight uppercase">Comfort Level</CardTitle>
+          <CardTitle className="text-sm font-bold tracking-tight uppercase">{t("comfortLevel.title")}</CardTitle>
         </div>
         <div className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter ${bg} ${color}`}>
           {label}
@@ -54,7 +55,7 @@ export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
                     {formatTemperature(dewPoint, temperatureUnit)}
                 </p>
                 <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em]">
-                    Dew Point
+                    {t("comfortLevel.dewPoint")}
                 </p>
              </div>
              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-background/40">
@@ -80,9 +81,9 @@ export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
                />
             </div>
             <div className="flex justify-between text-[8px] text-muted-foreground font-black uppercase tracking-widest opacity-60">
-                <span>Dry</span>
-                <span>Neutral</span>
-                <span>Moist</span>
+                <span>{t("comfortLevel.dry")}</span>
+                <span>{t("comfortLevel.neutral")}</span>
+                <span>{t("comfortLevel.moist")}</span>
             </div>
           </div>
         </div>

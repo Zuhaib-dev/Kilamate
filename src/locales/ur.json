@@ -249,5 +249,39 @@
             "carwash": "گاڑی دھونا",
             "gardening": "باغبانی"
         }
+    },
+    "comfortLevel": {
+        "title": "آرام کی سطح",
+        "dewPoint": "نقطہ شبنم",
+        "labels": {
+            "dry": "خشک اور کرکرا",
+            "veryPleasant": "بہت خوشگوار",
+            "comfortable": "آرام دہ",
+            "humid": "مرطوب",
+            "sticky": "چپچپا",
+            "oppressive": "ظالمانہ"
+        },
+        "dry": "خشک",
+        "neutral": "غیر جانبدار",
+        "moist": "نم"
+    },
+    "moonPhase": {
+        "title": "چاند کا مرحلہ",
+        "illumination": "روشنی"
+    },
+    "travelAdvisory": {
+        "title": "سفری مشورہ",
+        "driving": "ڈرائیونگ کے حالات",
+        "flight": "پرواز کے حالات"
+    },
+    "agricultureAdvisor": {
+        "titleKashmir": "کشمیر زراعت کی بصیرت",
+        "titleGeneric": "باغات اور زراعت کا مشیر",
+        "spraying": "چھڑکنے کے حالات",
+        "cropAdvice": "فصل کے مخصوص مشورے"
+    },
+    "regionalOverview": {
+        "title": "جموں و کشمیر کے اضلاع",
+        "desc": "خطے بھر میں حقیقی وقت کے موسم کی جھلکیاں"
     }
 }

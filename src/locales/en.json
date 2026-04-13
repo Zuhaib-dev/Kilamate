@@ -249,5 +249,39 @@
             "carwash": "Car Wash",
             "gardening": "Gardening"
         }
+    },
+    "comfortLevel": {
+        "title": "Comfort Level",
+        "dewPoint": "Dew Point",
+        "labels": {
+            "dry": "Dry & Crisp",
+            "veryPleasant": "Very Pleasant",
+            "comfortable": "Comfortable",
+            "humid": "Humid",
+            "sticky": "Sticky",
+            "oppressive": "Oppressive"
+        },
+        "dry": "Dry",
+        "neutral": "Neutral",
+        "moist": "Moist"
+    },
+    "moonPhase": {
+        "title": "Moon Phase",
+        "illumination": "Illumination"
+    },
+    "travelAdvisory": {
+        "title": "Travel Advisory",
+        "driving": "Driving Conditions",
+        "flight": "Flight Conditions"
+    },
+    "agricultureAdvisor": {
+        "titleKashmir": "Kashmir Farming Insights",
+        "titleGeneric": "Orchard & Farming Advisor",
+        "spraying": "Spraying Conditions",
+        "cropAdvice": "Crop Specific Advice"
+    },
+    "regionalOverview": {
+        "title": "J&K Districts",
+        "desc": "Real-time weather highlights across the region"
     }
 }

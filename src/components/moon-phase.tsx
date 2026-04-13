@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Moon } from "lucide-react";
 import { memo } from "react";
 import { Badge } from "./ui/badge";
+import { useTranslation } from "react-i18next";
 
 // Common moon phases
 const PHASES = [
@@ -47,6 +48,7 @@ function getMoonPhase() {
 
 export const MoonPhase = memo(() => {
     const { name, icon, illumination } = getMoonPhase();
+    const { t } = useTranslation();
     
     // Mocking next full moon for display (simplified)
     const nextFullMoon = "14 Days";
@@ -58,7 +60,7 @@ export const MoonPhase = memo(() => {
                     <div className="bg-primary/10 p-2 rounded-lg">
                         <Moon className="h-5 w-5 text-primary" />
                     </div>
-                    <CardTitle className="text-sm font-bold tracking-tight uppercase">Moon Phase</CardTitle>
+                    <CardTitle className="text-sm font-bold tracking-tight uppercase">{t("moonPhase.title")}</CardTitle>
                 </div>
                 <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter">
                     {name}
@@ -78,7 +80,7 @@ export const MoonPhase = memo(() => {
                             {illumination}%
                         </p>
                         <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em]">
-                            Illumination
+                            {t("moonPhase.illumination")}
                         </p>
                     </div>
                 </div>

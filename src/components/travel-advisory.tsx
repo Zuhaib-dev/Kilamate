@@ -4,6 +4,9 @@ import { Mountain, Wind, Car, AlertTriangle, CheckCircle2, CloudRain } from "luc
 import { Skeleton } from "./ui/skeleton";
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
+import { usePreferences } from "@/hooks/use-preferences";
+import { formatWindSpeed } from "@/lib/units";
 
 const TRAVEL_POINTS = [
   { 
@@ -42,6 +45,7 @@ const TRAVEL_POINTS = [
 
 const AdvisoryCard = memo(({ point }: { point: typeof TRAVEL_POINTS[0] }) => {
   const { data, isLoading } = useWeatherQuery({ lat: point.lat, lon: point.lon });
+  const { windSpeedUnit } = usePreferences();
 
   if (isLoading) {
     return <Skeleton className="h-40 w-full rounded-2xl" />;
@@ -147,7 +151,7 @@ const AdvisoryCard = memo(({ point }: { point: typeof TRAVEL_POINTS[0] }) => {
         <div className="flex gap-4 px-1">
           <div className="flex flex-col gap-0.5">
              <span className="text-[8px] text-muted-foreground font-bold uppercase">Wind</span>
-             <span className="text-xs font-black">{Math.round(windSpeed)} km/h</span>
+             <span className="text-xs font-black">{formatWindSpeed(data.wind.speed, windSpeedUnit)}</span>
           </div>
           <div className="flex flex-col gap-0.5">
              <span className="text-[8px] text-muted-foreground font-bold uppercase">Precip</span>
@@ -163,6 +167,7 @@ const AdvisoryCard = memo(({ point }: { point: typeof TRAVEL_POINTS[0] }) => {
 });
 
 export function TravelAdvisory() {
+  const { t } = useTranslation();
   return (
     <Card className="border-none shadow-none bg-transparent mb-8">
       <CardHeader className="px-0 pt-0 pb-6">
@@ -172,7 +177,7 @@ export function TravelAdvisory() {
                     <Mountain className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                    <CardTitle className="text-xl font-black tracking-tight uppercase leading-none">J&K Travel Advisory</CardTitle>
+                    <CardTitle className="text-xl font-black tracking-tight uppercase leading-none">{t("travelAdvisory.title")}</CardTitle>
                     <p className="text-xs text-muted-foreground font-medium mt-1">Real-time status for critical transit points and treks</p>
                 </div>
             </div>

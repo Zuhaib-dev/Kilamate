@@ -6,6 +6,7 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { Skeleton } from "./ui/skeleton";
 import { Link } from "react-router-dom";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 const REGIONAL_CITIES = [
   { name: "Srinagar", lat: 34.0837, lon: 74.7973 },
@@ -65,6 +66,7 @@ const CityWeatherCard = memo(({ cityName, lat, lon }: { cityName: string; lat: n
 });
 
 export function RegionalOverview() {
+  const { t } = useTranslation();
   return (
     <Card className="border-none shadow-none bg-transparent mb-8">
       <CardHeader className="px-0 pt-0 pb-6">
@@ -73,8 +75,8 @@ export function RegionalOverview() {
                 <Cloud className="h-5 w-5 text-primary" />
             </div>
             <div>
-                <CardTitle className="text-xl font-black tracking-tight uppercase leading-none">J&K Districts</CardTitle>
-                <p className="text-xs text-muted-foreground font-medium mt-1">Real-time weather highlights across the region</p>
+                <CardTitle className="text-xl font-black tracking-tight uppercase leading-none">{t("regionalOverview.title")}</CardTitle>
+                <p className="text-xs text-muted-foreground font-medium mt-1">{t("regionalOverview.desc")}</p>
             </div>
         </div>
       </CardHeader>
