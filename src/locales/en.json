@@ -283,5 +283,35 @@
     "regionalOverview": {
         "title": "J&K Districts",
         "desc": "Real-time weather highlights across the region"
+    },
+    "agricultureInsights": {
+        "spray": {
+            "good": "Good",
+            "bad": "Bad",
+            "suboptimal": "Suboptimal",
+            "windy": "Windy",
+            "msgClear": "Clear weather ahead. Excellent conditions for spraying insecticides/pesticides.",
+            "msgRain": "Current rainfall will wash away chemicals. Do not spray today.",
+            "msgExpected": "Rain expected in the next 24 hours. Wait for clear skies to prevent chemical runoff.",
+            "msgWindy": "High winds detected. Spraying might lead to drift. Wait for calmer winds (under {{speed}})."
+        },
+        "crops": {
+            "appleTitle": "Apple Orchards",
+            "apricotTitle": "Apricot & Stone Fruits",
+            "appleDefault": "Monitor orchard regularly. Keep soil moisture balanced.",
+            "apricotDefault": "Ensure adequate sunlight exposure and trim diseased branches.",
+            "appleHumid": "High humidity and heat detected. WARNING: High risk of Apple Scab. Consider early preventative fungicide actions.",
+            "apricotHumid": "Warm and humid conditions favor fungal growth. Ensure adequate spacing for airflow.",
+            "appleCool": "Cool temperatures. Good time for dormant oil sprays to manage overwintering pests, provided it's above freezing.",
+            "apricotCold": "Protect blossoms if late frost is expected. Avoid pruning to prevent frost damage to cuts.",
+            "appleWindy": "Strong winds can cause fruit drop. Ensure newly grafted trees are properly supported.",
+            "appleOptimal": "Optimal growing temperatures. Standard nutrient spray routines like Urea or Calcium can be applied safely.",
+            "apricotOptimal": "Ideal conditions for fruit development. Maintain regular irrigation schedules."
+        },
+        "badges": {
+            "optimalSpray": "Optimal time for essential sprays (e.g., Mancozeb/Captan)",
+            "delaySpray": "Delay pesticide schedules",
+            "frostWarning": "Frost warning: Monitor blossoms closely"
+        }
     }
 }

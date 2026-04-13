@@ -55,50 +55,50 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
     }
 
     // 1. Spraying Conditions
-    let sprayStatus = "Good";
+    let sprayStatus = t("agricultureInsights.spray.good");
     let sprayColor = "text-emerald-500 bg-emerald-500/10 border-emerald-500/20";
     let sprayIcon = ShieldCheck;
-    let sprayMessage = "Clear weather ahead. Excellent conditions for spraying insecticides/pesticides.";
+    let sprayMessage = t("agricultureInsights.spray.msgClear");
 
     if (isRaining) {
-      sprayStatus = "Bad";
+      sprayStatus = t("agricultureInsights.spray.bad");
       sprayColor = "text-red-500 bg-red-500/10 border-red-500/20";
       sprayIcon = ShieldAlert;
-      sprayMessage = "Current rainfall will wash away chemicals. Do not spray today.";
+      sprayMessage = t("agricultureInsights.spray.msgRain");
     } else if (rainExpected) {
-      sprayStatus = "Suboptimal";
+      sprayStatus = t("agricultureInsights.spray.suboptimal");
       sprayColor = "text-orange-500 bg-orange-500/10 border-orange-500/20";
       sprayIcon = Droplets;
-      sprayMessage = "Rain expected in the next 24 hours. Wait for clear skies to prevent chemical runoff.";
+      sprayMessage = t("agricultureInsights.spray.msgExpected");
     } else if (windSpeed > 15) {
-      sprayStatus = "Windy";
+      sprayStatus = t("agricultureInsights.spray.windy");
       sprayColor = "text-yellow-500 bg-yellow-500/10 border-yellow-500/20";
       sprayIcon = Wind;
-      sprayMessage = `High winds detected. Spraying might lead to drift. Wait for calmer winds (under ${formatWindSpeed(2.78, windSpeedUnit)}).`;
+      sprayMessage = t("agricultureInsights.spray.msgWindy", { speed: formatWindSpeed(2.78, windSpeedUnit) });
     }
 
     // 2. Crop Specific Advice (Tailored for Kashmir)
-    let appleAdvice = "Monitor orchard regularly. Keep soil moisture balanced.";
-    let apricotAdvice = "Ensure adequate sunlight exposure and trim diseased branches.";
+    let appleAdvice = t("agricultureInsights.crops.appleDefault");
+    let apricotAdvice = t("agricultureInsights.crops.apricotDefault");
 
     if (temp > 25 && humidity > 70) {
-      appleAdvice = "High humidity and heat detected. WARNING: High risk of Apple Scab. Consider early preventative fungicide actions.";
-      apricotAdvice = "Warm and humid conditions favor fungal growth. Ensure adequate spacing for airflow.";
+      appleAdvice = t("agricultureInsights.crops.appleHumid");
+      apricotAdvice = t("agricultureInsights.crops.apricotHumid");
     } else if (temp < 10) {
-      appleAdvice = "Cool temperatures. Good time for dormant oil sprays to manage overwintering pests, provided it's above freezing.";
-      apricotAdvice = "Protect blossoms if late frost is expected. Avoid pruning to prevent frost damage to cuts.";
+      appleAdvice = t("agricultureInsights.crops.appleCool");
+      apricotAdvice = t("agricultureInsights.crops.apricotCold");
     } else if (windSpeed > 20) {
-      appleAdvice = "Strong winds can cause fruit drop. Ensure newly grafted trees are properly supported.";
+      appleAdvice = t("agricultureInsights.crops.appleWindy");
     } else if (temp >= 15 && temp <= 25 && !isRaining) {
-      appleAdvice = "Optimal growing temperatures. Standard nutrient spray routines like Urea or Calcium can be applied safely.";
-      apricotAdvice = "Ideal conditions for fruit development. Maintain regular irrigation schedules.";
+      appleAdvice = t("agricultureInsights.crops.appleOptimal");
+      apricotAdvice = t("agricultureInsights.crops.apricotOptimal");
     }
 
     return { 
-      spray: { status: sprayStatus, color: sprayColor, icon: sprayIcon, message: sprayMessage },
+      spray: { status: sprayStatus, color: sprayColor, icon: sprayIcon, message: sprayMessage, originalStatus: isRaining ? "Bad" : rainExpected ? "Suboptimal" : windSpeed > 15 ? "Windy" : "Good" },
       crops: { apple: appleAdvice, apricot: apricotAdvice }
     };
-  }, [weather, forecast, windSpeedUnit]);
+  }, [weather, forecast, windSpeedUnit, t]);
 
   return (
     <Card className="h-full overflow-hidden relative">
@@ -148,21 +148,21 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
             <div className="bg-muted/30 border rounded-xl p-4 transition-colors hover:bg-muted/50">
               <div className="flex items-center gap-2 mb-2">
                 <div className="h-2 w-2 rounded-full bg-red-400" />
-                <span className="font-semibold text-sm">Apple Orchards</span>
+                <span className="font-semibold text-sm">{t("agricultureInsights.crops.appleTitle")}</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {insights.crops.apple}
               </p>
-              {isKashmir && insights.spray.status === "Good" && (
+              {isKashmir && insights.spray.originalStatus === "Good" && (
                 <div className="mt-3 text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-1.5 rounded-md inline-flex items-center gap-1.5 font-medium border border-emerald-500/20">
                   <ShieldCheck className="h-3 w-3" />
-                  Optimal time for essential sprays (e.g., Mancozeb/Captan)
+                  {t("agricultureInsights.badges.optimalSpray")}
                 </div>
               )}
-              {isKashmir && insights.spray.status !== "Good" && (
+              {isKashmir && insights.spray.originalStatus !== "Good" && (
                 <div className="mt-3 text-xs bg-orange-500/10 text-orange-600 dark:text-orange-400 px-2 py-1.5 rounded-md inline-flex items-center gap-1.5 font-medium border border-orange-500/20">
                   <AlertTriangle className="h-3 w-3" />
-                  Delay pesticide schedules
+                  {t("agricultureInsights.badges.delaySpray")}
                 </div>
               )}
             </div>
@@ -171,7 +171,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
             <div className="bg-muted/30 border rounded-xl p-4 transition-colors hover:bg-muted/50">
               <div className="flex items-center gap-2 mb-2">
                 <div className="h-2 w-2 rounded-full bg-orange-400" />
-                <span className="font-semibold text-sm">Apricot & Stone Fruits</span>
+                <span className="font-semibold text-sm">{t("agricultureInsights.crops.apricotTitle")}</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {insights.crops.apricot}
@@ -179,7 +179,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
               {isKashmir && forecast?.list && forecast.list.slice(0, 16).some(f => f.main.temp < 3) && (
                 <div className="mt-3 text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-1.5 rounded-md inline-flex items-center gap-1.5 font-medium border border-blue-500/20">
                   <AlertTriangle className="h-3 w-3" />
-                  Frost warning: Monitor blossoms closely
+                  {t("agricultureInsights.badges.frostWarning")}
                 </div>
               )}
             </div>
