@@ -20,6 +20,7 @@ import { ActivityPlanner } from "../components/activity-planner";
 import { ClothingAdvisor } from "../components/clothing-advisor";
 import { MoonPhase } from "../components/moon-phase";
 import { ComfortLevel } from "../components/comfort-level";
+import { AgricultureAdvisor } from "../components/agriculture-advisor";
 import { SEO, createCitySchema } from "@/components/seo";
 
 export function CityPage() {
@@ -142,6 +143,14 @@ export function CityPage() {
           {/* ROW 9: TRAVEL ADVISORY (FULL WIDTH) - New Feature */}
           <div className="col-span-full">
             <TravelAdvisory />
+          </div>
+
+          {/* ROW 10: AGRICULTURE ADVISOR (FULL WIDTH) - New Feature */}
+          <div className="col-span-full">
+            <AgricultureAdvisor 
+              weather={weatherQuery.data} 
+              forecast={forecastQuery.data} 
+            />
           </div>
         </div>
       </div>

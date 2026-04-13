@@ -27,6 +27,7 @@ import { RegionalOverview } from "../components/regional-overview";
 import { TravelAdvisory } from "../components/travel-advisory";
 import { MoonPhase } from "../components/moon-phase";
 import { ComfortLevel } from "../components/comfort-level";
+import { AgricultureAdvisor } from "../components/agriculture-advisor";
 import {
   SEO,
   webApplicationSchema,
@@ -266,6 +267,16 @@ export function WeatherDashboard() {
             <div className="col-span-full">
               <TravelAdvisory />
             </div>
+
+            {/* ROW 10: AGRICULTURE ADVISOR (FULL WIDTH) - New Feature */}
+            {weatherQuery.data && (
+              <div className="col-span-full">
+                <AgricultureAdvisor 
+                  weather={weatherQuery.data} 
+                  forecast={forecastQuery.data ?? undefined} 
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
