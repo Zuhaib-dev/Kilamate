@@ -13,6 +13,7 @@ const REGIONAL_CITIES = [
   { name: "Gulmarg", lat: 34.0484, lon: 74.3805 },
   { name: "Leh", lat: 34.1526, lon: 77.5771 },
   { name: "Pahalgam", lat: 34.0161, lon: 75.3150 },
+  { name: "Badgam", lat: 34.0154721, lon: 74.7220085 },
 ];
 
 const CityWeatherCard = memo(({ cityName, lat, lon }: { cityName: string; lat: number; lon: number }) => {
