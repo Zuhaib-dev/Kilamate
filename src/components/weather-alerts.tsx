@@ -277,6 +277,10 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
     return list;
   }, [data, airPollution, forecast, displayTemp, displayWind, windMs, tempC, t, windSymbol]);
 
+  const [notifAgri] = useLocalStorage("notifications-agriculture", true);
+  const [notifProt] = useLocalStorage("notifications-protection", true);
+  const [notifCloth] = useLocalStorage("notifications-clothing", true);
+
   // Handle Notifications
   useEffect(() => {
     if (permission === "granted" && notificationsEnabled && alerts.length > 0) {
@@ -286,10 +290,22 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
       alerts.forEach((alert) => {
         const alertKey = `${alert.id}-${data.name}`;
         if (!wasSentRecently(newSentAlerts, alertKey)) {
-          // Only notify for medium/high severity weather/aqi/agriculture
-          if (alert.severity !== 'low' || alert.category === 'agriculture') {
+          // Check granular settings
+          const isAllowed = 
+            (alert.category === 'agriculture' && notifAgri) ||
+            (alert.category === 'protection' && notifProt) ||
+            (alert.category === 'clothing' && notifCloth) ||
+            (alert.category === 'weather' || alert.category === 'aqi'); // Always allow core alerts
+
+          if (isAllowed && (alert.severity !== 'low' || alert.category === 'agriculture')) {
+            const categoryEmoji = 
+              alert.category === 'agriculture' ? '🍎' :
+              alert.category === 'protection' ? '☀️' :
+              alert.category === 'clothing' ? '👕' :
+              alert.category === 'aqi' ? '😷' : '⚠️';
+
             sendNotification({
-              title: `⚠️ ${alert.title}`,
+              title: `${categoryEmoji} ${alert.title}`,
               body: alert.message,
               tag: alertKey,
             });
@@ -303,7 +319,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         setSentAlerts(newSentAlerts);
       }
     }
-  }, [alerts, permission, sendNotification, data.name, notificationsEnabled, sentAlerts, setSentAlerts]);
+  }, [alerts, permission, sendNotification, data.name, notificationsEnabled, sentAlerts, setSentAlerts, notifAgri, notifProt, notifCloth]);
 
   if (alerts.length === 0) return null;
 

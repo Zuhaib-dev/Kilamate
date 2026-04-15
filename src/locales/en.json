@@ -92,7 +92,12 @@
         "disabled": "Notifications disabled",
         "enable": "Enable notifications",
         "permissionDenied": "Notification permission denied",
-        "notSupported": "Notifications are not supported in this browser"
+        "notSupported": "Notifications are not supported in this browser",
+        "categories": {
+            "agriculture": "Farming & Scab Alerts",
+            "protection": "UV & Sun Safety",
+            "clothing": "Daily Clothing Advice"
+        }
     },
     "keyboard": {
         "title": "Keyboard Shortcuts",
