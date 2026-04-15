@@ -8,7 +8,7 @@ import { useTheme } from "@/context/theme-provider";
 import { Button } from "./ui/button";
 import { Keyboard } from "lucide-react";
 import { motion } from "framer-motion";
-import { slideDown, staggerContainerFast, slideInRight } from "@/lib/animations";
+import { staggerContainerFast } from "@/lib/animations";
 
 const navItemVariant = {
   hidden: { opacity: 0, y: -10, scale: 0.9 },
