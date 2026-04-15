@@ -98,16 +98,31 @@ function getFrostCountdown(forecast: ForecastData | null | undefined) {
   return { hoursAway, minTemp, dt: frostEntry.dt };
 }
 
+// All J&K districts — Kashmir Valley + Jammu Division + Ladakh
+const JK_CITIES = [
+  // Kashmir Valley
+  "srinagar","baramulla","anantnag","pulwama","kupwara","shopian","bandipora","ganderbal","budgam","kulgam",
+  // Jammu Division
+  "jammu","udhampur","rajouri","poonch","doda","ramban","kishtwar","reasi","samba","kathua",
+  // Ladakh
+  "leh","kargil",
+];
+
+function isInJandK(weather: WeatherData): boolean {
+  const name = weather.name.toLowerCase();
+  if (JK_CITIES.some(c => name.includes(c))) return true;
+  // J&K bounding box: lat 32–37, lon 73–80
+  const { lat, lon } = weather.coord;
+  return lat > 32 && lat < 37.5 && lon > 73 && lon < 80;
+}
+
 export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProps) {
   const { windSpeedUnit } = usePreferences();
   const { t } = useTranslation();
 
-  const isKashmir = useMemo(() => {
-    const name = weather.name.toLowerCase();
-    const kashmirCities = ["srinagar","baramulla","anantnag","pulwama","kupwara","shopian","bandipora","ganderbal","budgam","kulgam"];
-    return kashmirCities.some(c => name.includes(c)) ||
-      (weather.coord.lat > 32 && weather.coord.lat < 35 && weather.coord.lon > 73 && weather.coord.lon < 76);
-  }, [weather]);
+  // Bail out entirely for non-J&K locations
+  const inJK = useMemo(() => isInJandK(weather), [weather]);
+  if (!inJK) return null;
 
   const insights = useMemo(() => {
     const temp = weather.main.temp;
@@ -175,14 +190,12 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
             <Sprout className="h-5 w-5 text-primary" />
           </div>
           <CardTitle className="text-sm font-bold tracking-tight uppercase">
-            {isKashmir ? t("agricultureAdvisor.titleKashmir") : t("agricultureAdvisor.titleGeneric")}
+            {t("agricultureAdvisor.titleKashmir")}
           </CardTitle>
         </div>
-        {isKashmir && (
-          <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter">
-            SKUAST-K
-          </Badge>
-        )}
+        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter">
+          SKUAST-K
+        </Badge>
       </CardHeader>
 
       <CardContent className="space-y-5">
@@ -202,7 +215,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
               <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{insights.spray.message}</p>
             </div>
           </div>
-          {isKashmir && isInBloom && (
+          {isInBloom && (
             <div className="mt-2 rounded-xl border border-yellow-400/20 bg-yellow-400/8 px-3.5 py-2.5 flex items-start gap-3">
               <span className="text-xl leading-none mt-0.5 shrink-0">🐝</span>
               <div>
@@ -216,7 +229,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
         <div className="border-t border-white/5" />
 
         {/* ── NEW: Live Smart Alerts Row (Scab + Frost + Spray Window) ── */}
-        {isKashmir && (
+        {(
           <div className="grid grid-cols-1 gap-2">
 
             {/* Apple Scab Risk */}
@@ -313,7 +326,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
           </div>
         )}
 
-        {isKashmir && <div className="border-t border-white/5" />}
+        <div className="border-t border-white/5" />
 
         {/* ── Crop Cards ── */}
         <div>
@@ -329,17 +342,15 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
                   <span className="text-base leading-none">🍎</span>
                   <span className="text-xs font-black uppercase tracking-tight">{t("agricultureInsights.crops.appleTitle")}</span>
                 </div>
-                {isKashmir && (
-                  <span className="text-[9px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-full border"
-                    style={insights.spray.originalStatus === "Good"
-                      ? { color: "#34d399", background: "#34d39914", borderColor: "#34d39930" }
-                      : { color: "#fb923c", background: "#fb923c14", borderColor: "#fb923c30" }}>
-                    {insights.spray.originalStatus === "Good" ? "✓ Spray OK" : "⚠ Delay"}
-                  </span>
-                )}
+                <span className="text-[9px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-full border"
+                  style={insights.spray.originalStatus === "Good"
+                    ? { color: "#34d399", background: "#34d39914", borderColor: "#34d39930" }
+                    : { color: "#fb923c", background: "#fb923c14", borderColor: "#fb923c30" }}>
+                  {insights.spray.originalStatus === "Good" ? "✓ Spray OK" : "⚠ Delay"}
+                </span>
               </div>
               <p className="text-[11px] text-muted-foreground leading-relaxed">{insights.crops.apple}</p>
-              {isKashmir && insights.spray.originalStatus === "Good" && (
+              {insights.spray.originalStatus === "Good" && (
                 <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-400">
                   <ShieldCheck className="h-3 w-3" />{t("agricultureInsights.badges.optimalSpray")}
                 </div>
@@ -352,12 +363,12 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
                   <span className="text-base leading-none">🟠</span>
                   <span className="text-xs font-black uppercase tracking-tight">{t("agricultureInsights.crops.apricotTitle")}</span>
                 </div>
-                {isKashmir && insights.hasFrost && (
+                {insights.hasFrost && (
                   <span className="text-[9px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-full border text-blue-400 bg-blue-400/10 border-blue-400/30">❄ Frost</span>
                 )}
               </div>
               <p className="text-[11px] text-muted-foreground leading-relaxed">{insights.crops.apricot}</p>
-              {isKashmir && insights.hasFrost && (
+              {insights.hasFrost && (
                 <div className="flex items-center gap-1 text-[10px] font-bold text-blue-400">
                   <AlertTriangle className="h-3 w-3" />{t("agricultureInsights.badges.frostWarning")}
                 </div>
@@ -369,7 +380,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
         <div className="border-t border-white/5" />
 
         {/* ── SKUAST Spray Schedule ── */}
-        {isKashmir && (
+        {(
           <div className="space-y-3.5">
             <div className="flex items-center justify-between">
               <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1.5">
