@@ -2,6 +2,7 @@ import { Github, Twitter, Linkedin, Globe, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { staggerContainerFast } from "@/lib/animations";
 
+
 const socialVariant = {
   hidden: { opacity: 0, y: 12, scale: 0.85 },
   visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 400, damping: 24 } },

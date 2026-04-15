@@ -13,6 +13,7 @@ import { formatTemperature } from "@/lib/units";
 import { motion, AnimatePresence } from "framer-motion";
 import { staggerContainerFast } from "@/lib/animations";
 
+
 interface FavoriteCityTabletProps {
   id: string;
   name: string;
