@@ -16,6 +16,8 @@ import {
   getPollutantPercentage,
 } from "@/lib/aqi-utils";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
+import { staggerContainer, slideUp } from "@/lib/animations";
 
 interface AirPollutionProps {
   data: ReturnType<typeof useAirPollutionQuery>["data"];
@@ -64,7 +66,13 @@ export function AirPollution({ data }: AirPollutionProps) {
     const { label: levelLabel, textColor } = getPollutantLevelLabel(percentage);
 
     return (
-      <div key={label} className="flex flex-col gap-1.5 p-3 bg-muted/30 rounded-lg border border-muted/50 hover:bg-muted/50 transition-colors">
+      <motion.div
+        key={label}
+        className="flex flex-col gap-1.5 p-3 bg-muted/30 rounded-lg border border-muted/50"
+        variants={slideUp}
+        whileHover={{ scale: 1.02, y: -2, boxShadow: "0px 6px 20px rgba(0,0,0,0.1)" }}
+        transition={{ type: "spring", stiffness: 400, damping: 28 }}
+      >
         <div className="flex justify-between items-center w-full">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             {label}
@@ -72,18 +80,27 @@ export function AirPollution({ data }: AirPollutionProps) {
           <span className={`text-[10px] font-bold uppercase ${textColor}`}>{levelLabel}</span>
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-xl font-bold font-mono tracking-tight">
+          <motion.span
+            className="text-xl font-bold font-mono tracking-tight"
+            initial={{ opacity: 0, y: 6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
             {value.toFixed(1)}
-          </span>
+          </motion.span>
           <span className="text-xs text-muted-foreground">{unit}</span>
         </div>
         <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-700 ease-out ${barColor}`}
-            style={{ width: `${Math.max(2, percentage)}%` }}
+          <motion.div
+            className={`h-full rounded-full ${barColor}`}
+            initial={{ width: 0 }}
+            whileInView={{ width: `${Math.max(2, percentage)}%` }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           />
         </div>
-      </div>
+      </motion.div>
     );
   };
 
@@ -91,7 +108,12 @@ export function AirPollution({ data }: AirPollutionProps) {
     <Card className="col-span-full md:col-span-2 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ThermometerSun className="h-5 w-5 text-primary" />
+          <motion.div
+            animate={{ rotate: [0, 10, -10, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ThermometerSun className="h-5 w-5 text-primary" />
+          </motion.div>
           {t("weather.aqi")}
         </CardTitle>
       </CardHeader>
@@ -100,14 +122,26 @@ export function AirPollution({ data }: AirPollutionProps) {
         <div className="flex flex-col md:flex-row items-start gap-6">
           {/* AQI Circle + Label */}
           <div className="flex items-center gap-4 flex-shrink-0">
-            <div
+            <motion.div
               className={`flex items-center justify-center w-20 h-20 rounded-full border-4 border-current ${level.color} bg-background shadow-lg flex-shrink-0`}
+              initial={{ scale: 0, rotate: -180 }}
+              whileInView={{ scale: 1, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
             >
               <div className="flex flex-col items-center leading-tight">
-                <span className="text-2xl font-black">{aqiValue}</span>
+                <motion.span
+                  className="text-2xl font-black"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 }}
+                >
+                  {aqiValue}
+                </motion.span>
                 <span className="text-[9px] uppercase font-bold tracking-widest opacity-70">AQI</span>
               </div>
-            </div>
+            </motion.div>
             <div className="flex flex-col gap-0.5">
               <span className={`text-xl font-bold ${level.color}`}>
                 {t(level.labelKey)}
@@ -122,14 +156,20 @@ export function AirPollution({ data }: AirPollutionProps) {
           </div>
 
           {/* Color-coded Pollutants Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 w-full">
+          <motion.div
+            className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 w-full"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+          >
             {renderPollutant("PM2.5", current.components.pm2_5, "μg/m³", 50)}
             {renderPollutant("PM10", current.components.pm10, "μg/m³", 100)}
             {renderPollutant("SO2", current.components.so2, "μg/m³", 185)}
             {renderPollutant("NO2", current.components.no2, "μg/m³", 100)}
             {renderPollutant("O3", current.components.o3, "μg/m³", 100)}
             {renderPollutant("CO", current.components.co / 1000, "mg/m³", 15)}
-          </div>
+          </motion.div>
         </div>
 
         {/* 24h AQI Forecast Chart */}

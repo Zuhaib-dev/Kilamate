@@ -22,6 +22,8 @@ import { MoonPhase } from "../components/moon-phase";
 import { ComfortLevel } from "../components/comfort-level";
 import { AgricultureAdvisor } from "../components/agriculture-advisor";
 import { SEO, createCitySchema } from "@/components/seo";
+import { motion } from "framer-motion";
+import { AnimateIn } from "@/components/motion/AnimateIn";
 
 export function CityPage() {
   const [searchParams] = useSearchParams();
@@ -66,92 +68,113 @@ export function CityPage() {
       />
 
       <div className="space-y-4">
-        {/* Favorite Cities - Added to match Dashboard */}
-        <FavoriteCities />
+        <AnimateIn variant="slideDown">
+          <FavoriteCities />
+        </AnimateIn>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold tracking-tight">
-              {cityName}, {country}
-            </h1>
+        <AnimateIn variant="slideInLeft">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold tracking-tight">
+                {cityName}, {country}
+              </h1>
+            </div>
+            <motion.div
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <FavoriteButton data={{ ...weatherQuery.data, name: cityName }} />
+            </motion.div>
           </div>
-          <div className="flex items-center gap-2">
-            <FavoriteButton
-              data={{ ...weatherQuery.data, name: cityName }}
-            />
-          </div>
-        </div>
+        </AnimateIn>
 
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-          {/* ROW 1: TOP 2 CARDS */}
-          <CurrentWeather
-            data={weatherQuery.data}
-            locationName={{ name: cityName, country, state: "" } as any}
-            forecast={forecastQuery.data ?? undefined}
-          />
-          <HourlyTemperature data={forecastQuery.data} />
+          {/* ROW 1 */}
+          <AnimateIn variant="slideInLeft">
+            <CurrentWeather
+              data={weatherQuery.data}
+              locationName={{ name: cityName, country, state: "" } as any}
+              forecast={forecastQuery.data ?? undefined}
+            />
+          </AnimateIn>
+          <AnimateIn variant="slideInRight">
+            <HourlyTemperature data={forecastQuery.data} />
+          </AnimateIn>
 
-          {/* FULL WIDTH ALERTS */}
-          <div className="col-span-full">
+          {/* ALERTS */}
+          <AnimateIn variant="fadeIn" className="col-span-full">
             <WeatherAlerts
               data={weatherQuery.data}
               airPollution={airPollutionQuery.data ?? undefined}
             />
-          </div>
+          </AnimateIn>
 
-          {/* ROW 2: WEATHER STATS (FULL WIDTH) */}
-          <div className="col-span-full">
+          {/* STATS */}
+          <AnimateIn variant="slideUp" className="col-span-full">
             <WeatherStats data={weatherQuery.data} />
-          </div>
+          </AnimateIn>
 
-          {/* ROW 3: SUN TRACKER & MOON PHASE (2 CARDS) */}
-          <SunTracker data={weatherQuery.data} />
-          <MoonPhase />
+          {/* SUN + MOON */}
+          <AnimateIn variant="slideInLeft">
+            <SunTracker data={weatherQuery.data} />
+          </AnimateIn>
+          <AnimateIn variant="slideInRight">
+            <MoonPhase />
+          </AnimateIn>
 
-          {/* ROW 4: WEATHER DETAILS (FULL WIDTH) */}
-          <div className="col-span-full">
+          {/* DETAILS */}
+          <AnimateIn variant="slideUp" className="col-span-full">
             <WeatherDetails data={weatherQuery.data} />
-          </div>
+          </AnimateIn>
 
-          {/* ROW 5: DAILY OUTLOOK & COMFORT LEVEL (2 CARDS) */}
-          <DailyOutlook
-            weather={weatherQuery.data}
-            forecast={forecastQuery.data}
-            airPollution={airPollutionQuery.data}
-          />
-          <ComfortLevel data={weatherQuery.data} />
-
-          {/* ROW 6: ADVISORS (2 CARDS) */}
-          <ClothingAdvisor data={weatherQuery.data} />
-          <ActivityPlanner data={forecastQuery.data} />
-
-          {/* ROW 6: FORECAST (FULL WIDTH) */}
-          <div className="col-span-full">
-            <WeatherForecast data={forecastQuery.data} />
-          </div>
-
-          {/* ROW 7: AGRICULTURE ADVISOR (FULL WIDTH) */}
-          <div className="col-span-full">
-            <AgricultureAdvisor 
-              weather={weatherQuery.data} 
-              forecast={forecastQuery.data} 
+          {/* DAILY OUTLOOK + COMFORT */}
+          <AnimateIn variant="slideInLeft">
+            <DailyOutlook
+              weather={weatherQuery.data}
+              forecast={forecastQuery.data}
+              airPollution={airPollutionQuery.data}
             />
-          </div>
+          </AnimateIn>
+          <AnimateIn variant="slideInRight">
+            <ComfortLevel data={weatherQuery.data} />
+          </AnimateIn>
 
-          {/* ROW 7: REGIONAL OVERVIEW (FULL WIDTH) - Added for consistency */}
-          <div className="col-span-full">
+          {/* ADVISORS */}
+          <AnimateIn variant="slideInLeft">
+            <ClothingAdvisor data={weatherQuery.data} />
+          </AnimateIn>
+          <AnimateIn variant="slideInRight">
+            <ActivityPlanner data={forecastQuery.data} />
+          </AnimateIn>
+
+          {/* FORECAST */}
+          <AnimateIn variant="slideUp" className="col-span-full">
+            <WeatherForecast data={forecastQuery.data} />
+          </AnimateIn>
+
+          {/* AGRICULTURE */}
+          <AnimateIn variant="slideUp" className="col-span-full">
+            <AgricultureAdvisor
+              weather={weatherQuery.data}
+              forecast={forecastQuery.data}
+            />
+          </AnimateIn>
+
+          {/* REGIONAL */}
+          <AnimateIn variant="slideUp" className="col-span-full">
             <RegionalOverview />
-          </div>
+          </AnimateIn>
 
-          {/* ROW 8: AQI (FULL WIDTH) */}
-          <div className="col-span-full">
+          {/* AQI */}
+          <AnimateIn variant="slideUp" className="col-span-full">
             <AirPollution data={airPollutionQuery.data} />
-          </div>
+          </AnimateIn>
 
-          {/* ROW 9: TRAVEL ADVISORY (FULL WIDTH) - New Feature */}
-          <div className="col-span-full">
+          {/* TRAVEL */}
+          <AnimateIn variant="slideUp" className="col-span-full">
             <TravelAdvisory />
-          </div>
+          </AnimateIn>
         </div>
       </div>
     </>
