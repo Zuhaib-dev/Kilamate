@@ -3,12 +3,14 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "./components/ui/sonner";
 import { Layout } from "./components/layout";
 import { ThemeProvider, useTheme } from "./context/theme-provider";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { ErrorBoundary } from "./components/error-boundary";
 import { useKeyboardShortcuts } from "./hooks/use-keyboard-shortcuts";
 import { KeyboardShortcutsDialog } from "./components/keyboard-shortcuts-dialog";
 import { useState, useEffect, Suspense, lazy } from "react";
 import WeatherSkeleton from "./components/loading-skeleton";
+import { AnimatePresence, motion } from "framer-motion";
+import { pageVariants } from "./lib/animations";
 
 // Lazy load routes for better performance
 const WeatherDashboard = lazy(() =>
@@ -130,27 +132,39 @@ function AppContent() {
     },
   ]);
 
+  const location = useLocation();
+
   return (
     <>
       <Layout>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Suspense fallback={<WeatherSkeleton />}>
-                <WeatherDashboard />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/city/:cityName"
-            element={
-              <Suspense fallback={<WeatherSkeleton />}>
-                <CityPage />
-              </Suspense>
-            }
-          />
-        </Routes>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={location.pathname}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <Routes location={location}>
+              <Route
+                path="/"
+                element={
+                  <Suspense fallback={<WeatherSkeleton />}>
+                    <WeatherDashboard />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/city/:cityName"
+                element={
+                  <Suspense fallback={<WeatherSkeleton />}>
+                    <CityPage />
+                  </Suspense>
+                }
+              />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
       </Layout>
       <Toaster richColors />
       <KeyboardShortcutsDialog
@@ -168,7 +182,17 @@ import { HelmetProvider } from "react-helmet-async";
 
 function App() {
   return (
-    <ReactLenis root>
+    <ReactLenis
+      root
+      options={{
+        lerp: 0.08,
+        duration: 1.2,
+        smoothWheel: true,
+        wheelMultiplier: 0.8,
+        touchMultiplier: 1.5,
+        infinite: false,
+      }}
+    >
       <HelmetProvider>
         <ErrorBoundary>
           <QueryClientProvider client={queryClient}>
