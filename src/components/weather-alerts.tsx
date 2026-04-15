@@ -122,7 +122,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
     }
 
     // 3. VISIBILITY
-    const weatherCondition = data.weather[0]?.main.toLowerCase();
+    const weatherCondition = data.weather?.[0]?.main?.toLowerCase() || "";
     if (weatherCondition === "mist" || weatherCondition === "fog" || (data.visibility && data.visibility < 1000)) {
       list.push({
         id: "visibility",
@@ -192,7 +192,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
     // 6. AGRICULTURE ALERTS (J&K Specific focus)
     if (isInJandK(data)) {
       // Scab Risk
-      const scab = getScabRisk(tempC, data.main.humidity, data.weather[0]?.main);
+      const scab = getScabRisk(tempC, data.main.humidity, data.weather?.[0]?.main || "");
       if (scab.level >= 2) {
         list.push({
           id: "scab-risk",
@@ -261,7 +261,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
     }
 
     // 8. CLOTHING ADVISOR
-    const clothing = getClothingAdvice(tempC, data.weather[0]?.id);
+    const clothing = getClothingAdvice(tempC, data.weather?.[0]?.id || 800);
     if (clothing.key !== "comfort") {
       list.push({
         id: "clothing-advice",
@@ -349,7 +349,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
 
       <CardContent className="p-6">
         <motion.div 
-          className="flex flex-wrap items-stretch justify-center gap-4 w-full"
+          className="flex flex-wrap items-stretch justify-center gap-6 w-full mx-auto"
           variants={staggerContainerFast}
           initial="hidden"
           animate="visible"
@@ -366,7 +366,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
                 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className={`relative group flex flex-col w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] max-w-[360px] p-6 rounded-[1.5rem] border border-white/10 ${alert.bgColor} backdrop-blur-md overflow-hidden cursor-default transition-all duration-300 shadow-lg isolate`}
+                className={`relative group flex flex-col flex-grow sm:flex-grow-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-[400px] p-6 rounded-[1.5rem] border border-white/10 ${alert.bgColor} backdrop-blur-md overflow-hidden cursor-default transition-all duration-300 shadow-lg isolate`}
               >
                 {/* Background Ambient Glows */}
                 <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-30 ${alert.accentBar} mix-blend-screen transition-transform duration-700 group-hover:scale-150 group-hover:opacity-50`} />
