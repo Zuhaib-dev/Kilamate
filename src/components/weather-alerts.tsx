@@ -327,79 +327,81 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
   if (alerts.length === 0) return null;
 
   return (
-    <Card className="col-span-full border-none shadow-xl bg-background/40 backdrop-blur-2xl overflow-hidden ring-1 ring-white/10 outline-none">
-      <CardHeader className="py-3 px-5 flex flex-row items-center gap-3 space-y-0">
-        <div className="flex items-center gap-2.5">
-          <div className="bg-primary/10 p-2 rounded-xl border border-primary/20">
-            <Zap className="h-4 w-4 text-primary" />
+    <Card className="col-span-full border border-white/5 shadow-2xl bg-gradient-to-br from-background/80 to-muted/30 backdrop-blur-3xl overflow-hidden rounded-3xl">
+      <CardHeader className="py-4 px-6 flex flex-row flex-wrap items-center justify-between gap-4 border-b border-white/5 bg-background/20">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 p-2.5 rounded-xl border border-primary/20 shadow-inner">
+            <Zap className="h-5 w-5 text-primary animate-pulse drop-shadow-md" />
           </div>
-          <CardTitle className="text-sm font-bold tracking-tight uppercase">
-            Live Intelligence
-          </CardTitle>
+          <div>
+            <CardTitle className="text-sm font-bold tracking-tight uppercase text-foreground/90">
+              Live Intelligence
+            </CardTitle>
+            <p className="text-[11px] text-muted-foreground font-medium mt-0.5">Smart Alerts & Local Insights</p>
+          </div>
         </div>
-        <div className="flex items-center h-5 bg-primary/10 px-2 rounded-full border border-primary/20">
-          <span className="text-[10px] font-bold text-primary">
+        <div className="flex items-center h-6 bg-primary/10 px-3 rounded-full border border-primary/20 shadow-sm">
+          <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
             {alerts.length} {alerts.length === 1 ? 'Notice' : 'Notices'}
           </span>
         </div>
       </CardHeader>
 
-      <CardContent className="p-4 pt-1">
-        <div className="flex justify-center w-full">
-          <motion.div 
-            className="flex flex-wrap gap-5 items-stretch justify-center w-full"
-            variants={staggerContainerFast}
-            initial="hidden"
-            animate="visible"
-          >
-          <AnimatePresence mode="popLayout">
+      <CardContent className="p-6">
+        <motion.div 
+          className="flex flex-wrap items-stretch justify-center gap-4 w-full"
+          variants={staggerContainerFast}
+          initial="hidden"
+          animate="visible"
+        >
+          <AnimatePresence>
             {alerts.map((alert) => (
               <motion.div
                 key={alert.id}
                 variants={slideUp}
                 whileHover={{ 
-                  y: -5, 
-                  scale: 1.02, 
-                  boxShadow: "0px 12px 32px rgba(0,0,0,0.15)",
-                  borderColor: "rgba(255,255,255,0.2)"
+                  y: -4, 
+                  scale: 1.015, 
+                  boxShadow: "0px 16px 40px -8px rgba(0,0,0,0.2)",
+                  borderColor: "rgba(255,255,255,0.15)"
                 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className={`relative group flex flex-col w-[320px] p-4 rounded-2xl border border-white/5 ${alert.bgColor} overflow-hidden cursor-default`}
+                className={`relative group flex flex-col w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] max-w-[360px] p-5 rounded-2xl border border-white/5 ${alert.bgColor} overflow-hidden cursor-default transition-colors duration-300`}
               >
                 {/* Vertical Accent Bar */}
-                <div className={`absolute left-0 top-0 bottom-0 w-1 ${alert.accentBar} opacity-60`} />
+                <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${alert.accentBar} opacity-80`} />
 
-                <div className="flex items-start gap-3 mb-3 pl-1">
-                  <div className={`p-2 rounded-xl bg-background shadow-inner ring-1 ring-white/5 ${alert.color}`}>
-                    <alert.icon className="h-4 w-4" />
+                <div className="flex items-start gap-4 mb-3 pl-2">
+                  <div className={`p-2.5 rounded-xl bg-background/90 shadow-sm ring-1 ring-white/10 ${alert.color}`}>
+                    <alert.icon className="h-5 w-5 drop-shadow-sm" />
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 flex flex-col justify-center">
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className={`text-[13px] font-bold leading-tight truncate ${alert.color}`}>
+                      <h4 className={`text-[14px] font-bold leading-tight truncate ${alert.color}`}>
                         {alert.title}
                       </h4>
                       {alert.severity === "high" && (
-                        <div className="flex h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping shrink-0" />
+                        <div className="flex h-2 w-2 rounded-full bg-rose-500 animate-ping shrink-0" />
                       )}
                     </div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-foreground/50 mt-1">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/40 mt-1.5">
                       {alert.category}
                     </p>
                   </div>
                 </div>
 
-                <p className="text-[11px] text-muted-foreground/90 font-medium leading-relaxed mb-4 pl-1">
+                <p className="text-[12px] text-muted-foreground/90 font-medium leading-relaxed mb-5 pl-2">
                   {alert.message}
                 </p>
 
                 {/* Severity Badge Row */}
-                <div className="mt-auto flex items-center justify-between pl-1">
-                  <div className={`text-[9px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-md ${alert.bgColor} border ${alert.borderColor} ${alert.color.replace('text-', 'border-').replace('text-', 'text-')}`}>
+                <div className="mt-auto flex items-center justify-between pl-2">
+                  <div className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${alert.bgColor} border ${alert.color.replace('text-', 'border-').replace('text-', 'text-')}`}>
                     {alert.severity} Risk
                   </div>
                   {alert.severity === 'high' && (
-                    <div className="text-[8px] font-black uppercase text-rose-500 tracking-widest bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">
+                    <div className="text-[9px] font-black uppercase text-rose-500 tracking-[0.15em] bg-rose-500/10 px-2.5 py-1 rounded-md border border-rose-500/20 shadow-sm">
                         Urgent
                     </div>
                   )}
@@ -408,7 +410,6 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
             ))}
           </AnimatePresence>
         </motion.div>
-        </div>
       </CardContent>
     </Card>
   );

@@ -1,4 +1,4 @@
-import type { WeatherData, AirPollutionResponse, ForecastData } from "@/api/types";
+import type { WeatherData, ForecastData } from "@/api/types";
 
 /**
  * Estimates UV Index based on weather condition and time of day.
