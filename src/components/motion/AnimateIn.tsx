@@ -42,9 +42,9 @@ export function AnimateIn({
       variants={{
         hidden: variants.hidden,
         visible: {
-          ...(variants.visible as object),
+          ...((variants.visible as any) || {}),
           transition: {
-            ...((variants.visible as { transition?: object }).transition ?? {}),
+            ...((variants.visible as any)?.transition || {}),
             delay,
           },
         },

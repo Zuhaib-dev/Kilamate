@@ -212,9 +212,7 @@ export const CurrentWeather = memo(function CurrentWeather({
                   src={weatherIconUrl}
                   alt={currentWeather.description}
                   className="h-full w-full object-contain"
-                  {...({
-                    fetchpriority: "high",
-                  } as React.ImgHTMLAttributes<HTMLImageElement>)}
+                  fetchPriority="high"
                   loading="eager"
                   width="200"
                   height="200"

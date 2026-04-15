@@ -11,6 +11,13 @@ import { useState, useEffect, Suspense, lazy } from "react";
 import WeatherSkeleton from "./components/loading-skeleton";
 import { AnimatePresence, motion } from "framer-motion";
 import { pageVariants } from "./lib/animations";
+import { toast } from "sonner";
+import { useNotifications } from "./hooks/use-notifications";
+import { usePreferences } from "./hooks/use-preferences";
+import { useTranslation } from "react-i18next";
+import { ReactLenis } from 'lenis/react';
+import { WeatherThemeProvider } from "./context/weather-theme-provider";
+import { HelmetProvider } from "react-helmet-async";
 
 // Lazy load routes for better performance
 const WeatherDashboard = lazy(() =>
@@ -21,10 +28,6 @@ const WeatherDashboard = lazy(() =>
 const CityPage = lazy(() =>
   import("./pages/city-page").then((module) => ({ default: module.CityPage })),
 );
-import { toast } from "sonner";
-import { useNotifications } from "./hooks/use-notifications";
-import { usePreferences } from "./hooks/use-preferences";
-import { useTranslation } from "react-i18next";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -175,11 +178,6 @@ function AppContent() {
   );
 }
 
-import { ReactLenis } from 'lenis/react';
-import { WeatherThemeProvider } from "./context/weather-theme-provider";
-
-import { HelmetProvider } from "react-helmet-async";
-
 function App() {
   return (
     <ReactLenis
@@ -214,3 +212,4 @@ function App() {
 }
 
 export default App;
+
