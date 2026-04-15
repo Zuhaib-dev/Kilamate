@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatTemperature } from "@/lib/units";
+import { motion, AnimatePresence } from "framer-motion";
+import { staggerContainerFast } from "@/lib/animations";
 
 interface FavoriteCityTabletProps {
   id: string;
@@ -41,37 +43,58 @@ function FavoriteCityTablet({
 
 
   return (
-    <div
+    <motion.div
       onClick={handleClick}
-      className="relative flex min-w-[250px] cursor-pointer items-center gap-3 rounded-lg border bg-card p-4 pr-8 shadow-sm transition-all hover:shadow-md"
+      className="relative flex min-w-[250px] cursor-pointer items-center gap-3 rounded-lg border bg-card p-4 pr-8 shadow-sm"
       role="button"
       tabIndex={0}
+      whileHover={{
+        scale: 1.03,
+        y: -4,
+        boxShadow: "0px 12px 32px rgba(0,0,0,0.15)",
+        borderColor: "hsl(var(--primary) / 0.4)",
+      }}
+      whileTap={{ scale: 0.97, y: 0 }}
+      transition={{ type: "spring", stiffness: 400, damping: 28 }}
     >
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-1 top-1 h-6 w-6 rounded-full p-0  hover:text-destructive-foreground group-hover:opacity-100"
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove(id);
-          toast.error(`Removed ${name} from Favorites`);
-        }}
+      <motion.div
+        className="absolute right-1 top-1"
+        whileHover={{ rotate: 90, scale: 1.2 }}
+        transition={{ type: "spring", stiffness: 400, damping: 20 }}
       >
-        <X className="h-4 w-4" />
-      </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6 rounded-full p-0 hover:text-destructive-foreground"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove(id);
+            toast.error(`Removed ${name} from Favorites`);
+          }}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </motion.div>
 
       {isLoading ? (
         <div className="flex h-8 items-center justify-center">
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          >
+            <Loader2 className="h-4 w-4" />
+          </motion.div>
         </div>
       ) : weather ? (
         <>
           <div className="flex flex-col gap-1 flex-1">
             <div className="flex items-center gap-2">
-              <img
+              <motion.img
                 src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
                 alt={weather.weather[0].description}
                 className="h-10 w-10 flex-shrink-0"
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
               <div className="min-w-0">
                 <p className="font-bold truncate text-sm leading-tight">{name}</p>
@@ -80,17 +103,17 @@ function FavoriteCityTablet({
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-1.5 mt-1">
-               <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
-                 {weather.weather[0].main}
-               </span>
-               {aqiInfo && (
-                 <div className="flex items-center gap-1">
-                   <div className={`h-2 w-2 rounded-full ${aqiInfo.bg}`} title={`AQI: ${aqi}`} />
-                   <span className="text-[10px] text-muted-foreground font-medium">{aqi}</span>
-                 </div>
-               )}
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
+                {weather.weather[0].main}
+              </span>
+              {aqiInfo && (
+                <div className="flex items-center gap-1">
+                  <div className={`h-2 w-2 rounded-full ${aqiInfo.bg}`} title={`AQI: ${aqi}`} />
+                  <span className="text-[10px] text-muted-foreground font-medium">{aqi}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -114,7 +137,7 @@ function FavoriteCityTablet({
           </div>
         </>
       ) : null}
-    </div>
+    </motion.div>
   );
 }
 
@@ -126,20 +149,40 @@ export function FavoriteCities() {
     return null;
   }
 
+  const childVariant = {
+    hidden: { opacity: 0, x: -20, scale: 0.95 },
+    visible: { opacity: 1, x: 0, scale: 1, transition: { type: "spring", stiffness: 350, damping: 26 } },
+  };
+
   return (
     <>
-      <h1 className="text-xl font-bold tracking-tight mb-4">{t('search.favorites')}</h1>
+      <motion.h1
+        className="text-xl font-bold tracking-tight mb-4"
+        initial={{ opacity: 0, x: -12 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 28 }}
+      >
+        {t('search.favorites')}
+      </motion.h1>
 
       <ScrollArea className="w-full pb-4">
-        <div className="flex gap-4">
-          {favorites.map((city) => (
-            <FavoriteCityTablet
-              key={city.id}
-              {...city}
-              onRemove={() => removeFavorite.mutate(city.id)}
-            />
-          ))}
-        </div>
+        <motion.div
+          className="flex gap-4"
+          variants={staggerContainerFast}
+          initial="hidden"
+          animate="visible"
+        >
+          <AnimatePresence>
+            {favorites.map((city) => (
+              <motion.div key={city.id} variants={childVariant} layout exit={{ opacity: 0, scale: 0.8, x: -20 }}>
+                <FavoriteCityTablet
+                  {...city}
+                  onRemove={() => removeFavorite.mutate(city.id)}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
         <ScrollBar orientation="horizontal" className="mt-2" />
       </ScrollArea>
     </>

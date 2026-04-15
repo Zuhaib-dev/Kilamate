@@ -4,6 +4,8 @@ import type { WeatherData } from "@/api/types";
 import { useTranslation } from "react-i18next";
 import { usePreferences } from "@/hooks/use-preferences";
 import { convertTemperature } from "@/lib/units";
+import { motion } from "framer-motion";
+import { staggerContainer, slideUp } from "@/lib/animations";
 
 interface WeatherDetailsProps {
   data: WeatherData;
@@ -103,16 +105,24 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
         <CardTitle>{t("weather.details")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <motion.div
+          className="grid gap-4 sm:grid-cols-2"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+        >
 
-          {/* ── Wind Compass ─────────────────────────────── */}
-          <div className="flex items-center gap-4 rounded-lg border p-4 col-span-full sm:col-span-1">
-            {/* SVG compass */}
+          {/* ── Wind Compass ─────────────────────────────────── */}
+          <motion.div
+            className="flex items-center gap-4 rounded-lg border p-4 col-span-full sm:col-span-1"
+            variants={slideUp}
+            whileHover={{ scale: 1.01, y: -2, boxShadow: "0px 8px 24px rgba(0,0,0,0.1)" }}
+            transition={{ type: "spring", stiffness: 350, damping: 28 }}
+          >
             <div className="relative flex-shrink-0 w-16 h-16">
               <svg viewBox="0 0 64 64" className="w-full h-full text-muted-foreground">
-                {/* Outer ring */}
                 <circle cx="32" cy="32" r="30" fill="none" strokeWidth="1.5" stroke="currentColor" strokeOpacity="0.25" />
-                {/* Cardinal ticks */}
                 {[0, 90, 180, 270].map((angle) => {
                   const rad = (angle * Math.PI) / 180;
                   const x1 = 32 + 26 * Math.sin(rad);
@@ -121,19 +131,20 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
                   const y2 = 32 - 30 * Math.cos(rad);
                   return <line key={angle} x1={x1} y1={y1} x2={x2} y2={y2} stroke="currentColor" strokeWidth="2" strokeOpacity="0.4" />;
                 })}
-                {/* N/S/E/W labels */}
                 <text x="32" y="8"  textAnchor="middle" fontSize="6" fill="currentColor" fillOpacity="0.5">N</text>
                 <text x="32" y="60" textAnchor="middle" fontSize="6" fill="currentColor" fillOpacity="0.5">S</text>
                 <text x="58" y="34" textAnchor="middle" fontSize="6" fill="currentColor" fillOpacity="0.5">E</text>
                 <text x="6"  y="34" textAnchor="middle" fontSize="6" fill="currentColor" fillOpacity="0.5">W</text>
-                {/* Arrow — rotated to wind direction */}
-                <g transform={`rotate(${wind.deg}, 32, 32)`}>
-                  {/* North-pointing tip (red) */}
+                {/* Animated compass arrow */}
+                <motion.g
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: wind.deg }}
+                  transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.4 }}
+                  style={{ transformOrigin: "32px 32px" }}
+                >
                   <polygon points="32,6 28,32 32,28 36,32" fill="#ef4444" />
-                  {/* South-pointing tail (muted) */}
                   <polygon points="32,58 28,32 32,36 36,32" fill="currentColor" fillOpacity="0.3" />
-                </g>
-                {/* Center dot */}
+                </motion.g>
                 <circle cx="32" cy="32" r="3" fill="hsl(var(--background))" stroke="currentColor" strokeWidth="1.5" />
               </svg>
             </div>
@@ -145,28 +156,46 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
               <p className="text-2xl font-bold tracking-tight mt-0.5">{windDir}</p>
               <p className="text-xs text-muted-foreground">{wind.deg}° — from {windDir}</p>
             </div>
-          </div>
+          </motion.div>
 
           {/* ── UV Index ─────────────────────────────────── */}
-          <div className="rounded-lg border p-4">
+          <motion.div
+            className="rounded-lg border p-4"
+            variants={slideUp}
+            whileHover={{ scale: 1.01, y: -2, boxShadow: "0px 8px 24px rgba(0,0,0,0.1)" }}
+            transition={{ type: "spring", stiffness: 350, damping: 28 }}
+          >
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
               <Sun className="h-3.5 w-3.5" />
               UV Index
             </p>
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-2xl font-bold tracking-tight">{uvi}</span>
+              <motion.span
+                className="text-2xl font-bold tracking-tight"
+                initial={{ opacity: 0, scale: 0.7 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.15 }}
+              >
+                {uvi}
+              </motion.span>
               <span className={`text-sm font-semibold ${uviInfo.color}`}>{uviInfo.label}</span>
             </div>
-            {/* UV bar */}
+            {/* UV bar — animated fill */}
             <div className="relative h-2 w-full rounded-full bg-muted overflow-hidden mt-1">
-              <div
-                className={`h-full rounded-full transition-all duration-700 ${uviInfo.bar}`}
-                style={{ width: `${uviPct}%` }}
+              <motion.div
+                className={`h-full rounded-full ${uviInfo.bar}`}
+                initial={{ width: 0 }}
+                whileInView={{ width: `${uviPct}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
               />
-              {/* Indicator dot */}
-              <div 
-                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border border-black/20 shadow-sm transition-all duration-700"
-                style={{ left: `calc(${uviPct}% - 4px)` }}
+              <motion.div
+                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border border-black/20 shadow-sm"
+                initial={{ left: "0%" }}
+                whileInView={{ left: `calc(${uviPct}% - 4px)` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
               />
             </div>
             <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
@@ -181,19 +210,30 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
                 {uvi > 10 && "Avoid outdoor exposure if possible."}
               </p>
             )}
-          </div>
+          </motion.div>
 
-          {/* ── Dew Point ────────────────────────────────── */}
-          <div className="rounded-lg border p-4">
+          {/* ── Dew Point ─────────────────────────────────── */}
+          <motion.div
+            className="rounded-lg border p-4"
+            variants={slideUp}
+            whileHover={{ scale: 1.01, y: -2, boxShadow: "0px 8px 24px rgba(0,0,0,0.1)" }}
+            transition={{ type: "spring", stiffness: 350, damping: 28 }}
+          >
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
               <Thermometer className="h-3.5 w-3.5" />
               Dew Point
             </p>
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="text-2xl font-bold tracking-tight">
+              <motion.span
+                className="text-2xl font-bold tracking-tight"
+                initial={{ opacity: 0, scale: 0.7 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
+              >
                 {dewPointDisplay}
                 <span className="text-base font-medium text-muted-foreground">{dewUnit}</span>
-              </span>
+              </motion.span>
             </div>
             <span className={`text-sm font-semibold ${dewComfort.color}`}>{dewComfort.label}</span>
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
@@ -202,18 +242,29 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
               {dewPointC >= 16 && dewPointC < 21 && "You may notice some humidity."}
               {dewPointC >= 21 && "Feels muggy; sweat evaporates slowly."}
             </p>
-          </div>
+          </motion.div>
 
-          {/* ── Visibility ───────────────────────────────── */}
-          <div className="rounded-lg border p-4">
+          {/* ── Visibility ─────────────────────────────────── */}
+          <motion.div
+            className="rounded-lg border p-4"
+            variants={slideUp}
+            whileHover={{ scale: 1.01, y: -2, boxShadow: "0px 8px 24px rgba(0,0,0,0.1)" }}
+            transition={{ type: "spring", stiffness: 350, damping: 28 }}
+          >
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
               <Eye className="h-3.5 w-3.5" />
               {t("weather.visibility") || "Visibility"}
             </p>
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="text-2xl font-bold tracking-tight">
+              <motion.span
+                className="text-2xl font-bold tracking-tight"
+                initial={{ opacity: 0, scale: 0.7 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
+              >
                 {visKm >= 10 ? "10+" : visKm.toFixed(1)}
-              </span>
+              </motion.span>
               <span className="text-sm text-muted-foreground">km</span>
             </div>
             <span className={`text-sm font-semibold ${visInfo.color}`}>{visInfo.label}</span>
@@ -223,10 +274,9 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
               {visKm >= 2 && visKm < 5 && "Reduced visibility — drive carefully."}
               {visKm < 2 && "Foggy — use low-beam headlights."}
             </p>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
       </CardContent>
     </Card>
   );
-}

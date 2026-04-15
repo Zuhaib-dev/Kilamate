@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Droplets, Gauge, Wind, Thermometer, Sunrise, Sunset } from "lucide-react";
 import type { WeatherData } from "@/api/types";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
+import { staggerContainer, slideUp } from "@/lib/animations";
 
 interface WeatherStatsProps {
     data: WeatherData;
@@ -88,11 +90,25 @@ export function WeatherStats({ data }: WeatherStatsProps) {
                 <CardTitle>{t('weather.details')}</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <motion.div
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-60px" }}
+                >
                     {validStats.map((stat) => (
-                        <div
+                        <motion.div
                             key={stat.title}
-                            className="group relative overflow-hidden rounded-xl border p-4 transition-all hover:shadow-md hover:scale-[1.02]"
+                            variants={slideUp}
+                            className="group relative overflow-hidden rounded-xl border p-4"
+                            whileHover={{
+                                scale: 1.03,
+                                y: -3,
+                                boxShadow: "0px 10px 30px rgba(0,0,0,0.12)",
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 28 }}
                         >
                             <div className="flex items-center justify-between gap-3">
                                 <div className="space-y-1.5 min-w-0 flex-1">
@@ -107,9 +123,15 @@ export function WeatherStats({ data }: WeatherStatsProps) {
                                         )}
                                     </div>
                                     <div className="flex items-baseline gap-1 overflow-hidden">
-                                        <span className="text-xl font-black leading-none tracking-tight truncate">
+                                        <motion.span
+                                            className="text-xl font-black leading-none tracking-tight truncate"
+                                            initial={{ opacity: 0, y: 8 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ delay: 0.1, type: "spring", stiffness: 300, damping: 25 }}
+                                        >
                                             {stat.primary}
-                                        </span>
+                                        </motion.span>
                                         {stat.unit && (
                                             <span className="text-[10px] font-bold text-muted-foreground leading-none shrink-0">
                                                 {stat.unit}
@@ -117,10 +139,14 @@ export function WeatherStats({ data }: WeatherStatsProps) {
                                         )}
                                     </div>
                                 </div>
-                                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl p-2 transition-all duration-500 ${stat.iconBg} ${stat.title === t('weather.windSpeed') ? 'hover:bg-primary/5' : ''}`}>
+                                <motion.div
+                                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl p-2 ${stat.iconBg}`}
+                                    whileHover={{ scale: 1.2, rotate: 8 }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                                >
                                     {stat.title === t('weather.windSpeed') ? (
-                                        <div 
-                                            className="relative flex items-center justify-center w-full h-full transition-transform duration-1000 ease-in-out"
+                                        <div
+                                            className="relative flex items-center justify-center w-full h-full"
                                             style={{ transform: `rotate(${data.wind.deg || 0}deg)` }}
                                         >
                                             <stat.icon className={`h-5 w-5 ${stat.color} opacity-80`} />
@@ -129,12 +155,12 @@ export function WeatherStats({ data }: WeatherStatsProps) {
                                     ) : (
                                         <stat.icon className={`h-5 w-5 ${stat.color}`} />
                                     )}
-                                </div>
+                                </motion.div>
                             </div>
                             <div className="absolute inset-0 -z-10 bg-gradient-to-br from-transparent to-muted opacity-0 transition-opacity group-hover:opacity-100" />
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </CardContent>
         </Card>
     );
