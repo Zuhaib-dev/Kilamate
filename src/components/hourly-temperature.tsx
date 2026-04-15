@@ -80,6 +80,10 @@ export const HourlyTemperature = memo(function HourlyTemperature({
   const unitSymbol = temperatureUnit === "celsius" ? "°C" : "°F";
 
   return (
+    <motion.div
+      whileHover={{ scale: 1.005, y: -2 }}
+      transition={{ type: "spring", stiffness: 300, damping: 28 }}
+    >
     <Card className="flex-1">
       <CardHeader className="pb-0">
         <div className="flex items-center justify-between">
@@ -101,15 +105,18 @@ export const HourlyTemperature = memo(function HourlyTemperature({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-0 pt-2">
+        <motion.div
+          className="flex flex-col gap-0 pt-2"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.1 }}
+        >
           {/* Temperature Line Chart */}
           <div className="h-[150px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                <XAxis
-                  dataKey="time"
-                  hide
-                />
+                <XAxis dataKey="time" hide />
                 <YAxis
                   stroke="#888888"
                   fontSize={11}
@@ -167,14 +174,19 @@ export const HourlyTemperature = memo(function HourlyTemperature({
                   strokeDasharray="5 5"
                   activeDot={{ r: 4, strokeWidth: 0, fill: "#94a3b8" }}
                 />
-                {/* Hidden bar just to get pop data into the common tooltip */}
                 <Line dataKey="pop" hide />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           {/* Rain Probability Bar Chart */}
-          <div className="h-[60px] w-full">
+          <motion.div
+            className="h-[60px] w-full"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.35 }}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
                 <XAxis
@@ -184,29 +196,27 @@ export const HourlyTemperature = memo(function HourlyTemperature({
                   tickLine={false}
                   axisLine={false}
                 />
-                <YAxis
-                  hide
-                  domain={[0, 100]}
-                />
-                <Bar 
-                  dataKey="pop" 
+                <YAxis hide domain={[0, 100]} />
+                <Bar
+                  dataKey="pop"
                   radius={[2, 2, 0, 0]}
                   fill="#0ea5e9"
                   fillOpacity={0.4}
                 >
                   {chartData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.pop > 20 ? "#0ea5e9" : "#94a3b8"} 
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.pop > 20 ? "#0ea5e9" : "#94a3b8"}
                       fillOpacity={entry.pop > 20 ? 0.6 : 0.2}
                     />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </CardContent>
     </Card>
+    </motion.div>
   );
 });
