@@ -360,49 +360,58 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
                 key={alert.id}
                 variants={slideUp}
                 whileHover={{ 
-                  y: -4, 
-                  scale: 1.015, 
-                  boxShadow: "0px 16px 40px -8px rgba(0,0,0,0.2)",
-                  borderColor: "rgba(255,255,255,0.15)"
+                  y: -5, 
+                  scale: 1.02, 
+                  boxShadow: "0px 20px 40px -10px rgba(0,0,0,0.3)",
                 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className={`relative group flex flex-col w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] max-w-[360px] p-5 rounded-2xl border border-white/5 ${alert.bgColor} overflow-hidden cursor-default transition-colors duration-300`}
+                className={`relative group flex flex-col w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] max-w-[360px] p-6 rounded-[1.5rem] border border-white/10 ${alert.bgColor} backdrop-blur-md overflow-hidden cursor-default transition-all duration-300 shadow-lg isolate`}
               >
-                {/* Vertical Accent Bar */}
-                <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${alert.accentBar} opacity-80`} />
+                {/* Background Ambient Glows */}
+                <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-30 ${alert.accentBar} mix-blend-screen transition-transform duration-700 group-hover:scale-150 group-hover:opacity-50`} />
+                <div className={`absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-3xl opacity-20 ${alert.accentBar} mix-blend-screen transition-transform duration-700 group-hover:scale-150 group-hover:opacity-40`} />
 
-                <div className="flex items-start gap-4 mb-3 pl-2">
-                  <div className={`p-2.5 rounded-xl bg-background/90 shadow-sm ring-1 ring-white/10 ${alert.color}`}>
-                    <alert.icon className="h-5 w-5 drop-shadow-sm" />
+                {/* Left Sleek Boundary Line */}
+                <div className={`absolute left-0 top-4 bottom-4 w-1 rounded-r-md ${alert.accentBar} opacity-70 transition-opacity group-hover:opacity-100`} />
+
+                <div className="flex items-start gap-4 mb-4 pl-2 relative z-10">
+                  <div className={`flex items-center justify-center shrink-0 w-11 h-11 rounded-2xl bg-background/80 backdrop-blur-sm shadow-inner ring-1 ring-white/20 ${alert.color} relative overflow-hidden group-hover:ring-white/40 transition-all`}>
+                    <div className={`absolute inset-0 opacity-20 ${alert.accentBar}`} />
+                    <alert.icon className="h-5 w-5 drop-shadow-md relative z-10" />
                   </div>
-                  <div className="flex-1 min-w-0 flex flex-col justify-center">
-                    <div className="flex items-center justify-between gap-2">
-                      <h4 className={`text-[14px] font-bold leading-tight truncate ${alert.color}`}>
+                  
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <h4 className={`text-[15px] font-bold leading-tight ${alert.color} tracking-tight drop-shadow-sm`}>
                         {alert.title}
                       </h4>
                       {alert.severity === "high" && (
-                        <div className="flex h-2 w-2 rounded-full bg-rose-500 animate-ping shrink-0" />
+                        <div className="flex relative items-center justify-center h-2 w-2 shrink-0 mt-1">
+                          <span className="absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75 animate-ping" />
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500" />
+                        </div>
                       )}
                     </div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/40 mt-1.5">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/40 mt-1.5 flex items-center gap-1.5">
                       {alert.category}
                     </p>
                   </div>
                 </div>
 
-                <p className="text-[12px] text-muted-foreground/90 font-medium leading-relaxed mb-5 pl-2">
+                <p className="text-[13px] text-muted-foreground font-medium leading-relaxed mb-6 pl-2 relative z-10 flex-1">
                   {alert.message}
                 </p>
 
                 {/* Severity Badge Row */}
-                <div className="mt-auto flex items-center justify-between pl-2">
-                  <div className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${alert.bgColor} border ${alert.color.replace('text-', 'border-').replace('text-', 'text-')}`}>
+                <div className="mt-auto flex items-center justify-between pl-2 relative z-10">
+                  <div className={`inline-flex items-center text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-background/40 backdrop-blur-md border border-white/10 ${alert.color} shadow-sm group-hover:bg-background/60 transition-colors`}>
                     {alert.severity} Risk
                   </div>
                   {alert.severity === 'high' && (
-                    <div className="text-[9px] font-black uppercase text-rose-500 tracking-[0.15em] bg-rose-500/10 px-2.5 py-1 rounded-md border border-rose-500/20 shadow-sm">
-                        Urgent
+                    <div className="inline-flex items-center justify-center text-[10px] font-black uppercase text-rose-500 tracking-[0.2em] bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20 shadow-sm relative overflow-hidden">
+                      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
+                      Urgent
                     </div>
                   )}
                 </div>
