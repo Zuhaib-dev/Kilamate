@@ -214,6 +214,7 @@ export function WeatherDashboard() {
                 <WeatherAlerts
                   data={weatherQuery.data}
                   airPollution={airPollutionQuery.data ?? undefined}
+                  forecast={forecastQuery.data ?? undefined}
                 />
               </AnimateIn>
             )}

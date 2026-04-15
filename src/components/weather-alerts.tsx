@@ -6,14 +6,28 @@ import {
   Eye,
   Thermometer,
   Skull,
+  Zap,
+  Sun,
+  Sprout,
+  Shirt,
+  Snowflake,
+  AlertCircle,
 } from "lucide-react";
-import type { WeatherData, AirPollutionResponse } from "@/api/types";
+import type { WeatherData, AirPollutionResponse, ForecastData } from "@/api/types";
 import { useNotifications } from "@/hooks/use-notifications";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { calculateAQI, getAQIDescription } from "@/lib/aqi-utils";
 import { useTranslation } from "react-i18next";
 import { usePreferences } from "@/hooks/use-preferences";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  estimateUVI, 
+  getScabRisk, 
+  getFrostRisk, 
+  isInJandK, 
+  getClothingAdvice 
+} from "@/lib/weather-utils";
 
 // How long to suppress the same alert before re-notifying (24 hours)
 const ALERT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
@@ -30,41 +44,38 @@ function wasSentRecently(sentAlerts: SentAlertsMap, key: string): boolean {
 interface WeatherAlertsProps {
   data: WeatherData;
   airPollution?: AirPollutionResponse;
+  forecast?: ForecastData;
 }
 
 interface WeatherAlert {
-  type: "warning" | "info" | "destructive";
+  id: string;
+  type: "warning" | "info" | "destructive" | "success";
+  category: "weather" | "aqi" | "agriculture" | "protection" | "clothing";
   severity: "high" | "medium" | "low";
   icon: React.ElementType;
   title: string;
   message: string;
   color: string;
+  bgColor: string;
+  borderColor: string;
 }
 
-export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
+export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsProps) {
   const { sendNotification, permission } = useNotifications();
   const { t } = useTranslation();
   const { temperatureUnit, windSpeedUnit } = usePreferences();
-  const [notificationsEnabled] = useLocalStorage(
-    "notifications-enabled",
-    false,
-  );
-  const [sentAlerts, setSentAlerts] = useLocalStorage<SentAlertsMap>(
-    SENT_ALERTS_KEY,
-    {},
-  );
+  const [notificationsEnabled] = useLocalStorage("notifications-enabled", false);
+  const [sentAlerts, setSentAlerts] = useLocalStorage<SentAlertsMap>(SENT_ALERTS_KEY, {});
 
-  // Normalise to user-facing units for display + thresholding
-  const tempC  = data.main.temp;         // API is always °C
-  const windMs = data.wind.speed;         // API is always m/s
+  // Normalise to user-facing units
+  const tempC  = data.main.temp;
+  const windMs = data.wind.speed;
 
-  // Temperature for display
   const displayTemp = temperatureUnit === "fahrenheit"
     ? Math.round(tempC * 9 / 5 + 32)
     : Math.round(tempC);
   const tempSymbol = temperatureUnit === "fahrenheit" ? "°F" : "°C";
 
-  // Wind for display
   const displayWind = windSpeedUnit === "mph"
     ? Math.round(windMs * 2.237)
     : windSpeedUnit === "kmh"
@@ -72,132 +83,219 @@ export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
       : Math.round(windMs);
   const windSymbol = windSpeedUnit === "mph" ? "mph" : windSpeedUnit === "kmh" ? "km/h" : "m/s";
 
-  // Thresholds in raw metric (API units)
-  const HIGH_WIND_MS  = 10;    // ≈ 36 km/h
-  const HEAT_C        = 35;
-  const FREEZE_C      = 0;
+  const alerts = useMemo(() => {
+    const list: WeatherAlert[] = [];
 
-  const alerts: WeatherAlert[] = [];
-
-  // High wind alert
-  if (windMs > HIGH_WIND_MS) {
-    alerts.push({
-      type: "warning",
-      severity: "medium",
-      icon: Wind,
-      title: "High Wind Alert",
-      message: `Strong winds at ${displayWind} ${windSymbol}. Exercise caution outdoors.`,
-      color: "text-orange-500",
-    });
-  }
-
-  // High humidity alert
-  if (data.main.humidity > 80) {
-    alerts.push({
-      type: "info",
-      severity: "low",
-      icon: Droplets,
-      title: "High Humidity",
-      message: `Humidity is at ${data.main.humidity}%. It may feel muggy outside.`,
-      color: "text-blue-500",
-    });
-  }
-
-  // Low visibility
-  const weatherCondition = data.weather[0]?.main.toLowerCase();
-  if (weatherCondition === "mist" || weatherCondition === "fog") {
-    alerts.push({
-      type: "warning",
-      severity: "medium",
-      icon: Eye,
-      title: "Low Visibility",
-      message:
-        "Foggy conditions detected. Reduce speed and use low-beam headlights.",
-      color: "text-orange-500",
-    });
-  }
-
-  // Extreme temperature
-  if (tempC > HEAT_C) {
-    alerts.push({
-      type: "warning",
-      severity: "high",
-      icon: Thermometer,
-      title: "Extreme Heat",
-      message: `Temperature is ${displayTemp}${tempSymbol}. Stay hydrated and avoid prolonged sun exposure.`,
-      color: "text-red-500",
-    });
-  } else if (tempC < FREEZE_C) {
-    alerts.push({
-      type: "warning",
-      severity: "high",
-      icon: Thermometer,
-      title: "Freezing Temperature",
-      message: `Temperature is ${displayTemp}${tempSymbol}. Watch for ice and dress warmly.`,
-      color: "text-blue-500",
-    });
-  }
-
-  // AQI Alerts
-  if (airPollution && airPollution.list && airPollution.list.length > 0) {
-    const currentAQI = calculateAQI(airPollution.list[0].components);
-    const aqiInfo = getAQIDescription(currentAQI);
-
-    if (currentAQI > 300) {
-      alerts.push({
-        type: "destructive",
-        severity: "high",
-        icon: Skull,
-        title: "Hazardous Air Quality",
-        message: `AQI is ${currentAQI}. ${t(aqiInfo.descKey)}`,
-        color: "text-red-700",
-      });
-    } else if (currentAQI > 200) {
-      alerts.push({
-        type: "destructive",
-        severity: "high",
-        icon: AlertTriangle,
-        title: "Very Unhealthy Air",
-        message: `AQI is ${currentAQI}. ${t(aqiInfo.descKey)}`,
-        color: "text-red-600",
-      });
-    } else if (currentAQI > 150) {
-      alerts.push({
-        type: "destructive",
-        severity: "high",
-        icon: AlertTriangle,
-        title: "Unhealthy Air Quality",
-        message: `AQI is ${currentAQI}. ${t(aqiInfo.descKey)}`,
-        color: "text-red-500",
-      });
-    } else if (currentAQI > 100) {
-      alerts.push({
+    // 1. HIGH WIND
+    if (windMs > 10) {
+      list.push({
+        id: "wind",
         type: "warning",
+        category: "weather",
         severity: "medium",
-        icon: AlertTriangle,
-        title: "Sensitve Air Quality",
-        message: `AQI is ${currentAQI}. Sensitive groups should reduce outdoor exertion.`,
+        icon: Wind,
+        title: t("alerts.highWind"),
+        message: t("alerts.highWindMessage", { speed: displayWind, unit: windSymbol }),
         color: "text-orange-500",
+        bgColor: "bg-orange-500/10",
+        borderColor: "border-orange-500/20",
       });
     }
-  }
 
-  // Send notifications
+    // 2. HUMIDITY
+    if (data.main.humidity > 85) {
+      list.push({
+        id: "humidity",
+        type: "info",
+        category: "weather",
+        severity: "low",
+        icon: Droplets,
+        title: t("alerts.highHumidity"),
+        message: t("alerts.highHumidityMessage", { humidity: data.main.humidity }),
+        color: "text-blue-500",
+        bgColor: "bg-blue-500/10",
+        borderColor: "border-blue-500/20",
+      });
+    }
+
+    // 3. VISIBILITY
+    const weatherCondition = data.weather[0]?.main.toLowerCase();
+    if (weatherCondition === "mist" || weatherCondition === "fog" || (data.visibility && data.visibility < 1000)) {
+      list.push({
+        id: "visibility",
+        type: "warning",
+        category: "weather",
+        severity: "medium",
+        icon: Eye,
+        title: t("alerts.lowVisibility"),
+        message: t("alerts.lowVisibilityMessage"),
+        color: "text-amber-500",
+        bgColor: "bg-amber-500/10",
+        borderColor: "border-amber-500/20",
+      });
+    }
+
+    // 4. EXTREME TEMP
+    if (tempC > 35) {
+      list.push({
+        id: "extreme-heat",
+        type: "warning",
+        category: "weather",
+        severity: "high",
+        icon: Thermometer,
+        title: t("alerts.extremeHeat"),
+        message: t("alerts.extremeHeatMessage", { temp: displayTemp }),
+        color: "text-red-500",
+        bgColor: "bg-red-500/10",
+        borderColor: "border-red-500/20",
+      });
+    } else if (tempC < 0) {
+      list.push({
+        id: "freezing",
+        type: "warning",
+        category: "weather",
+        severity: "high",
+        icon: Snowflake,
+        title: t("alerts.freezing"),
+        message: t("alerts.freezingMessage", { temp: displayTemp }),
+        color: "text-sky-500",
+        bgColor: "bg-sky-500/10",
+        borderColor: "border-sky-500/20",
+      });
+    }
+
+    // 5. AQI ALERTS
+    if (airPollution?.list?.[0]) {
+      const currentAQI = calculateAQI(airPollution.list[0].components);
+      const aqiInfo = getAQIDescription(currentAQI);
+
+      if (currentAQI > 100) {
+        const isHazardous = currentAQI > 300;
+        list.push({
+          id: `aqi-${currentAQI}`,
+          type: isHazardous ? "destructive" : "warning",
+          category: "aqi",
+          severity: isHazardous ? "high" : "medium",
+          icon: isHazardous ? Skull : AlertTriangle,
+          title: t(`aqi.${currentAQI > 200 ? 'veryUnhealthy' : currentAQI > 150 ? 'unhealthy' : 'unhealthySensitive'}`),
+          message: `AQI is ${currentAQI}. ${t(aqiInfo.descKey)}`,
+          color: isHazardous ? "text-red-700" : "text-orange-600",
+          bgColor: isHazardous ? "bg-red-700/10" : "bg-orange-600/10",
+          borderColor: isHazardous ? "border-red-700/20" : "border-orange-600/20",
+        });
+      }
+    }
+
+    // 6. AGRICULTURE ALERTS (J&K Specific focus)
+    if (isInJandK(data)) {
+      // Scab Risk
+      const scab = getScabRisk(tempC, data.main.humidity, data.weather[0]?.main);
+      if (scab.level >= 2) {
+        list.push({
+          id: "scab-risk",
+          type: "warning",
+          category: "agriculture",
+          severity: scab.level === 3 ? "high" : "medium",
+          icon: Sprout,
+          title: t("agricultureAdvisor.scabRisk"),
+          message: t(`agricultureAdvisor.scabDesc.${scab.level}`),
+          color: "text-emerald-500",
+          bgColor: "bg-emerald-500/10",
+          borderColor: "border-emerald-500/20",
+        });
+      }
+
+      // Frost Risk (Next 24h)
+      const frost = getFrostRisk(forecast);
+      if (frost) {
+        list.push({
+          id: "frost-risk",
+          type: "warning",
+          category: "agriculture",
+          severity: "high",
+          icon: Snowflake,
+          title: t("agricultureAdvisor.frostRisk"),
+          message: `Expected frost event in ${frost.hoursAway}h (${frost.temp}°C). Protect sensitive crops.`,
+          color: "text-blue-400",
+          bgColor: "bg-blue-400/10",
+          borderColor: "border-blue-400/20",
+        });
+      }
+
+      // Bloom Spray Warning (April)
+      const currentMonth = new Date().getMonth();
+      if (currentMonth === 3 || currentMonth === 4) { // April/May
+         list.push({
+          id: "bloom-warning",
+          type: "info",
+          category: "agriculture",
+          severity: "medium",
+          icon: AlertCircle,
+          title: "Full Bloom Warning",
+          message: "Protect pollinators! Avoid chemical sprays during full bloom to ensure bee safety and fruit set.",
+          color: "text-yellow-500",
+          bgColor: "bg-yellow-500/10",
+          borderColor: "border-yellow-500/20",
+        });
+      }
+    }
+
+    // 7. SUN PROTECTION (UV)
+    const uvi = estimateUVI(data);
+    if (uvi > 5) {
+      list.push({
+        id: "uv-protection",
+        type: "warning",
+        category: "protection",
+        severity: uvi > 8 ? "high" : "medium",
+        icon: Sun,
+        title: t("outlook.recs.uv.essential"),
+        message: uvi > 8 ? t("outlook.recs.uv.detail_bad", { uvi: uvi.toFixed(1) }) : t("outlook.recs.uv.detail_caution", { uvi: uvi.toFixed(1) }),
+        color: "text-amber-500",
+        bgColor: "bg-amber-500/10",
+        borderColor: "border-amber-500/20",
+      });
+    }
+
+    // 8. CLOTHING ADVISOR
+    const clothing = getClothingAdvice(tempC, data.weather[0]?.id);
+    if (clothing.key !== "comfort") {
+      list.push({
+        id: "clothing-advice",
+        type: "info",
+        category: "clothing",
+        severity: "low",
+        icon: Shirt,
+        title: t(`outlook.recs.clothing.${clothing.key}`),
+        message: t(`outlook.recs.clothing.detail_${clothing.key}`),
+        color: "text-indigo-400",
+        bgColor: "bg-indigo-400/10",
+        borderColor: "border-indigo-400/20",
+      });
+    }
+
+    return list;
+  }, [data, airPollution, forecast, displayTemp, displayWind, windMs, tempC, t, windSymbol]);
+
+  // Handle Notifications
   useEffect(() => {
     if (permission === "granted" && notificationsEnabled && alerts.length > 0) {
       let updated = false;
       const newSentAlerts = { ...sentAlerts };
 
       alerts.forEach((alert) => {
-        const alertKey = `${alert.title}-${data.name}`;
+        const alertKey = `${alert.id}-${data.name}`;
         if (!wasSentRecently(newSentAlerts, alertKey)) {
-          sendNotification({
-            title: `⚠️ ${alert.title}`,
-            body: alert.message,
-            tag: alertKey,
-          });
-          newSentAlerts[alertKey] = Date.now();
-          updated = true;
+          // Only notify for medium/high severity weather/aqi/agriculture
+          if (alert.severity !== 'low' || alert.category === 'agriculture') {
+            sendNotification({
+              title: `⚠️ ${alert.title}`,
+              body: alert.message,
+              tag: alertKey,
+            });
+            newSentAlerts[alertKey] = Date.now();
+            updated = true;
+          }
         }
       });
 
@@ -205,51 +303,76 @@ export function WeatherAlerts({ data, airPollution }: WeatherAlertsProps) {
         setSentAlerts(newSentAlerts);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alerts, permission, sendNotification, data.name, notificationsEnabled]);
+  }, [alerts, permission, sendNotification, data.name, notificationsEnabled, sentAlerts, setSentAlerts]);
 
-  if (alerts.length === 0) {
-    return null;
-  }
+  if (alerts.length === 0) return null;
 
   return (
-    <Card className="col-span-full border-l-4 border-l-destructive/50 bg-gradient-to-br from-background to-muted/20">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <AlertTriangle className="h-6 w-6 text-destructive animate-pulse" />
-          <span>Weather & Air Quality Alerts</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {alerts.map((alert, index) => (
-          <div
-            key={index}
-            className="flex items-start gap-4 rounded-lg border bg-card/50 p-4 transition-all hover:bg-card/80"
-          >
-            <div
-              className={`rounded-full p-2 bg-background shadow-sm ${alert.color}`}
-            >
-              <alert.icon className="h-6 w-6" />
+    <Card className="col-span-full border-none shadow-2xl bg-gradient-to-br from-background/40 to-muted/10 backdrop-blur-xl overflow-hidden">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-tight">
+            <div className="bg-destructive/10 p-2 rounded-xl">
+              <Zap className="h-5 w-5 text-destructive animate-pulse" />
             </div>
-
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center justify-between">
-                <h4 className={`font-semibold text-lg ${alert.color}`}>
-                  {alert.title}
-                </h4>
-                {alert.severity === "high" && (
-                  <span className="inline-flex items-center rounded-full border border-destructive/50 bg-destructive/10 px-2.5 py-0.5 text-xs font-semibold text-destructive">
-                    High Risk
-                  </span>
-                )}
-              </div>
-
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {alert.message}
-              </p>
-            </div>
+            <span>Smart Alerts & Insights</span>
+          </CardTitle>
+          <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted/30 px-2 py-1 rounded-full">
+            {alerts.length} {alerts.length === 1 ? 'Notice' : 'Notices'}
           </div>
-        ))}
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-4 pt-0">
+        <div className="grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <AnimatePresence mode="popLayout">
+            {alerts.map((alert, index) => (
+              <motion.div
+                key={alert.id}
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ 
+                  delay: index * 0.05,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 25
+                }}
+                className={`relative group flex flex-col p-4 rounded-2xl border ${alert.bgColor} ${alert.borderColor} transition-all hover:shadow-lg hover:bg-opacity-20`}
+              >
+                <div className="flex items-start gap-3 mb-2">
+                  <div className={`p-2 rounded-xl bg-background/50 shadow-sm ${alert.color}`}>
+                    <alert.icon className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className={`text-sm font-bold truncate ${alert.color}`}>
+                        {alert.title}
+                      </h4>
+                      {alert.severity === "high" && (
+                        <span className="flex h-2 w-2 rounded-full bg-destructive animate-ping shrink-0" />
+                      )}
+                    </div>
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mt-0.5">
+                      {alert.category}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-muted-foreground leading-relaxed font-medium">
+                  {alert.message}
+                </p>
+
+                {/* Categories Badge on Hover */}
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className={`text-[8px] font-bold uppercase border px-1.5 py-0.5 rounded ${alert.color} ${alert.borderColor}`}>
+                    {alert.severity} Risk
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
       </CardContent>
     </Card>
   );
