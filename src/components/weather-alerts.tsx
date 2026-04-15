@@ -349,7 +349,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
 
       <CardContent className="p-6">
         <motion.div 
-          className="flex flex-wrap items-stretch justify-center gap-6 w-full mx-auto"
+          className="flex flex-wrap items-stretch justify-center gap-6 w-full max-w-[1400px] mx-auto"
           variants={staggerContainerFast}
           initial="hidden"
           animate="visible"
@@ -366,7 +366,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
                 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className={`relative group flex flex-col flex-grow sm:flex-grow-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-[400px] p-6 rounded-[1.5rem] border border-white/10 ${alert.bgColor} backdrop-blur-md overflow-hidden cursor-default transition-all duration-300 shadow-lg isolate`}
+                className={`relative group flex flex-col w-full sm:w-[340px] flex-shrink-0 p-6 rounded-[1.5rem] border border-white/10 ${alert.bgColor} backdrop-blur-md overflow-hidden transition-all duration-300 shadow-lg isolate`}
               >
                 {/* Background Ambient Glows */}
                 <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-30 ${alert.accentBar} mix-blend-screen transition-transform duration-700 group-hover:scale-150 group-hover:opacity-50`} />
