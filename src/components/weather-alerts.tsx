@@ -31,7 +31,6 @@ import {
 import { 
   staggerContainerFast, 
   slideUp, 
-  cardHover, 
 } from "@/lib/animations";
 
 // How long to suppress the same alert before re-notifying (24 hours)
@@ -61,8 +60,8 @@ interface WeatherAlert {
   title: string;
   message: string;
   color: string;
+  accentBar: string;
   bgColor: string;
-  borderColor: string;
 }
 
 export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsProps) {
@@ -101,8 +100,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         title: t("alerts.highWind"),
         message: t("alerts.highWindMessage", { speed: displayWind, unit: windSymbol }),
         color: "text-orange-500",
-        bgColor: "bg-orange-500/10",
-        borderColor: "border-orange-500/20",
+        accentBar: "bg-orange-500",
+        bgColor: "bg-orange-500/5",
       });
     }
 
@@ -117,8 +116,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         title: t("alerts.highHumidity"),
         message: t("alerts.highHumidityMessage", { humidity: data.main.humidity }),
         color: "text-blue-500",
-        bgColor: "bg-blue-500/10",
-        borderColor: "border-blue-500/20",
+        accentBar: "bg-blue-500",
+        bgColor: "bg-blue-500/5",
       });
     }
 
@@ -134,8 +133,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         title: t("alerts.lowVisibility"),
         message: t("alerts.lowVisibilityMessage"),
         color: "text-amber-500",
-        bgColor: "bg-amber-500/10",
-        borderColor: "border-amber-500/20",
+        accentBar: "bg-amber-500",
+        bgColor: "bg-amber-500/5",
       });
     }
 
@@ -149,9 +148,9 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         icon: Thermometer,
         title: t("alerts.extremeHeat"),
         message: t("alerts.extremeHeatMessage", { temp: displayTemp }),
-        color: "text-red-500",
-        bgColor: "bg-red-500/10",
-        borderColor: "border-red-500/20",
+        color: "text-rose-500",
+        accentBar: "bg-rose-500",
+        bgColor: "bg-rose-500/5",
       });
     } else if (tempC < 0) {
       list.push({
@@ -163,8 +162,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         title: t("alerts.freezing"),
         message: t("alerts.freezingMessage", { temp: displayTemp }),
         color: "text-blue-400",
-        bgColor: "bg-blue-400/10",
-        borderColor: "border-blue-400/20",
+        accentBar: "bg-blue-400",
+        bgColor: "bg-blue-400/5",
       });
     }
 
@@ -183,9 +182,9 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
           icon: isHazardous ? Skull : AlertTriangle,
           title: t(`aqi.${currentAQI > 200 ? 'veryUnhealthy' : currentAQI > 150 ? 'unhealthy' : 'unhealthySensitive'}`),
           message: `AQI is ${currentAQI}. ${t(aqiInfo.descKey)}`,
-          color: isHazardous ? "text-red-700" : "text-orange-600",
-          bgColor: isHazardous ? "bg-red-700/10" : "bg-orange-600/10",
-          borderColor: isHazardous ? "border-red-700/20" : "border-orange-600/20",
+          color: isHazardous ? "text-rose-700" : "text-orange-600",
+          accentBar: isHazardous ? "bg-rose-700" : "bg-orange-600",
+          bgColor: isHazardous ? "bg-rose-700/8" : "bg-orange-600/5",
         });
       }
     }
@@ -204,8 +203,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
           title: t("agricultureAdvisor.scabRisk"),
           message: t(`agricultureAdvisor.scabDesc.${scab.level}`),
           color: "text-emerald-500",
-          bgColor: "bg-emerald-500/10",
-          borderColor: "border-emerald-500/20",
+          accentBar: "bg-emerald-500",
+          bgColor: "bg-emerald-500/5",
         });
       }
 
@@ -221,8 +220,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
           title: t("agricultureAdvisor.frostRisk"),
           message: `Expected frost event in ${frost.hoursAway}h (${frost.temp}°C). Protect sensitive crops.`,
           color: "text-blue-400",
-          bgColor: "bg-blue-400/10",
-          borderColor: "border-blue-400/20",
+          accentBar: "bg-blue-400",
+          bgColor: "bg-blue-400/5",
         });
       }
 
@@ -238,8 +237,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
           title: "Full Bloom Warning",
           message: "Protect pollinators! Avoid chemical sprays during full bloom to ensure bee safety and fruit set.",
           color: "text-yellow-500",
-          bgColor: "bg-yellow-500/10",
-          borderColor: "border-yellow-500/20",
+          accentBar: "bg-yellow-500",
+          bgColor: "bg-yellow-500/5",
         });
       }
     }
@@ -256,8 +255,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         title: t("outlook.recs.uv.essential"),
         message: uvi > 8 ? t("outlook.recs.uv.detail_bad", { uvi: uvi.toFixed(1) }) : t("outlook.recs.uv.detail_caution", { uvi: uvi.toFixed(1) }),
         color: "text-amber-500",
-        bgColor: "bg-amber-500/10",
-        borderColor: "border-amber-500/20",
+        accentBar: "bg-amber-500",
+        bgColor: "bg-amber-500/5",
       });
     }
 
@@ -273,8 +272,8 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         title: t(`outlook.recs.clothing.${clothing.key}`),
         message: t(`outlook.recs.clothing.detail_${clothing.key}`),
         color: "text-indigo-400",
-        bgColor: "bg-indigo-400/10",
-        borderColor: "border-indigo-400/20",
+        accentBar: "bg-indigo-400",
+        bgColor: "bg-indigo-400/5",
       });
     }
 
@@ -328,76 +327,80 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
   if (alerts.length === 0) return null;
 
   return (
-    <Card className="col-span-full border-none shadow-2xl bg-gradient-to-br from-background/60 to-muted/20 backdrop-blur-2xl overflow-hidden ring-1 ring-white/5">
-      <CardHeader className="pb-3 border-b flex flex-row items-center justify-between space-y-0">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 p-2.5 rounded-2xl ring-1 ring-primary/20">
-            <Zap className="h-5 w-5 text-primary animate-pulse" />
+    <Card className="col-span-full border-none shadow-xl bg-background/40 backdrop-blur-2xl overflow-hidden ring-1 ring-white/10 outline-none">
+      <CardHeader className="py-3 px-5 flex flex-row items-center gap-3 space-y-0">
+        <div className="flex items-center gap-2.5">
+          <div className="bg-primary/10 p-2 rounded-xl border border-primary/20">
+            <Zap className="h-4 w-4 text-primary" />
           </div>
-          <div className="space-y-0.5">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-primary/80">
-              Live Intelligence
-            </CardTitle>
-            <p className="text-[10px] text-muted-foreground font-medium">Smart Alerts & Local Insights</p>
-          </div>
+          <CardTitle className="text-sm font-bold tracking-tight uppercase">
+            Live Intelligence
+          </CardTitle>
         </div>
-        <div className="flex gap-1.5 items-center">
-          <div className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/20">
-            {alerts.length} {alerts.length === 1 ? 'Alert' : 'Alerts'}
-          </div>
+        <div className="flex items-center h-5 bg-primary/10 px-2 rounded-full border border-primary/20">
+          <span className="text-[10px] font-bold text-primary">
+            {alerts.length} {alerts.length === 1 ? 'Notice' : 'Notices'}
+          </span>
         </div>
       </CardHeader>
 
-      <CardContent className="p-4">
-        <motion.div 
-          className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-          variants={staggerContainerFast}
-          initial="hidden"
-          animate="visible"
-        >
+      <CardContent className="p-4 pt-1">
+        <div className="flex justify-center w-full">
+          <motion.div 
+            className="flex flex-wrap gap-5 items-stretch justify-center w-full"
+            variants={staggerContainerFast}
+            initial="hidden"
+            animate="visible"
+          >
           <AnimatePresence mode="popLayout">
             {alerts.map((alert) => (
               <motion.div
                 key={alert.id}
                 variants={slideUp}
-                whileHover={cardHover.hover}
-                whileTap={cardHover.tap}
-                className={`relative group flex flex-col p-4 rounded-2xl border ${alert.bgColor} ${alert.borderColor} transition-all duration-300`}
+                whileHover={{ 
+                  y: -5, 
+                  scale: 1.02, 
+                  boxShadow: "0px 12px 32px rgba(0,0,0,0.15)",
+                  borderColor: "rgba(255,255,255,0.2)"
+                }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className={`relative group flex flex-col w-[320px] p-4 rounded-2xl border border-white/5 ${alert.bgColor} overflow-hidden cursor-default`}
               >
-                <div className="flex items-start gap-3 mb-2.5">
-                  <div className={`p-2.5 rounded-xl bg-background/80 shadow-inner ring-1 ring-white/10 ${alert.color}`}>
-                    <alert.icon className="h-5 w-5" />
+                {/* Vertical Accent Bar */}
+                <div className={`absolute left-0 top-0 bottom-0 w-1 ${alert.accentBar} opacity-60`} />
+
+                <div className="flex items-start gap-3 mb-3 pl-1">
+                  <div className={`p-2 rounded-xl bg-background shadow-inner ring-1 ring-white/5 ${alert.color}`}>
+                    <alert.icon className="h-4 w-4" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className={`text-sm font-black leading-tight truncate ${alert.color}`}>
+                      <h4 className={`text-[13px] font-bold leading-tight truncate ${alert.color}`}>
                         {alert.title}
                       </h4>
                       {alert.severity === "high" && (
-                        <div className="flex h-1.5 w-1.5 rounded-full bg-destructive animate-ping shrink-0" />
+                        <div className="flex h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping shrink-0" />
                       )}
                     </div>
-                    <div className="flex items-center gap-1.5 mt-1 opacity-60">
-                      <div className={`h-1 w-1 rounded-full ${alert.color.replace('text-', 'bg-')}`} />
-                      <p className="text-[10px] font-black uppercase tracking-[0.15em] truncate">
-                        {alert.category}
-                      </p>
-                    </div>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-foreground/50 mt-1">
+                      {alert.category}
+                    </p>
                   </div>
                 </div>
 
-                <p className="text-[11px] text-muted-foreground leading-relaxed font-bold tracking-tight">
+                <p className="text-[11px] text-muted-foreground/90 font-medium leading-relaxed mb-4 pl-1">
                   {alert.message}
                 </p>
 
-                {/* Severity Badge */}
-                <div className="mt-4 flex items-center justify-between">
-                  <div className={`text-[8px] font-black uppercase tracking-[0.2em] border px-2 py-0.5 rounded-md bg-background/30 ${alert.color} ${alert.borderColor}`}>
-                    {alert.severity} Priority
+                {/* Severity Badge Row */}
+                <div className="mt-auto flex items-center justify-between pl-1">
+                  <div className={`text-[9px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-md ${alert.bgColor} border ${alert.borderColor} ${alert.color.replace('text-', 'border-').replace('text-', 'text-')}`}>
+                    {alert.severity} Risk
                   </div>
                   {alert.severity === 'high' && (
-                    <div className="bg-destructive/10 text-destructive text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border border-destructive/20">
-                        Critical
+                    <div className="text-[8px] font-black uppercase text-rose-500 tracking-widest bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">
+                        Urgent
                     </div>
                   )}
                 </div>
@@ -405,6 +408,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
             ))}
           </AnimatePresence>
         </motion.div>
+        </div>
       </CardContent>
     </Card>
   );
