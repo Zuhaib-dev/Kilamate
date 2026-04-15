@@ -280,3 +280,4 @@ export function WeatherDetails({ data }: WeatherDetailsProps) {
       </CardContent>
     </Card>
   );
+}
