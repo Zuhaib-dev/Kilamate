@@ -312,6 +312,29 @@
             "optimalSpray": "Optimal time for essential sprays (e.g., Mancozeb/Captan)",
             "delaySpray": "Delay pesticide schedules",
             "frostWarning": "Frost warning: Monitor blossoms closely"
+        },
+        "schedule": {
+            "title": "SKUAST Kashmir Spray Schedule",
+            "current": "Est. Current Stage",
+            "months": "Approx. {{period}}",
+            "stages": {
+                "dormancy": "Delayed Dormancy",
+                "dormancyDesc": "HMO for overwintering pests (San Jose Scale, Mites).",
+                "greenTip": "Green Tip",
+                "greenTipDesc": "Fungicides (e.g., Dodine/Captan) for early Apple Scab.",
+                "pinkBud": "Pink Bud",
+                "pinkBudDesc": "Mancozeb/Propineb for Scab & Alternaria.",
+                "fullBloom": "Full Bloom",
+                "fullBloomDesc": "Do NOT spray chemicals. Protect pollinating bees.",
+                "petalFall": "Petal Fall",
+                "petalFallDesc": "Systemic fungicides for Scab & Powdery Mildew.",
+                "fruitDev": "Fruit Development",
+                "fruitDevDesc": "Need-based fungicides based on weather & pests.",
+                "preHarvest": "Pre-Harvest",
+                "preHarvestDesc": "Respect waiting periods before harvest. Prevent rot.",
+                "postHarvest": "Post-Harvest",
+                "postHarvestDesc": "Orchard sanitation and urea spray for defoliation."
+            }
         }
     }
 }
