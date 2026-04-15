@@ -95,7 +95,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
   const rowVariant = {
     hidden: { opacity: 0, x: -16 },
     visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 350, damping: 28 } },
-  };
+  } as const;
 
   return (
     <Card className="h-full">

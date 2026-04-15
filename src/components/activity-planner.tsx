@@ -93,7 +93,7 @@ export const ActivityPlanner = memo(function ActivityPlanner({ data }: ActivityP
   const rowVariant = {
     hidden: { opacity: 0, x: -14 },
     visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 350, damping: 26 } },
-  };
+  } as const;
 
   return (
     <Card className="h-full flex flex-col">

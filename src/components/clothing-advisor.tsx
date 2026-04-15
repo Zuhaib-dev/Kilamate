@@ -96,7 +96,7 @@ export const ClothingAdvisor = memo(function ClothingAdvisor({ data }: ClothingA
       opacity: 1, scale: 1, y: 0,
       transition: { type: "spring", stiffness: 400, damping: 22 },
     },
-  };
+  } as const;
 
   return (
     <Card className="h-full flex flex-col overflow-hidden">

@@ -151,9 +151,9 @@ export function FavoriteCities() {
   }
 
   const childVariant = {
-    hidden: { opacity: 0, x: -20, scale: 0.95 },
-    visible: { opacity: 1, x: 0, scale: 1, transition: { type: "spring", stiffness: 350, damping: 26 } },
-  };
+    hidden: { opacity: 0, x: -10, scale: 0.95 },
+    visible: { opacity: 1, x: 0, scale: 1, transition: { type: "spring", stiffness: 350, damping: 28 } },
+  } as const;
 
   return (
     <>

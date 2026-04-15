@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { staggerContainer, slideUp } from "@/lib/animations";
+import { slideUp } from "@/lib/animations";
 
 interface StaggerListProps {
   children: React.ReactNode;
