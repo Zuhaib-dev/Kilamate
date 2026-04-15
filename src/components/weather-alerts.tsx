@@ -20,7 +20,7 @@ import { useLocalStorage } from "@/hooks/use-local-storage";
 import { calculateAQI, getAQIDescription } from "@/lib/aqi-utils";
 import { useTranslation } from "react-i18next";
 import { usePreferences } from "@/hooks/use-preferences";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   estimateUVI, 
   getScabRisk, 
@@ -354,7 +354,6 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
           initial="hidden"
           animate="visible"
         >
-          <AnimatePresence>
             {alerts.map((alert) => (
               <motion.div
                 key={alert.id}
@@ -417,7 +416,6 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
                 </div>
               </motion.div>
             ))}
-          </AnimatePresence>
         </motion.div>
       </CardContent>
     </Card>
