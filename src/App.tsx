@@ -161,28 +161,31 @@ function AppContent() {
   );
 }
 
+import { ReactLenis } from 'lenis/react';
 import { WeatherThemeProvider } from "./context/weather-theme-provider";
 
 import { HelmetProvider } from "react-helmet-async";
 
 function App() {
   return (
-    <HelmetProvider>
-      <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter
-            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-          >
-            <ThemeProvider defaultTheme="dark">
-              <WeatherThemeProvider>
-                <AppContent />
-              </WeatherThemeProvider>
-            </ThemeProvider>
-          </BrowserRouter>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </ErrorBoundary>
-    </HelmetProvider>
+    <ReactLenis root>
+      <HelmetProvider>
+        <ErrorBoundary>
+          <QueryClientProvider client={queryClient}>
+            <BrowserRouter
+              future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+            >
+              <ThemeProvider defaultTheme="dark">
+                <WeatherThemeProvider>
+                  <AppContent />
+                </WeatherThemeProvider>
+              </ThemeProvider>
+            </BrowserRouter>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </ErrorBoundary>
+      </HelmetProvider>
+    </ReactLenis>
   );
 }
 
