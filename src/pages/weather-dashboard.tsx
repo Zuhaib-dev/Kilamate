@@ -4,35 +4,31 @@ import {
   useWeatherQuery,
   useAirPollutionQuery,
 } from "@/hooks/use-weather";
-import { CurrentWeather } from "../components/current-weather";
-import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
-import { Button } from "../components/ui/button";
+import { CurrentWeather } from "@/components/current-weather";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { MapPin, AlertTriangle, RefreshCw } from "lucide-react";
 import { useGeolocation } from "@/hooks/use-geolocation";
-import { WeatherDetails } from "../components/weather-details";
-import { WeatherForecast } from "../components/weather-forecast";
-import { HourlyTemperature } from "../components/hourly-temperature";
-import { Skeleton } from "../components/ui/skeleton";
+import { WeatherDetails } from "@/components/weather-details";
+import { WeatherForecast } from "@/components/weather-forecast";
+import { HourlyTemperature } from "@/components/hourly-temperature";
+import { Skeleton } from "@/components/ui/skeleton";
 import { FavoriteCities } from "@/components/favorite-cities";
-import { AirPollution } from "../components/air-pollution";
+import { AirPollution } from "@/components/air-pollution";
 import { useWeatherTheme } from "@/context/weather-theme-provider";
 import { useEffect } from "react";
-import { WeatherAlerts } from "../components/weather-alerts";
-import { WeatherStats } from "../components/weather-stats";
-import { SunTracker } from "../components/sun-tracker";
-import { DailyOutlook } from "../components/daily-outlook";
-import { ClothingAdvisor } from "../components/clothing-advisor";
-import { ActivityPlanner } from "../components/activity-planner";
-import { RegionalOverview } from "../components/regional-overview";
-import { TravelAdvisory } from "../components/travel-advisory";
-import { MoonPhase } from "../components/moon-phase";
-import { ComfortLevel } from "../components/comfort-level";
-import { AgricultureAdvisor } from "../components/agriculture-advisor";
-import {
-  SEO,
-  webApplicationSchema,
-  organizationSchema,
-} from "@/components/seo";
+import { WeatherAlerts } from "@/components/weather-alerts";
+import { WeatherStats } from "@/components/weather-stats";
+import { SunTracker } from "@/components/sun-tracker";
+import { DailyOutlook } from "@/components/daily-outlook";
+import { ClothingAdvisor } from "@/components/clothing-advisor";
+import { ActivityPlanner } from "@/components/activity-planner";
+import { RegionalOverview } from "@/components/regional-overview";
+import { TravelAdvisory } from "@/components/travel-advisory";
+import { MoonPhase } from "@/components/moon-phase";
+import { ComfortLevel } from "@/components/comfort-level";
+import { AgricultureAdvisor } from "@/components/agriculture-advisor";
+import { SEO, webApplicationSchema, organizationSchema } from "@/components/seo";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 

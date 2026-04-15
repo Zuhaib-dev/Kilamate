@@ -21,12 +21,12 @@ import { HelmetProvider } from "react-helmet-async";
 
 // Lazy load routes for better performance
 const WeatherDashboard = lazy(() =>
-  import("./pages/weather-dashboard").then((module) => ({
+  import("@/pages/weather-dashboard").then((module) => ({
     default: module.WeatherDashboard,
   })),
 );
 const CityPage = lazy(() =>
-  import("./pages/city-page").then((module) => ({ default: module.CityPage })),
+  import("@/pages/city-page").then((module) => ({ default: module.CityPage })),
 );
 
 const queryClient = new QueryClient({

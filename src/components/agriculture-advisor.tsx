@@ -229,102 +229,100 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
         <div className="border-t border-white/5" />
 
         {/* ── NEW: Live Smart Alerts Row (Scab + Frost + Spray Window) ── */}
-        {(
-          <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-2">
 
-            {/* Apple Scab Risk */}
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1.5 mb-2">
-                <Thermometer className="h-3 w-3" />
-                {t("agricultureAdvisor.scabRisk")}
-              </p>
-              <div className="rounded-xl border border-white/5 bg-background/30 p-3.5">
-                <div className="flex items-center justify-between mb-2.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">🍂</span>
-                    <span className="font-black text-sm" style={{ color: insights.scab.color }}>
-                      {t(`agricultureAdvisor.scabLevel.${insights.scab.level}`)}
-                    </span>
-                  </div>
-                  <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border" style={{ color: insights.scab.color, background: `${insights.scab.color}15`, borderColor: `${insights.scab.color}30` }}>
-                    {insights.scab.label} Risk
+          {/* Apple Scab Risk */}
+          <div>
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1.5 mb-2">
+              <Thermometer className="h-3 w-3" />
+              {t("agricultureAdvisor.scabRisk")}
+            </p>
+            <div className="rounded-xl border border-white/5 bg-background/30 p-3.5">
+              <div className="flex items-center justify-between mb-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🍂</span>
+                  <span className="font-black text-sm" style={{ color: insights.scab.color }}>
+                    {t(`agricultureAdvisor.scabLevel.${insights.scab.level}`)}
                   </span>
                 </div>
-                {/* Risk gauge bar */}
-                <div className="relative h-1.5 w-full rounded-full bg-muted/30 overflow-hidden">
-                  <div className="absolute top-0 left-0 h-full rounded-full transition-all duration-700"
-                    style={{ width: `${insights.scab.pct}%`, background: `linear-gradient(to right, #34d399, #facc15, #f87171)` }} />
-                  <div className="absolute top-0 h-full w-1 bg-white/80 shadow-[0_0_6px_white] z-10 rounded-full transition-all duration-700"
-                    style={{ left: `calc(${insights.scab.pct}% - 2px)` }} />
-                </div>
-                <p className="text-[10px] text-muted-foreground mt-2 leading-snug">
-                  {t(`agricultureAdvisor.scabDesc.${insights.scab.level}`)}
-                </p>
+                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border" style={{ color: insights.scab.color, background: `${insights.scab.color}15`, borderColor: `${insights.scab.color}30` }}>
+                  {insights.scab.label} Risk
+                </span>
               </div>
-            </div>
-
-            {/* Best Spray Window + Frost Countdown side by side */}
-            <div className="grid grid-cols-2 gap-2">
-
-              {/* Best Spray Window */}
-              <div className="rounded-xl border border-white/5 bg-background/30 p-3">
-                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1 mb-2">
-                  <Clock className="h-2.5 w-2.5" />
-                  {t("agricultureAdvisor.sprayWindow")}
-                </p>
-                {sprayWindow ? (
-                  <>
-                    <p className="font-black text-lg tracking-tight leading-none text-emerald-400 italic">
-                      {sprayWindow.timeStr}
-                    </p>
-                    <p className="text-[9px] text-muted-foreground/70 font-black uppercase mt-1">
-                      {sprayWindow.isToday ? "Today" : "Tomorrow"}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[9px] text-muted-foreground bg-muted/40 px-1.5 py-0.5 rounded-md font-bold">
-                        💨 {sprayWindow.windKph} km/h
-                      </span>
-                      <span className="text-[9px] text-muted-foreground bg-muted/40 px-1.5 py-0.5 rounded-md font-bold">
-                        🌡 {sprayWindow.temp}°C
-                      </span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <p className="font-black text-sm text-muted-foreground italic mt-1">{t("agricultureAdvisor.noWindow")}</p>
-                    <p className="text-[9px] text-muted-foreground/60 mt-1">{t("agricultureAdvisor.noWindowDesc")}</p>
-                  </>
-                )}
+              {/* Risk gauge bar */}
+              <div className="relative h-1.5 w-full rounded-full bg-muted/30 overflow-hidden">
+                <div className="absolute top-0 left-0 h-full rounded-full transition-all duration-700"
+                  style={{ width: `${insights.scab.pct}%`, background: `linear-gradient(to right, #34d399, #facc15, #f87171)` }} />
+                <div className="absolute top-0 h-full w-1 bg-white/80 shadow-[0_0_6px_white] z-10 rounded-full transition-all duration-700"
+                  style={{ left: `calc(${insights.scab.pct}% - 2px)` }} />
               </div>
-
-              {/* Frost Risk Countdown */}
-              <div className="rounded-xl border border-white/5 bg-background/30 p-3">
-                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1 mb-2">
-                  <Snowflake className="h-2.5 w-2.5" />
-                  {t("agricultureAdvisor.frostRisk")}
-                </p>
-                {frostRisk ? (
-                  <>
-                    <p className="font-black text-lg tracking-tight leading-none text-blue-400 italic">
-                      {frostRisk.hoursAway}h
-                    </p>
-                    <p className="text-[9px] text-muted-foreground/70 font-black uppercase mt-1">{t("agricultureAdvisor.frostIn")}</p>
-                    <div className="mt-2">
-                      <span className="text-[9px] font-black text-blue-400 bg-blue-400/10 border border-blue-400/20 px-1.5 py-0.5 rounded-md">
-                        ❄ {frostRisk.minTemp}°C min
-                      </span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <p className="font-black text-sm text-emerald-400 italic mt-1">{t("agricultureAdvisor.noFrost")}</p>
-                    <p className="text-[9px] text-muted-foreground/60 mt-1">{t("agricultureAdvisor.noFrostDesc")}</p>
-                  </>
-                )}
-              </div>
+              <p className="text-[10px] text-muted-foreground mt-2 leading-snug">
+                {t(`agricultureAdvisor.scabDesc.${insights.scab.level}`)}
+              </p>
             </div>
           </div>
-        )}
+
+          {/* Best Spray Window + Frost Countdown side by side */}
+          <div className="grid grid-cols-2 gap-2">
+
+            {/* Best Spray Window */}
+            <div className="rounded-xl border border-white/5 bg-background/30 p-3">
+              <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1 mb-2">
+                <Clock className="h-2.5 w-2.5" />
+                {t("agricultureAdvisor.sprayWindow")}
+              </p>
+              {sprayWindow ? (
+                <>
+                  <p className="font-black text-lg tracking-tight leading-none text-emerald-400 italic">
+                    {sprayWindow.timeStr}
+                  </p>
+                  <p className="text-[9px] text-muted-foreground/70 font-black uppercase mt-1">
+                    {sprayWindow.isToday ? "Today" : "Tomorrow"}
+                  </p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-[9px] text-muted-foreground bg-muted/40 px-1.5 py-0.5 rounded-md font-bold">
+                      💨 {sprayWindow.windKph} km/h
+                    </span>
+                    <span className="text-[9px] text-muted-foreground bg-muted/40 px-1.5 py-0.5 rounded-md font-bold">
+                      🌡 {sprayWindow.temp}°C
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="font-black text-sm text-muted-foreground italic mt-1">{t("agricultureAdvisor.noWindow")}</p>
+                  <p className="text-[9px] text-muted-foreground/60 mt-1">{t("agricultureAdvisor.noWindowDesc")}</p>
+                </>
+              )}
+            </div>
+
+            {/* Frost Risk Countdown */}
+            <div className="rounded-xl border border-white/5 bg-background/30 p-3">
+              <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1 mb-2">
+                <Snowflake className="h-2.5 w-2.5" />
+                {t("agricultureAdvisor.frostRisk")}
+              </p>
+              {frostRisk ? (
+                <>
+                  <p className="font-black text-lg tracking-tight leading-none text-blue-400 italic">
+                    {frostRisk.hoursAway}h
+                  </p>
+                  <p className="text-[9px] text-muted-foreground/70 font-black uppercase mt-1">{t("agricultureAdvisor.frostIn")}</p>
+                  <div className="mt-2">
+                    <span className="text-[9px] font-black text-blue-400 bg-blue-400/10 border border-blue-400/20 px-1.5 py-0.5 rounded-md">
+                      ❄ {frostRisk.minTemp}°C min
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="font-black text-sm text-emerald-400 italic mt-1">{t("agricultureAdvisor.noFrost")}</p>
+                  <p className="text-[9px] text-muted-foreground/60 mt-1">{t("agricultureAdvisor.noFrostDesc")}</p>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
 
         <div className="border-t border-white/5" />
 
@@ -380,83 +378,81 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
         <div className="border-t border-white/5" />
 
         {/* ── SKUAST Spray Schedule ── */}
-        {(
-          <div className="space-y-3.5">
-            <div className="flex items-center justify-between">
-              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1.5">
-                <CalendarClock className="h-3 w-3" />
-                {t("agricultureInsights.schedule.title")}
-              </p>
-              <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter text-primary">
-                {t("agricultureInsights.schedule.current")}
-              </Badge>
-            </div>
+        <div className="space-y-3.5">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em] flex items-center gap-1.5">
+              <CalendarClock className="h-3 w-3" />
+              {t("agricultureInsights.schedule.title")}
+            </p>
+            <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter text-primary">
+              {t("agricultureInsights.schedule.current")}
+            </Badge>
+          </div>
 
-            {/* Season progress bar */}
-            <div className="space-y-1.5">
-              <div className="relative h-1.5 w-full rounded-full bg-muted/30 overflow-hidden">
-                <div className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: `${progressPct}%`, background: "linear-gradient(to right, #60a5fa, #2dd4bf, #34d399, #a3e635, #f87171)" }} />
-                <div className="absolute top-0 h-full w-1 bg-white/80 shadow-[0_0_6px_white] z-10 transition-all duration-1000 ease-out rounded-full"
-                  style={{ left: `calc(${progressPct}% - 2px)` }} />
-              </div>
-              <div className="flex justify-between text-[8px] text-muted-foreground font-black uppercase tracking-widest opacity-50">
-                <span>Jan</span><span>Apr</span><span>Aug</span><span>Dec</span>
-              </div>
+          {/* Season progress bar */}
+          <div className="space-y-1.5">
+            <div className="relative h-1.5 w-full rounded-full bg-muted/30 overflow-hidden">
+              <div className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out"
+                style={{ width: `${progressPct}%`, background: "linear-gradient(to right, #60a5fa, #2dd4bf, #34d399, #a3e635, #f87171)" }} />
+              <div className="absolute top-0 h-full w-1 bg-white/80 shadow-[0_0_6px_white] z-10 transition-all duration-1000 ease-out rounded-full"
+                style={{ left: `calc(${progressPct}% - 2px)` }} />
             </div>
+            <div className="flex justify-between text-[8px] text-muted-foreground font-black uppercase tracking-widest opacity-50">
+              <span>Jan</span><span>Apr</span><span>Aug</span><span>Dec</span>
+            </div>
+          </div>
 
-            {/* Active stage cards */}
-            <div className="space-y-2">
-              {activeStages.map(stage => (
-                <div key={stage.id} className="relative rounded-xl p-4 border border-white/5 overflow-hidden transition-all duration-300 hover:scale-[1.01]"
-                  style={{ background: `${stage.accent}10` }}>
-                  <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl" style={{ background: stage.accent }} />
-                  <div className="pl-3 flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                        <span className="text-lg leading-none">{stage.emoji}</span>
-                        <span className="font-black text-sm tracking-tight" style={{ color: stage.accent }}>
-                          {t(`agricultureInsights.schedule.stages.${stage.id}`)}
-                        </span>
-                        {stage.bee && (
-                          <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-yellow-400/15 text-yellow-400 border border-yellow-400/25">🐝 No Spray</span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed">
-                        {t(`agricultureInsights.schedule.stages.${stage.id}Desc`)}
-                      </p>
-                      <p className="text-[9px] font-black uppercase tracking-widest mt-2 opacity-60" style={{ color: stage.accent }}>📅 {stage.monthLabel}</p>
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-70" style={{ background: stage.accent }} />
-                        <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: stage.accent }} />
+          {/* Active stage cards */}
+          <div className="space-y-2">
+            {activeStages.map(stage => (
+              <div key={stage.id} className="relative rounded-xl p-4 border border-white/5 overflow-hidden transition-all duration-300 hover:scale-[1.01]"
+                style={{ background: `${stage.accent}10` }}>
+                <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl" style={{ background: stage.accent }} />
+                <div className="pl-3 flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                      <span className="text-lg leading-none">{stage.emoji}</span>
+                      <span className="font-black text-sm tracking-tight" style={{ color: stage.accent }}>
+                        {t(`agricultureInsights.schedule.stages.${stage.id}`)}
                       </span>
-                      <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: stage.accent }}>Now</span>
+                      {stage.bee && (
+                        <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-yellow-400/15 text-yellow-400 border border-yellow-400/25">🐝 No Spray</span>
+                      )}
                     </div>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                      {t(`agricultureInsights.schedule.stages.${stage.id}Desc`)}
+                    </p>
+                    <p className="text-[9px] font-black uppercase tracking-widest mt-2 opacity-60" style={{ color: stage.accent }}>📅 {stage.monthLabel}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-70" style={{ background: stage.accent }} />
+                      <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: stage.accent }} />
+                    </span>
+                    <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: stage.accent }}>Now</span>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Next stage */}
-            {nextStage && (
-              <div className="rounded-xl border border-white/5 bg-background/20 px-3.5 py-3 flex items-center gap-3">
-                <span className="text-lg shrink-0">{nextStage.emoji}</span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Up Next</p>
-                  <p className="text-xs font-bold" style={{ color: nextStage.accent }}>{t(`agricultureInsights.schedule.stages.${nextStage.id}`)}</p>
-                  <p className="text-[9px] text-muted-foreground/60 font-black uppercase tracking-widest">{nextStage.monthLabel}</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />
               </div>
-            )}
-
-            <p className="text-[9px] text-muted-foreground/40 text-right font-bold uppercase tracking-widest">
-              Source: SKUAST-K · Dept. of Horticulture J&K
-            </p>
+            ))}
           </div>
-        )}
+
+          {/* Next stage */}
+          {nextStage && (
+            <div className="rounded-xl border border-white/5 bg-background/20 px-3.5 py-3 flex items-center gap-3">
+              <span className="text-lg shrink-0">{nextStage.emoji}</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-black uppercase tracking-wider text-muted-foreground">Up Next</p>
+                <p className="text-xs font-bold" style={{ color: nextStage.accent }}>{t(`agricultureInsights.schedule.stages.${nextStage.id}`)}</p>
+                <p className="text-[9px] text-muted-foreground/60 font-black uppercase tracking-widest">{nextStage.monthLabel}</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />
+            </div>
+          )}
+
+          <p className="text-[9px] text-muted-foreground/40 text-right font-bold uppercase tracking-widest">
+            Source: SKUAST-K · Dept. of Horticulture J&K
+          </p>
+        </div>
 
         {/* Subtle bg icon */}
         <div className="absolute -bottom-4 -right-4 h-24 w-24 text-primary/5 -rotate-12 pointer-events-none">
