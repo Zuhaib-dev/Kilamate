@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
-  AlertTriangle,
   Wind,
   Droplets,
   Eye,
@@ -12,6 +11,7 @@ import {
   Shirt,
   Snowflake,
   AlertCircle,
+  AlertTriangle,
 } from "lucide-react";
 import type { WeatherData, AirPollutionResponse, ForecastData } from "@/api/types";
 import { useNotifications } from "@/hooks/use-notifications";
@@ -28,6 +28,11 @@ import {
   isInJandK, 
   getClothingAdvice 
 } from "@/lib/weather-utils";
+import { 
+  staggerContainerFast, 
+  slideUp, 
+  cardHover, 
+} from "@/lib/animations";
 
 // How long to suppress the same alert before re-notifying (24 hours)
 const ALERT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
@@ -74,7 +79,6 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
   const displayTemp = temperatureUnit === "fahrenheit"
     ? Math.round(tempC * 9 / 5 + 32)
     : Math.round(tempC);
-  const tempSymbol = temperatureUnit === "fahrenheit" ? "°F" : "°C";
 
   const displayWind = windSpeedUnit === "mph"
     ? Math.round(windMs * 2.237)
@@ -158,9 +162,9 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
         icon: Snowflake,
         title: t("alerts.freezing"),
         message: t("alerts.freezingMessage", { temp: displayTemp }),
-        color: "text-sky-500",
-        bgColor: "bg-sky-500/10",
-        borderColor: "border-sky-500/20",
+        color: "text-blue-400",
+        bgColor: "bg-blue-400/10",
+        borderColor: "border-blue-400/20",
       });
     }
 
@@ -295,7 +299,7 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
             (alert.category === 'agriculture' && notifAgri) ||
             (alert.category === 'protection' && notifProt) ||
             (alert.category === 'clothing' && notifCloth) ||
-            (alert.category === 'weather' || alert.category === 'aqi'); // Always allow core alerts
+            (alert.category === 'weather' || alert.category === 'aqi');
 
           if (isAllowed && (alert.severity !== 'low' || alert.category === 'agriculture')) {
             const categoryEmoji = 
@@ -324,71 +328,83 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
   if (alerts.length === 0) return null;
 
   return (
-    <Card className="col-span-full border-none shadow-2xl bg-gradient-to-br from-background/40 to-muted/10 backdrop-blur-xl overflow-hidden">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-tight">
-            <div className="bg-destructive/10 p-2 rounded-xl">
-              <Zap className="h-5 w-5 text-destructive animate-pulse" />
-            </div>
-            <span>Smart Alerts & Insights</span>
-          </CardTitle>
-          <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted/30 px-2 py-1 rounded-full">
-            {alerts.length} {alerts.length === 1 ? 'Notice' : 'Notices'}
+    <Card className="col-span-full border-none shadow-2xl bg-gradient-to-br from-background/60 to-muted/20 backdrop-blur-2xl overflow-hidden ring-1 ring-white/5">
+      <CardHeader className="pb-3 border-b flex flex-row items-center justify-between space-y-0">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 p-2.5 rounded-2xl ring-1 ring-primary/20">
+            <Zap className="h-5 w-5 text-primary animate-pulse" />
+          </div>
+          <div className="space-y-0.5">
+            <CardTitle className="text-sm font-black uppercase tracking-widest text-primary/80">
+              Live Intelligence
+            </CardTitle>
+            <p className="text-[10px] text-muted-foreground font-medium">Smart Alerts & Local Insights</p>
+          </div>
+        </div>
+        <div className="flex gap-1.5 items-center">
+          <div className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/20">
+            {alerts.length} {alerts.length === 1 ? 'Alert' : 'Alerts'}
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="p-4 pt-0">
-        <div className="grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <CardContent className="p-4">
+        <motion.div 
+          className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          variants={staggerContainerFast}
+          initial="hidden"
+          animate="visible"
+        >
           <AnimatePresence mode="popLayout">
-            {alerts.map((alert, index) => (
+            {alerts.map((alert) => (
               <motion.div
                 key={alert.id}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ 
-                  delay: index * 0.05,
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 25
-                }}
-                className={`relative group flex flex-col p-4 rounded-2xl border ${alert.bgColor} ${alert.borderColor} transition-all hover:shadow-lg hover:bg-opacity-20`}
+                variants={slideUp}
+                whileHover={cardHover.hover}
+                whileTap={cardHover.tap}
+                className={`relative group flex flex-col p-4 rounded-2xl border ${alert.bgColor} ${alert.borderColor} transition-all duration-300`}
               >
-                <div className="flex items-start gap-3 mb-2">
-                  <div className={`p-2 rounded-xl bg-background/50 shadow-sm ${alert.color}`}>
+                <div className="flex items-start gap-3 mb-2.5">
+                  <div className={`p-2.5 rounded-xl bg-background/80 shadow-inner ring-1 ring-white/10 ${alert.color}`}>
                     <alert.icon className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className={`text-sm font-bold truncate ${alert.color}`}>
+                      <h4 className={`text-sm font-black leading-tight truncate ${alert.color}`}>
                         {alert.title}
                       </h4>
                       {alert.severity === "high" && (
-                        <span className="flex h-2 w-2 rounded-full bg-destructive animate-ping shrink-0" />
+                        <div className="flex h-1.5 w-1.5 rounded-full bg-destructive animate-ping shrink-0" />
                       )}
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mt-0.5">
-                      {alert.category}
-                    </p>
+                    <div className="flex items-center gap-1.5 mt-1 opacity-60">
+                      <div className={`h-1 w-1 rounded-full ${alert.color.replace('text-', 'bg-')}`} />
+                      <p className="text-[10px] font-black uppercase tracking-[0.15em] truncate">
+                        {alert.category}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <p className="text-xs text-muted-foreground leading-relaxed font-medium">
+                <p className="text-[11px] text-muted-foreground leading-relaxed font-bold tracking-tight">
                   {alert.message}
                 </p>
 
-                {/* Categories Badge on Hover */}
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className={`text-[8px] font-bold uppercase border px-1.5 py-0.5 rounded ${alert.color} ${alert.borderColor}`}>
-                    {alert.severity} Risk
+                {/* Severity Badge */}
+                <div className="mt-4 flex items-center justify-between">
+                  <div className={`text-[8px] font-black uppercase tracking-[0.2em] border px-2 py-0.5 rounded-md bg-background/30 ${alert.color} ${alert.borderColor}`}>
+                    {alert.severity} Priority
                   </div>
+                  {alert.severity === 'high' && (
+                    <div className="bg-destructive/10 text-destructive text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border border-destructive/20">
+                        Critical
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </CardContent>
     </Card>
   );
