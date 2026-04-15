@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardContent } from "./ui/card";
 import { ArrowDown, ArrowUp, Droplets, Wind, CloudRain, CloudSnow, Zap, CloudDrizzle, Sun, Cloud } from "lucide-react";
 import type { WeatherData, GeocodingResponse, ForecastData } from "@/api/types";
@@ -5,8 +6,9 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { formatTemperature, formatWindSpeed } from "@/lib/units";
 import { useTranslation } from "react-i18next";
 import { translateCityName, translateStateName } from "@/lib/translate-city";
+import { memo } from "react";
 import { motion } from "framer-motion";
-import { staggerContainerFast, slideInLeft, slideUp, floatAnimation, scaleInBounce } from "@/lib/animations";
+import { staggerContainerFast, slideInLeft, slideUp, scaleInBounce } from "@/lib/animations";
 
 interface CurrentWeatherProps {
   data: WeatherData;
@@ -15,7 +17,7 @@ interface CurrentWeatherProps {
   forecast?: ForecastData;
 }
 
-import { memo } from "react";
+
 
 // Maps OWM weather condition IDs to a short label + icon + color
 function getConditionChip(id: number): { label: string; Icon: React.ElementType; color: string; bg: string } {

@@ -35,7 +35,6 @@ import {
 } from "@/components/seo";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
-import { StaggerList, StaggerItem } from "@/components/motion/StaggerList";
 
 export function WeatherDashboard() {
   const {

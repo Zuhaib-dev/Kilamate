@@ -77,10 +77,7 @@ export function Footer() {
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
               className="relative text-muted-foreground hover:text-foreground group"
             >
-              <motion.div
-                className="absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 group-hover:opacity-100"
-                transition={{ duration: 0.2 }}
-              />
+              <div className="absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               <Icon className="h-5 w-5 relative z-10" />
               <span className="sr-only">{label}</span>
             </motion.a>

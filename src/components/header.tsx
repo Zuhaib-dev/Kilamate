@@ -10,7 +10,9 @@ import { Keyboard } from "lucide-react";
 import { motion } from "framer-motion";
 import { staggerContainerFast } from "@/lib/animations";
 
-const navItemVariant = {
+import type { Variants } from "framer-motion";
+
+const navItemVariant: Variants = {
   hidden: { opacity: 0, y: -10, scale: 0.9 },
   visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 400, damping: 28 } },
 };

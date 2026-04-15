@@ -16,6 +16,7 @@ import type { ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
 import { convertTemperature } from "@/lib/units";
 import { useTranslation } from "react-i18next";
+import { memo } from "react";
 import { motion } from "framer-motion";
 
 interface HourlyTemperatureProps {
@@ -29,7 +30,7 @@ interface ChartData {
   pop: number;
 }
 
-import { memo } from "react";
+
 
 export const HourlyTemperature = memo(function HourlyTemperature({
   data,
