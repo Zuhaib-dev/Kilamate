@@ -278,7 +278,27 @@
         "titleKashmir": "Kashmir Farming Insights",
         "titleGeneric": "Orchard & Farming Advisor",
         "spraying": "Spraying Conditions",
-        "cropAdvice": "Crop Specific Advice"
+        "cropAdvice": "Crop Specific Advice",
+        "scabRisk": "Apple Scab Risk",
+        "sprayWindow": "Best Spray Window",
+        "frostRisk": "Frost Risk",
+        "frostIn": "Until frost event",
+        "noFrost": "Clear",
+        "noFrostDesc": "No frost risk in next 48h",
+        "noWindow": "No window",
+        "noWindowDesc": "Conditions unfavourable today",
+        "scabLevel": {
+            "0": "None",
+            "1": "Low",
+            "2": "Moderate",
+            "3": "High"
+        },
+        "scabDesc": {
+            "0": "No significant scab risk. Conditions do not favour Apple Scab infection.",
+            "1": "Low risk. Conditions may favour early infection. Monitor orchards closely.",
+            "2": "Moderate risk. Apply preventive fungicide (e.g. Mancozeb/Captan) soon.",
+            "3": "High risk! Mills Period conditions active. Spray systemic fungicide immediately."
+        }
     },
     "regionalOverview": {
         "title": "J&K Districts",
