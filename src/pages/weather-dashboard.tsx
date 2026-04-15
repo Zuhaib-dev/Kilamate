@@ -33,6 +33,9 @@ import {
   webApplicationSchema,
   organizationSchema,
 } from "@/components/seo";
+import { motion } from "framer-motion";
+import { AnimateIn } from "@/components/motion/AnimateIn";
+import { StaggerList, StaggerItem } from "@/components/motion/StaggerList";
 
 export function WeatherDashboard() {
   const {
@@ -112,53 +115,72 @@ export function WeatherDashboard() {
       />
 
       <div className="space-y-4">
-        {/* Favorite Cities - Restored to Top */}
-        <FavoriteCities />
+        {/* Favorite Cities */}
+        <AnimateIn variant="slideDown">
+          <FavoriteCities />
+        </AnimateIn>
 
         {locationError && (
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Location Error</AlertTitle>
-            <AlertDescription className="flex flex-col gap-4">
-              <p>{locationError}</p>
-              <Button onClick={getLocation} variant="outline" className="w-fit">
-                <MapPin className="mr-2 h-4 w-4" />
-                Retry Location
-              </Button>
-            </AlertDescription>
-          </Alert>
+          <AnimateIn variant="scaleIn">
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Location Error</AlertTitle>
+              <AlertDescription className="flex flex-col gap-4">
+                <p>{locationError}</p>
+                <Button onClick={getLocation} variant="outline" className="w-fit">
+                  <MapPin className="mr-2 h-4 w-4" />
+                  Retry Location
+                </Button>
+              </AlertDescription>
+            </Alert>
+          </AnimateIn>
         )}
 
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold tracking-tight">My Location</h1>
-          <div className="flex items-center gap-3">
-            {weatherQuery.dataUpdatedAt > 0 && (
-              <span className="text-xs text-muted-foreground hidden sm:block">
-                Updated {
-                  (() => {
-                    const mins = Math.floor((Date.now() - weatherQuery.dataUpdatedAt) / 60000);
-                    if (mins < 1) return "just now";
-                    if (mins === 1) return "1 min ago";
-                    return `${mins} min ago`;
-                  })()
-                }
-              </span>
-            )}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleRefresh}
-              aria-label="Refresh weather data"
-              disabled={weatherQuery.isFetching || forecastQuery.isFetching}
-            >
-              <RefreshCw
-                className={`h-4 w-4 ${
-                  weatherQuery.isFetching ? "animate-spin" : ""
-                }`}
-              />
-            </Button>
+        {/* Section title + refresh */}
+        <AnimateIn variant="slideInLeft">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold tracking-tight">My Location</h1>
+            <div className="flex items-center gap-3">
+              {weatherQuery.dataUpdatedAt > 0 && (
+                <motion.span
+                  className="text-xs text-muted-foreground hidden sm:block"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  Updated {
+                    (() => {
+                      const mins = Math.floor((Date.now() - weatherQuery.dataUpdatedAt) / 60000);
+                      if (mins < 1) return "just now";
+                      if (mins === 1) return "1 min ago";
+                      return `${mins} min ago`;
+                    })()
+                  }
+                </motion.span>
+              )}
+              <motion.div
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.9, rotate: -15 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              >
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleRefresh}
+                  aria-label="Refresh weather data"
+                  disabled={weatherQuery.isFetching || forecastQuery.isFetching}
+                >
+                  <motion.div
+                    animate={weatherQuery.isFetching ? { rotate: 360 } : { rotate: 0 }}
+                    transition={{ duration: 0.8, repeat: weatherQuery.isFetching ? Infinity : 0, ease: "linear" }}
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                  </motion.div>
+                </Button>
+              </motion.div>
+            </div>
           </div>
-        </div>
+        </AnimateIn>
 
         {locationLoading ? (
           <div className="space-y-4">
@@ -169,114 +191,129 @@ export function WeatherDashboard() {
           </div>
         ) : (
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+
             {/* ROW 1: TOP 2 CARDS */}
             {weatherQuery.isLoading ? (
               <Skeleton className="h-[350px] w-full rounded-xl" />
             ) : weatherQuery.data ? (
-              <CurrentWeather
-                data={weatherQuery.data}
-                locationName={locationName}
-                forecast={forecastQuery.data ?? undefined}
-              />
+              <AnimateIn variant="slideInLeft">
+                <CurrentWeather
+                  data={weatherQuery.data}
+                  locationName={locationName}
+                  forecast={forecastQuery.data ?? undefined}
+                />
+              </AnimateIn>
             ) : null}
 
             {forecastQuery.isLoading ? (
               <Skeleton className="h-[350px] w-full rounded-xl" />
             ) : forecastQuery.data ? (
-              <HourlyTemperature data={forecastQuery.data} />
+              <AnimateIn variant="slideInRight">
+                <HourlyTemperature data={forecastQuery.data} />
+              </AnimateIn>
             ) : null}
 
             {/* FULL WIDTH ALERTS IF PRESENT */}
             {weatherQuery.data && (
-              <div className="col-span-full">
+              <AnimateIn variant="fadeIn" className="col-span-full">
                 <WeatherAlerts
                   data={weatherQuery.data}
                   airPollution={airPollutionQuery.data ?? undefined}
                 />
-              </div>
+              </AnimateIn>
             )}
 
-            {/* ROW 2: WEATHER STATS (FULL WIDTH) */}
+            {/* ROW 2: WEATHER STATS */}
             {weatherQuery.data && (
-              <div className="col-span-full">
+              <AnimateIn variant="slideUp" className="col-span-full">
                 <WeatherStats data={weatherQuery.data} />
-              </div>
+              </AnimateIn>
             )}
 
-            {/* ROW 3: SUN TRACKER & MOON PHASE (2 CARDS) */}
+            {/* ROW 3: SUN TRACKER & MOON PHASE */}
             {weatherQuery.isLoading ? (
               <Skeleton className="h-[350px] w-full rounded-xl" />
             ) : weatherQuery.data ? (
-              <SunTracker data={weatherQuery.data} />
+              <AnimateIn variant="slideInLeft">
+                <SunTracker data={weatherQuery.data} />
+              </AnimateIn>
             ) : null}
 
-            {/* MOON PHASE TRACKER */}
-            <MoonPhase />
+            <AnimateIn variant="slideInRight">
+              <MoonPhase />
+            </AnimateIn>
 
-            {/* ROW 4: WEATHER DETAILS (FULL WIDTH) */}
+            {/* ROW 4: WEATHER DETAILS */}
             {weatherQuery.data && (
-              <div className="col-span-full">
+              <AnimateIn variant="slideUp" className="col-span-full">
                 <WeatherDetails data={weatherQuery.data} />
-              </div>
+              </AnimateIn>
             )}
 
-            {/* ROW 5: DAILY OUTLOOK & COMFORT LEVEL (2 CARDS) */}
+            {/* ROW 5: DAILY OUTLOOK & COMFORT LEVEL */}
             {weatherQuery.isLoading ? (
               <Skeleton className="h-[350px] w-full rounded-xl" />
             ) : weatherQuery.data ? (
-              <DailyOutlook
-                weather={weatherQuery.data}
-                forecast={forecastQuery.data ?? null}
-                airPollution={airPollutionQuery.data ?? null}
-              />
+              <AnimateIn variant="slideInLeft">
+                <DailyOutlook
+                  weather={weatherQuery.data}
+                  forecast={forecastQuery.data ?? null}
+                  airPollution={airPollutionQuery.data ?? null}
+                />
+              </AnimateIn>
             ) : null}
 
-            {/* COMFORT LEVEL (DEW POINT GAUGE) */}
             {weatherQuery.data && (
-              <ComfortLevel data={weatherQuery.data} />
+              <AnimateIn variant="slideInRight">
+                <ComfortLevel data={weatherQuery.data} />
+              </AnimateIn>
             )}
 
-            {/* ROW 5: ADVISORS (2 CARDS) */}
+            {/* ROW 5: ADVISORS */}
             {weatherQuery.data && (
-              <ClothingAdvisor data={weatherQuery.data} />
+              <AnimateIn variant="slideInLeft">
+                <ClothingAdvisor data={weatherQuery.data} />
+              </AnimateIn>
             )}
             {forecastQuery.data && (
-              <ActivityPlanner data={forecastQuery.data} />
+              <AnimateIn variant="slideInRight">
+                <ActivityPlanner data={forecastQuery.data} />
+              </AnimateIn>
             )}
 
-            {/* ROW 6: FORECAST (FULL WIDTH) */}
+            {/* ROW 6: FORECAST */}
             {forecastQuery.data && (
-              <div className="col-span-full">
+              <AnimateIn variant="slideUp" className="col-span-full">
                 <WeatherForecast data={forecastQuery.data} />
-              </div>
+              </AnimateIn>
             )}
 
-            {/* ROW 7: AGRICULTURE ADVISOR (FULL WIDTH) */}
+            {/* ROW 7: AGRICULTURE ADVISOR */}
             {weatherQuery.data && (
-              <div className="col-span-full">
-                <AgricultureAdvisor 
-                  weather={weatherQuery.data} 
-                  forecast={forecastQuery.data ?? undefined} 
+              <AnimateIn variant="slideUp" className="col-span-full">
+                <AgricultureAdvisor
+                  weather={weatherQuery.data}
+                  forecast={forecastQuery.data ?? undefined}
                 />
-              </div>
+              </AnimateIn>
             )}
 
-            {/* ROW 7: REGIONAL OVERVIEW (FULL WIDTH) */}
-            <div className="col-span-full">
+            {/* ROW 7: REGIONAL OVERVIEW */}
+            <AnimateIn variant="slideUp" className="col-span-full">
               <RegionalOverview />
-            </div>
+            </AnimateIn>
 
-            {/* ROW 8: AQI (FULL WIDTH) */}
+            {/* ROW 8: AQI */}
             {airPollutionQuery.data && (
-              <div className="col-span-full">
+              <AnimateIn variant="slideUp" className="col-span-full">
                 <AirPollution data={airPollutionQuery.data} />
-              </div>
+              </AnimateIn>
             )}
 
-            {/* ROW 9: TRAVEL ADVISORY (FULL WIDTH) - New Feature */}
-            <div className="col-span-full">
+            {/* ROW 9: TRAVEL ADVISORY */}
+            <AnimateIn variant="slideUp" className="col-span-full">
               <TravelAdvisory />
-            </div>
+            </AnimateIn>
           </div>
         )}
       </div>

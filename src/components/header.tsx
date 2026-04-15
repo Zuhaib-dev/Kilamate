@@ -7,46 +7,88 @@ import { LanguageSwitcher } from "./language-switcher";
 import { useTheme } from "@/context/theme-provider";
 import { Button } from "./ui/button";
 import { Keyboard } from "lucide-react";
+import { motion } from "framer-motion";
+import { slideDown, staggerContainerFast, slideInRight } from "@/lib/animations";
+
+const navItemVariant = {
+  hidden: { opacity: 0, y: -10, scale: 0.9 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 400, damping: 28 } },
+};
 
 export function Header() {
   const { theme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
+    <motion.header
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2"
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.1 }}
+    >
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link to={"/"} className="shrink-0">
-          <img
-            src={theme === "dark" ? "/logo.webp" : "/logo2.webp"}
-            alt="Klimate logo"
-            className="h-10 w-auto md:h-14"
-            width="200"
-            height="56"
-            {...({
-              fetchpriority: "high",
-            } as React.ImgHTMLAttributes<HTMLImageElement>)}
-          />
-        </Link>
+        {/* Logo — subtle scale-up on hover */}
+        <motion.div
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.97 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        >
+          <Link to={"/"} className="shrink-0">
+            <img
+              src={theme === "dark" ? "/logo.webp" : "/logo2.webp"}
+              alt="Klimate logo"
+              className="h-10 w-auto md:h-14"
+              width="200"
+              height="56"
+              {...({
+                fetchpriority: "high",
+              } as React.ImgHTMLAttributes<HTMLImageElement>)}
+            />
+          </Link>
+        </motion.div>
 
-        <div className="flex items-center gap-2 md:gap-4">
-          <CitySearch />
-          <LanguageSwitcher />
-          <NotificationSettings />
-          <PreferencesMenu />
-          <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() =>
-              window.dispatchEvent(new CustomEvent("open-shortcuts-dialog"))
-            }
-            className="hidden md:flex"
-            title="Keyboard Shortcuts (Shift + ?)"
-          >
-            <Keyboard className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
-            <span className="sr-only">Keyboard Shortcuts</span>
-          </Button>
-        </div>
+        {/* Nav items — stagger in from top-right */}
+        <motion.div
+          className="flex items-center gap-2 md:gap-4"
+          variants={staggerContainerFast}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={navItemVariant}>
+            <CitySearch />
+          </motion.div>
+          <motion.div variants={navItemVariant}>
+            <LanguageSwitcher />
+          </motion.div>
+          <motion.div variants={navItemVariant}>
+            <NotificationSettings />
+          </motion.div>
+          <motion.div variants={navItemVariant}>
+            <PreferencesMenu />
+          </motion.div>
+          <motion.div variants={navItemVariant}>
+            <ThemeToggle />
+          </motion.div>
+          <motion.div variants={navItemVariant} className="hidden md:flex">
+            <motion.div
+              whileHover={{ scale: 1.08, rotate: 8 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  window.dispatchEvent(new CustomEvent("open-shortcuts-dialog"))
+                }
+                title="Keyboard Shortcuts (Shift + ?)"
+              >
+                <Keyboard className="h-[1.2rem] w-[1.2rem]" />
+                <span className="sr-only">Keyboard Shortcuts</span>
+              </Button>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
-    </header>
+    </motion.header>
   );
 }
