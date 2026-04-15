@@ -19,6 +19,8 @@ import { TbJacket } from "react-icons/tb";
 import { useTranslation } from "react-i18next";
 import type { WeatherData } from "@/api/types";
 import { memo } from "react";
+import { motion } from "framer-motion";
+import { staggerContainerFast } from "@/lib/animations";
 
 
 interface ClothingAdvisorProps {
@@ -88,28 +90,56 @@ export const ClothingAdvisor = memo(function ClothingAdvisor({ data }: ClothingA
     items.push({ icon: PiSprayBottleFill, labelKey: "clothing.items.sunscreen", color: "text-orange-500" });
   }
 
+  const tileVariant = {
+    hidden: { opacity: 0, scale: 0.7, y: 10 },
+    visible: {
+      opacity: 1, scale: 1, y: 0,
+      transition: { type: "spring", stiffness: 400, damping: 22 },
+    },
+  };
+
   return (
     <Card className="h-full flex flex-col overflow-hidden">
       <CardHeader className="pb-3 border-b bg-muted/20">
         <CardTitle className="flex items-center gap-2 text-base font-bold">
-          <PiTShirtFill className="h-4 w-4 text-primary" />
+          <motion.div
+            animate={{ rotate: [0, -8, 8, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <PiTShirtFill className="h-4 w-4 text-primary" />
+          </motion.div>
           {t("clothing.title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-4">
-        <div className="grid grid-cols-2 gap-3 h-full">
+        <motion.div
+          className="grid grid-cols-2 gap-3 h-full"
+          variants={staggerContainerFast}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+        >
           {items.map((item, i) => (
-            <div 
-              key={i} 
-              className="flex flex-col items-center justify-center p-3 rounded-xl border bg-card hover:bg-muted/50 transition-all group pointer-events-none"
+            <motion.div
+              key={i}
+              className="flex flex-col items-center justify-center p-3 rounded-xl border bg-card"
+              variants={tileVariant}
+              whileHover={{ scale: 1.06, y: -3, boxShadow: "0px 8px 24px rgba(0,0,0,0.12)" }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 24 }}
             >
-              <item.icon className={`h-8 w-8 mb-2 ${item.color} group-hover:scale-110 transition-transform`} />
+              <motion.div
+                whileHover={{ rotate: 15, scale: 1.2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 18 }}
+              >
+                <item.icon className={`h-8 w-8 mb-2 ${item.color}`} />
+              </motion.div>
               <span className="text-[11px] font-bold text-center leading-tight uppercase tracking-tight opacity-80">
                 {t(item.labelKey)}
               </span>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </CardContent>
     </Card>
   );

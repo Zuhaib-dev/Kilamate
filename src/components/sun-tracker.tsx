@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import type { WeatherData } from "@/api/types";
 import { useTranslation } from "react-i18next";
 import { memo } from "react";
+import { motion } from "framer-motion";
 
 interface SunTrackerProps {
   data: WeatherData;
@@ -75,9 +76,19 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
           {isDay ? (
-            <Sunrise className="h-4 w-4 text-orange-400" />
+            <motion.div
+              animate={{ rotate: [0, 15, -15, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Sunrise className="h-4 w-4 text-orange-400" />
+            </motion.div>
           ) : (
-            <Moon className="h-4 w-4 text-slate-400" />
+            <motion.div
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Moon className="h-4 w-4 text-slate-400" />
+            </motion.div>
           )}
           {t("weather.sunrise") && "Sun Tracker"}
         </CardTitle>
@@ -165,23 +176,40 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
             {/* Sun position (daytime) */}
             {isDay && sunPos && (
               <>
-                {/* Glow halo */}
-                <circle cx={sunPos.x} cy={sunPos.y} r="14" fill="url(#sunGlow)" clipPath="url(#aboveHorizon)" />
+                {/* Glow halo — pulsing */}
+                <motion.circle
+                  cx={sunPos.x} cy={sunPos.y} r="14"
+                  fill="url(#sunGlow)"
+                  clipPath="url(#aboveHorizon)"
+                  animate={{ r: [14, 18, 14], opacity: [0.8, 0.4, 0.8] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                />
                 {/* Sun core */}
-                <circle cx={sunPos.x} cy={sunPos.y} r="6" fill={sky.sun} clipPath="url(#aboveHorizon)" filter="url(#glow)" />
-                {/* Sun rays (cross) */}
+                <motion.circle
+                  cx={sunPos.x} cy={sunPos.y} r="6"
+                  fill={sky.sun}
+                  clipPath="url(#aboveHorizon)"
+                  filter="url(#glow)"
+                  initial={{ r: 0, opacity: 0 }}
+                  animate={{ r: 6, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.3 }}
+                />
+                {/* Sun rays */}
                 {[0, 45, 90, 135].map((ang) => {
                   const rad = (ang * Math.PI) / 180;
                   const dx = Math.cos(rad) * 10;
                   const dy = Math.sin(rad) * 10;
                   return (
-                    <line
+                    <motion.line
                       key={ang}
                       x1={sunPos.x - dx} y1={sunPos.y - dy}
                       x2={sunPos.x + dx} y2={sunPos.y + dy}
                       stroke={sky.sun} strokeOpacity={0.35} strokeWidth={1.5}
                       strokeLinecap="round"
                       clipPath="url(#aboveHorizon)"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 + ang * 0.003 }}
                     />
                   );
                 })}
@@ -207,7 +235,13 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
         </div>
 
         {/* Bottom info row */}
-        <div className="grid grid-cols-3 gap-2 text-center">
+        <motion.div
+          className="grid grid-cols-3 gap-2 text-center"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 250, damping: 26, delay: 0.2 }}
+        >
           <div className="space-y-0.5">
             <div className="flex items-center justify-center gap-1 text-orange-400">
               <Sunrise className="h-3.5 w-3.5" />
@@ -245,7 +279,7 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
             </div>
             <p className="text-sm font-bold tabular-nums">{formatTime(sunset)}</p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Day length */}
         <div className="text-center text-xs text-muted-foreground pt-1 border-t">

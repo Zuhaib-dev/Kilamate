@@ -11,6 +11,8 @@ import {
 import { useTranslation } from "react-i18next";
 import type { ForecastData } from "@/api/types";
 import { memo } from "react";
+import { motion } from "framer-motion";
+import { staggerContainerFast } from "@/lib/animations";
 
 interface ActivityPlannerProps {
   data: ForecastData;
@@ -88,34 +90,72 @@ export const ActivityPlanner = memo(function ActivityPlanner({ data }: ActivityP
     return activityList;
   }, [data]);
 
+  const rowVariant = {
+    hidden: { opacity: 0, x: -14 },
+    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 350, damping: 26 } },
+  };
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="pb-3 border-b bg-muted/20">
         <CardTitle className="flex items-center gap-2 text-base font-bold">
-          <Activity className="h-4 w-4 text-primary" />
+          <motion.div
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Activity className="h-4 w-4 text-primary" />
+          </motion.div>
           {t("activity.title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-4 space-y-4">
-        {scores.map((activity, i) => (
-          <div key={i} className="flex flex-col gap-1.5 group">
-            <div className="flex justify-between items-center text-xs">
-              <div className="flex items-center gap-2">
-                <activity.icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="font-semibold uppercase tracking-wider">{t(activity.labelKey)}</span>
+        <motion.div
+          className="space-y-4"
+          variants={staggerContainerFast}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+        >
+          {scores.map((activity, i) => (
+            <motion.div
+              key={i}
+              className="flex flex-col gap-1.5 group"
+              variants={rowVariant}
+              whileHover={{ x: 2 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <div className="flex justify-between items-center text-xs">
+                <div className="flex items-center gap-2">
+                  <motion.div
+                    whileHover={{ scale: 1.3, rotate: -10 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 18 }}
+                  >
+                    <activity.icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </motion.div>
+                  <span className="font-semibold uppercase tracking-wider">{t(activity.labelKey)}</span>
+                </div>
+                <motion.span
+                  className={`font-mono font-bold ${activity.score < 50 ? 'text-muted-foreground' : ''}`}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 + i * 0.05 }}
+                >
+                  {activity.score}%
+                </motion.span>
               </div>
-              <span className={`font-mono font-bold ${activity.score < 50 ? 'text-muted-foreground' : ''}`}>
-                {activity.score}%
-              </span>
-            </div>
-            <div className="h-2 w-full bg-muted rounded-full overflow-hidden shadow-inner translate-z-0">
-              <div 
-                className={`h-full rounded-full transition-all duration-1000 ease-out ${activity.color} shadow-sm`}
-                style={{ width: `${activity.score}%` }}
-              />
-            </div>
-          </div>
-        ))}
+              <div className="h-2 w-full bg-muted rounded-full overflow-hidden shadow-inner">
+                <motion.div
+                  className={`h-full rounded-full shadow-sm ${activity.color}`}
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${activity.score}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.15 + i * 0.07 }}
+                />
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </CardContent>
     </Card>
   );
