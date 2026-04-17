@@ -10,7 +10,6 @@ import {
   Bug,
   AlertTriangle,
   CalendarClock,
-  ChevronRight,
   Thermometer,
   Clock,
   Snowflake,
