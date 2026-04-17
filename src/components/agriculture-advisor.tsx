@@ -20,7 +20,7 @@ import type { WeatherData, ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatWindSpeed } from "@/lib/units";
 import { useTranslation } from "react-i18next";
-import { KASHMIR_APPLE_STAGES } from "@/lib/kashmir-apple-stages";
+import { getAppleStagesStatus } from "@/lib/kashmir-apple-stages";
 
 interface AgricultureAdvisorProps {
   weather: WeatherData;
@@ -156,12 +156,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
   }, [weather, forecast, windSpeedUnit, t]);
 
   const { activeStages, nextStage, progressPct } = useMemo(() => {
-    const currentMonth = new Date().getMonth();
-    const active = KASHMIR_APPLE_STAGES.filter(s => s.months.includes(currentMonth));
-    const fallback = active.length === 0 ? [KASHMIR_APPLE_STAGES[0]] : active;
-    const next = KASHMIR_APPLE_STAGES.find(s => s.months.some(m => m > currentMonth)) ?? KASHMIR_APPLE_STAGES[0];
-    const pct = Math.round(((currentMonth + 1) / 12) * 100);
-    return { activeStages: fallback, nextStage: next, progressPct: pct };
+    return getAppleStagesStatus();
   }, []);
 
   const sprayWindow  = useMemo(() => getBestSprayWindow(forecast, weather.sys.sunrise, weather.sys.sunset), [forecast, weather]);
