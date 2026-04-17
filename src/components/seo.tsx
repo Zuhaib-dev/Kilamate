@@ -26,9 +26,20 @@ export function SEO({
             <meta name="title" content={title} />
             <meta name="description" content={description} />
             <meta name="keywords" content={keywords} />
+            <meta name="author" content="Zuhaib Rashid" />
+            <meta name="publisher" content="Kilamate" />
+            <meta name="robots" content="index, follow" />
+            <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+            <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 
-            {/* Canonical URL */}
+            {/* Canonical URL & Localization */}
             <link rel="canonical" href={canonicalUrl} />
+            <meta httpEquiv="content-language" content="en, hi, ur" />
+
+            {/* Apple / Progressive Web App Tags */}
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+            <meta name="apple-mobile-web-app-title" content="Kilamate" />
 
             {/* Open Graph / Facebook */}
             <meta property="og:type" content={ogType} />
@@ -36,6 +47,8 @@ export function SEO({
             <meta property="og:title" content={title} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={ogImage} />
+            <meta property="og:site_name" content="Kilamate Weather" />
+            <meta property="og:locale" content="en_US" />
 
             {/* Twitter */}
             <meta property="twitter:card" content="summary_large_image" />
@@ -43,6 +56,8 @@ export function SEO({
             <meta property="twitter:title" content={title} />
             <meta property="twitter:description" content={description} />
             <meta property="twitter:image" content={ogImage} />
+            <meta name="twitter:creator" content="@xuhaib_x9" />
+            <meta name="twitter:site" content="@xuhaib_x9" />
 
             {/* Structured Data */}
             {structuredData && (
