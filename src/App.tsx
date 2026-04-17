@@ -32,7 +32,7 @@ const CityPage = lazy(() =>
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 20 * 60 * 1000, // 20 minutes
       gcTime: 30 * 60 * 1000, // 30 minutes (increased from 5)
       retry: 2,
       refetchOnWindowFocus: false, // Don't refetch when window regains focus
