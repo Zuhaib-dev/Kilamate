@@ -455,6 +455,7 @@ export function getAppleStagesStatus() {
   const now = Date.now();
   let active = schedule[0];
   let next = schedule[1];
+  let daysUntilNext = 0;
   
   for (let i = 0; i < schedule.length; i++) {
     const start = schedule[i].startDate.getTime();
@@ -462,6 +463,7 @@ export function getAppleStagesStatus() {
     if (now >= start && now < end) {
       active = schedule[i];
       next = i < schedule.length - 1 ? schedule[i+1] : schedule[0];
+      daysUntilNext = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
       break;
     }
   }
@@ -469,5 +471,5 @@ export function getAppleStagesStatus() {
   const currentMonth = new Date().getMonth();
   const progressPct = Math.round(((currentMonth + 1) / 12) * 100);
   
-  return { activeStages: [active], nextStage: next, progressPct };
+  return { activeStages: [active], nextStage: next, progressPct, daysUntilNext };
 }
