@@ -303,6 +303,21 @@
             "1": "Low risk. Conditions may favour early infection. Monitor orchards closely.",
             "2": "Moderate risk. Apply preventive fungicide (e.g. Mancozeb/Captan) soon.",
             "3": "High risk! Mills Period conditions active. Spray systemic fungicide immediately."
+        },
+        "stagesUI": {
+            "sprayBadge": "Spray",
+            "protectPollinators": "Protect Pollinators",
+            "active": "Active",
+            "recommendedSprays": "Recommended Sprays",
+            "fungicidesPer100L": "Fungicides (Per 100L Water)",
+            "insecticidesAcaricides": "Insecticides / Acaricides",
+            "noChemicalSprays": "No chemical sprays required at this stage.",
+            "managementFertilizer": "Management & Fertilizer",
+            "fertilizerDosage": "Fertilizer Dosage",
+            "culturalPractices": "Cultural Practices",
+            "upNext": "Up Next",
+            "startsInApprox": "Starts in approximately {{days}} days",
+            "days": "Days"
         }
     },
     "regionalOverview": {
