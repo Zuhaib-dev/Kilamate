@@ -12,8 +12,8 @@ interface SEOProps {
 
 export function SEO({
     title = "Kilamate | Weather Forecast in Jammu & Kashmir",
-    description = "Get accurate weather forecasts and real-time Air Quality Index (AQI) for all districts of Jammu & Kashmir including Srinagar, Budgam, Baramulla, Pulwama, Anantnag, Kupwara, Ganderbal, Shopian, Bandipora, Kulgam, Chadoora and more with Kilamate weather app.",
-    keywords = "Weather in Srinagar, AQI in Srinagar, Air Quality Index Jammu Kashmir, Weather in Budgam, Weather in Chadoora, Weather in Baramulla, Weather in Pulwama, Weather in Anantnag, Weather in Kupwara, Weather in Ganderbal, Weather in Shopian, Weather in Bandipora, Weather in Kulgam, Jammu Kashmir weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, pollution levels",
+    description = "Get accurate weather forecasts, real-time Air Quality Index (AQI), and a specialized Kashmir Apple Farming Advisory (SKUAST spray schedules, Apple Scab Risk) for all districts of Jammu & Kashmir with Kilamate.",
+    keywords = "Weather in Srinagar, AQI in Srinagar, Air Quality Index Jammu Kashmir, Weather in Budgam, Weather in Chadoora, Weather in Baramulla, Weather in Pulwama, Weather in Anantnag, Weather in Kupwara, Weather in Ganderbal, Weather in Shopian, Weather in Bandipora, Weather in Kulgam, Jammu Kashmir weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, pollution levels, Agriculture Advisor J&K, Kashmir Apple Farming, SKUAST Spray Schedule, Apple Scab Risk",
     ogImage = "https://www.zuhaibrashid.com/SEO.png",
     ogType = "website",
     canonicalUrl = "https://kilamate.netlify.app/",

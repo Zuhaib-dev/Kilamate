@@ -19,7 +19,7 @@
 
 ## 📌 About
 
-**Kilamate** is a modern, high-performance weather forecasting application developed by **Zuhaib Rashid**. It goes beyond basic temperature readings by providing **Real-time Air Quality Index (AQI)** data, detailed pollutant breakdowns, and interactive trend charts.
+**Kilamate** is a modern, high-performance weather forecasting application developed by **Zuhaib Rashid**. It goes beyond basic temperature readings by providing **Real-time Air Quality Index (AQI)** data, detailed pollutant breakdowns, and specialized **Kashmir agricultural insights** for orchard owners and farmers.
 
 Designed with a focus on user experience, it features a beautiful, responsive interface that works seamlessly across all devices, leveraging the power of **Vite** for lightning-fast performance.
 
@@ -30,6 +30,7 @@ Designed with a focus on user experience, it features a beautiful, responsive in
 - 🌍 **Live Weather:** Accurate current weather data for any city worldwide
 - 🌫️ **Air Quality Index (AQI):** Real-time US AQI scores with color-coded scale
 - 📉 **AQI Trends:** Interactive graphs visualizing air quality forecast
+- 🍎 **Agriculture Advisor:** Kashmir Apple SKUAST-K Spray Schedules, Apple Scab risk warnings, and localized cultural practices
 - 🧪 **Pollutant Details:** Detailed breakdown of PM2.5, PM10, NO2, and SO2 levels
 - ⚠️ **Weather Alerts:** Smart alerts for extreme weather conditions
 - 🌡️ **Unit Preferences:** Toggle between Celsius/Fahrenheit and wind speed units
@@ -134,6 +135,12 @@ Customize your experience:
 - 24-hour forecast trends
 - Detailed pollutant breakdown
 - Health recommendations
+
+### Kashmir Agricultural Insights
+- **SKUAST-K Spray Schedule:** Highly detailed duration-based phenological tracking for apple orchards.
+- **Apple Scab Warnings:** Identifies Mills Period conditions from live meteorological data.
+- **Fungicide & Fertilizer Dosages:** Live chemical advice based on specific apple growth stages (e.g., *Petal Fall, Fruit Let*).
+- **Multi-lingual Native Support:** Translates critical farming terms into Urdu (`ur`) and Hindi (`hi`).
 
 ---
 
