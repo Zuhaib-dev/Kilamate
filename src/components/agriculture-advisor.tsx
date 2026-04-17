@@ -399,11 +399,11 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
                         {stage.name}
                       </span>
                       <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-2" style={{ borderColor: `${stage.accent}50`, color: stage.accent }}>
-                        {stage.sprayNo} Spray
+                        {stage.sprayNo} {t("agricultureAdvisor.stagesUI.sprayBadge")}
                       </Badge>
                       {!stage.beeFriendly && (
                         <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-yellow-400/15 text-yellow-500 border border-yellow-400/25 flex items-center gap-1">
-                          🐝 Protect Pollinators
+                          🐝 {t("agricultureAdvisor.stagesUI.protectPollinators")}
                         </span>
                       )}
                     </div>
@@ -416,7 +416,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-70" style={{ background: stage.accent }} />
                       <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: stage.accent }} />
                     </span>
-                    <span className="text-xs font-black uppercase tracking-widest" style={{ color: stage.accent }}>Now</span>
+                    <span className="text-xs font-black uppercase tracking-widest" style={{ color: stage.accent }}>{t("agricultureAdvisor.stagesUI.active")}</span>
                   </div>
                 </div>
 
@@ -424,12 +424,12 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
                   {/* Salts & Chemical Sprays */}
                   <div className="rounded-xl border p-3 border-white/5 bg-background/40">
                     <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-2 flex items-center gap-1.5 text-blue-400">
-                      <Droplets className="h-3 w-3" /> Recommended Sprays / Salts
+                      <Droplets className="h-3 w-3" /> {t("agricultureAdvisor.stagesUI.recommendedSprays")}
                     </p>
                     <div className="space-y-3">
                       {stage.fungicide[0] !== "X" && (
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Fungicides (Per 100L Water)</p>
+                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">{t("agricultureAdvisor.stagesUI.fungicidesPer100L")}</p>
                           <ul className="text-[11px] text-muted-foreground/90 space-y-1 list-none">
                             {stage.fungicide.map((f, i) => <li key={i} className="leading-snug">{f}</li>)}
                           </ul>
@@ -437,14 +437,14 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
                       )}
                       {stage.insecticide[0] !== "X" && (
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Insecticides / Acaricides</p>
+                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">{t("agricultureAdvisor.stagesUI.insecticidesAcaricides")}</p>
                           <ul className="text-[11px] text-muted-foreground/90 space-y-1 list-none">
                             {stage.insecticide.map((f, i) => <li key={i} className="leading-snug">{f}</li>)}
                           </ul>
                         </div>
                       )}
                       {stage.fungicide[0] === "X" && stage.insecticide[0] === "X" && (
-                        <p className="text-[11px] font-bold text-emerald-400/80">No chemical sprays required at this stage.</p>
+                        <p className="text-[11px] font-bold text-emerald-400/80">{t("agricultureAdvisor.stagesUI.noChemicalSprays")}</p>
                       )}
                     </div>
                   </div>
@@ -452,19 +452,19 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
                   {/* Management & Fertilizer */}
                   <div className="rounded-xl border p-3 border-white/5 bg-background/40">
                     <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-2 flex items-center gap-1.5 text-emerald-400">
-                       <Sprout className="h-3 w-3" /> Management & Fertilizer
+                       <Sprout className="h-3 w-3" /> {t("agricultureAdvisor.stagesUI.managementFertilizer")}
                     </p>
                     <div className="space-y-3">
                        {stage.fertilizer[0] !== "X" && (
                          <div>
-                            <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Fertilizer Dosage</p>
+                            <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">{t("agricultureAdvisor.stagesUI.fertilizerDosage")}</p>
                             <ul className="text-[11px] text-muted-foreground/90 space-y-1 list-none">
                               {stage.fertilizer.map((f, i) => <li key={i} className="leading-snug">{f}</li>)}
                             </ul>
                          </div>
                        )}
                        <div>
-                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Cultural Practices</p>
+                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">{t("agricultureAdvisor.stagesUI.culturalPractices")}</p>
                           <ul className="text-[11px] text-muted-foreground/90 space-y-1 pl-3 list-disc">
                             {stage.practices.map((p, i) => <li key={i} className="leading-snug">{p}</li>)}
                           </ul>
@@ -483,16 +483,16 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
                 <span className="text-2xl shrink-0 drop-shadow-sm">{nextStage.emoji}</span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-black uppercase tracking-widest mb-0.5" style={{ color: nextStage.accent }}>
-                    Up Next
+                    {t("agricultureAdvisor.stagesUI.upNext")}
                   </p>
                   <p className="text-sm font-black tracking-tight leading-tight uppercase">{nextStage.name}</p>
-                  <p className="text-[10px] text-muted-foreground/80 mt-0.5 truncate">Starts in approximately {daysUntilNext} days</p>
+                  <p className="text-[10px] text-muted-foreground/80 mt-0.5 truncate">{t("agricultureAdvisor.stagesUI.startsInApprox", { days: daysUntilNext })}</p>
                 </div>
               </div>
               <div className="shrink-0 text-right">
                 <div className="inline-flex flex-col items-center justify-center min-w-[50px] px-2 py-1.5 rounded-lg border bg-background/40" style={{ borderColor: `${nextStage.accent}30` }}>
                   <span className="text-lg font-black leading-none" style={{ color: nextStage.accent }}>{daysUntilNext}</span>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mt-1">Days</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mt-1">{t("agricultureAdvisor.stagesUI.days")}</span>
                 </div>
               </div>
             </div>
