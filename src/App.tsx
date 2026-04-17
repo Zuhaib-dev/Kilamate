@@ -197,7 +197,7 @@ function App() {
             <BrowserRouter
               future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
             >
-              <ThemeProvider defaultTheme="dark">
+              <ThemeProvider defaultTheme="light">
                 <WeatherThemeProvider>
                   <AppContent />
                 </WeatherThemeProvider>
