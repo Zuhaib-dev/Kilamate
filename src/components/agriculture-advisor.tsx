@@ -20,23 +20,12 @@ import type { WeatherData, ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatWindSpeed } from "@/lib/units";
 import { useTranslation } from "react-i18next";
+import { KASHMIR_APPLE_STAGES } from "@/lib/kashmir-apple-stages";
 
 interface AgricultureAdvisorProps {
   weather: WeatherData;
   forecast?: ForecastData | null;
 }
-
-// SKUAST Kashmir phenological stages
-const ALL_STAGES = [
-  { id: "dormancy",    emoji: "🌿", months: [1, 2],    monthLabel: "Feb – Mar", bee: false, accent: "#60a5fa" },
-  { id: "greenTip",   emoji: "🌱", months: [2, 3],    monthLabel: "Mar – Apr", bee: false, accent: "#2dd4bf" },
-  { id: "pinkBud",    emoji: "🌸", months: [3],        monthLabel: "Apr",       bee: false, accent: "#f472b6" },
-  { id: "fullBloom",  emoji: "🐝", months: [3, 4],    monthLabel: "Apr – May", bee: true,  accent: "#facc15" },
-  { id: "petalFall",  emoji: "🍃", months: [4],        monthLabel: "May",       bee: false, accent: "#34d399" },
-  { id: "fruitDev",   emoji: "🍏", months: [5, 6, 7], monthLabel: "Jun – Aug", bee: false, accent: "#a3e635" },
-  { id: "preHarvest", emoji: "🍎", months: [7, 8],    monthLabel: "Aug – Sep", bee: false, accent: "#f87171" },
-  { id: "postHarvest",emoji: "🍂", months: [9, 10],   monthLabel: "Oct – Nov", bee: false, accent: "#fb923c" },
-];
 
 // Mills Period: Apple Scab risk based on temp + consecutive wet hours
 function getScabRisk(temp: number, humidity: number, isRaining: boolean) {
@@ -168,16 +157,16 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
 
   const { activeStages, nextStage, progressPct } = useMemo(() => {
     const currentMonth = new Date().getMonth();
-    const active = ALL_STAGES.filter(s => s.months.includes(currentMonth));
-    const fallback = active.length === 0 ? [ALL_STAGES[0]] : active;
-    const next = ALL_STAGES.find(s => Math.min(...s.months) > currentMonth) ?? null;
+    const active = KASHMIR_APPLE_STAGES.filter(s => s.months.includes(currentMonth));
+    const fallback = active.length === 0 ? [KASHMIR_APPLE_STAGES[0]] : active;
+    const next = KASHMIR_APPLE_STAGES.find(s => s.months.some(m => m > currentMonth)) ?? KASHMIR_APPLE_STAGES[0];
     const pct = Math.round(((currentMonth + 1) / 12) * 100);
     return { activeStages: fallback, nextStage: next, progressPct: pct };
   }, []);
 
   const sprayWindow  = useMemo(() => getBestSprayWindow(forecast, weather.sys.sunrise, weather.sys.sunset), [forecast, weather]);
   const frostRisk    = useMemo(() => getFrostCountdown(forecast), [forecast]);
-  const isInBloom    = activeStages.some(s => s.id === "fullBloom");
+  const isInBloom    = activeStages.some(s => s.id === "flowering");
   const SprayIcon    = insights.spray.icon;
 
   return (
@@ -403,33 +392,90 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
           </div>
 
           {/* Active stage cards */}
-          <div className="space-y-2">
+          <div className="space-y-4">
             {activeStages.map(stage => (
-              <div key={stage.id} className="relative rounded-xl p-4 border border-white/5 overflow-hidden transition-all duration-300 hover:scale-[1.01]"
-                style={{ background: `${stage.accent}10` }}>
-                <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl" style={{ background: stage.accent }} />
-                <div className="pl-3 flex items-start justify-between gap-3">
+              <div key={stage.id} className="relative rounded-2xl p-5 border overflow-hidden transition-all duration-300 shadow-sm"
+                style={{ background: `${stage.accent}15`, borderColor: `${stage.accent}30` }}>
+                <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ background: stage.accent }} />
+                <div className="flex items-start justify-between gap-3 mb-4">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <span className="text-lg leading-none">{stage.emoji}</span>
-                      <span className="font-black text-sm tracking-tight" style={{ color: stage.accent }}>
-                        {t(`agricultureInsights.schedule.stages.${stage.id}`)}
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                      <span className="text-2xl leading-none">{stage.emoji}</span>
+                      <span className="font-black text-lg tracking-tight uppercase" style={{ color: stage.accent }}>
+                        {stage.name}
                       </span>
-                      {stage.bee && (
-                        <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-yellow-400/15 text-yellow-400 border border-yellow-400/25">🐝 No Spray</span>
+                      <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-2" style={{ borderColor: `${stage.accent}50`, color: stage.accent }}>
+                        {stage.sprayNo} Spray
+                      </Badge>
+                      {!stage.beeFriendly && (
+                        <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-yellow-400/15 text-yellow-500 border border-yellow-400/25 flex items-center gap-1">
+                          🐝 Protect Pollinators
+                        </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      {t(`agricultureInsights.schedule.stages.${stage.id}Desc`)}
+                    <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: stage.accent }}>
+                      📅 {stage.monthLabel}
                     </p>
-                    <p className="text-[9px] font-black uppercase tracking-widest mt-2 opacity-60" style={{ color: stage.accent }}>📅 {stage.monthLabel}</p>
                   </div>
-                  <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
-                    <span className="relative flex h-2 w-2">
+                  <div className="flex items-center gap-2 shrink-0 pt-1">
+                    <span className="relative flex h-3 w-3">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-70" style={{ background: stage.accent }} />
-                      <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: stage.accent }} />
+                      <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: stage.accent }} />
                     </span>
-                    <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: stage.accent }}>Now</span>
+                    <span className="text-xs font-black uppercase tracking-widest" style={{ color: stage.accent }}>Now</span>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 mt-2">
+                  {/* Salts & Chemical Sprays */}
+                  <div className="rounded-xl border p-3 border-white/5 bg-background/40">
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-2 flex items-center gap-1.5 text-blue-400">
+                      <Droplets className="h-3 w-3" /> Recommended Sprays / Salts
+                    </p>
+                    <div className="space-y-3">
+                      {stage.fungicide[0] !== "X" && (
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Fungicides (Per 100L Water)</p>
+                          <ul className="text-[11px] text-muted-foreground/90 space-y-1 list-none">
+                            {stage.fungicide.map((f, i) => <li key={i} className="leading-snug">{f}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      {stage.insecticide[0] !== "X" && (
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Insecticides / Acaricides</p>
+                          <ul className="text-[11px] text-muted-foreground/90 space-y-1 list-none">
+                            {stage.insecticide.map((f, i) => <li key={i} className="leading-snug">{f}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      {stage.fungicide[0] === "X" && stage.insecticide[0] === "X" && (
+                        <p className="text-[11px] font-bold text-emerald-400/80">No chemical sprays required at this stage.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Management & Fertilizer */}
+                  <div className="rounded-xl border p-3 border-white/5 bg-background/40">
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-2 flex items-center gap-1.5 text-emerald-400">
+                       <Sprout className="h-3 w-3" /> Management & Fertilizer
+                    </p>
+                    <div className="space-y-3">
+                       {stage.fertilizer[0] !== "X" && (
+                         <div>
+                            <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Fertilizer Dosage</p>
+                            <ul className="text-[11px] text-muted-foreground/90 space-y-1 list-none">
+                              {stage.fertilizer.map((f, i) => <li key={i} className="leading-snug">{f}</li>)}
+                            </ul>
+                         </div>
+                       )}
+                       <div>
+                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Cultural Practices</p>
+                          <ul className="text-[11px] text-muted-foreground/90 space-y-1 pl-3 list-disc">
+                            {stage.practices.map((p, i) => <li key={i} className="leading-snug">{p}</li>)}
+                          </ul>
+                       </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -442,7 +488,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
               <span className="text-lg shrink-0">{nextStage.emoji}</span>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-black uppercase tracking-wider text-muted-foreground">Up Next</p>
-                <p className="text-xs font-bold" style={{ color: nextStage.accent }}>{t(`agricultureInsights.schedule.stages.${nextStage.id}`)}</p>
+                <p className="text-xs font-bold" style={{ color: nextStage.accent }}>{nextStage.name}</p>
                 <p className="text-[9px] text-muted-foreground/60 font-black uppercase tracking-widest">{nextStage.monthLabel}</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />
