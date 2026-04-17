@@ -155,7 +155,7 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
     };
   }, [weather, forecast, windSpeedUnit, t]);
 
-  const { activeStages, nextStage, progressPct } = useMemo(() => {
+  const { activeStages, nextStage, progressPct, daysUntilNext } = useMemo(() => {
     return getAppleStagesStatus();
   }, []);
 
@@ -479,14 +479,23 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
 
           {/* Next stage */}
           {nextStage && (
-            <div className="rounded-xl border border-white/5 bg-background/20 px-3.5 py-3 flex items-center gap-3">
-              <span className="text-lg shrink-0">{nextStage.emoji}</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-black uppercase tracking-wider text-muted-foreground">Up Next</p>
-                <p className="text-xs font-bold" style={{ color: nextStage.accent }}>{nextStage.name}</p>
-                <p className="text-[9px] text-muted-foreground/60 font-black uppercase tracking-widest">{nextStage.monthLabel}</p>
+            <div className="rounded-xl border border-white/5 bg-background/30 px-4 py-3.5 flex items-center justify-between gap-4 mt-2 transition-all hover:bg-background/40">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-2xl shrink-0 drop-shadow-sm">{nextStage.emoji}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-black uppercase tracking-widest mb-0.5" style={{ color: nextStage.accent }}>
+                    Up Next
+                  </p>
+                  <p className="text-sm font-black tracking-tight leading-tight uppercase">{nextStage.name}</p>
+                  <p className="text-[10px] text-muted-foreground/80 mt-0.5 truncate">Starts in approximately {daysUntilNext} days</p>
+                </div>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />
+              <div className="shrink-0 text-right">
+                <div className="inline-flex flex-col items-center justify-center min-w-[50px] px-2 py-1.5 rounded-lg border bg-background/40" style={{ borderColor: `${nextStage.accent}30` }}>
+                  <span className="text-lg font-black leading-none" style={{ color: nextStage.accent }}>{daysUntilNext}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mt-1">Days</span>
+                </div>
+              </div>
             </div>
           )}
 
