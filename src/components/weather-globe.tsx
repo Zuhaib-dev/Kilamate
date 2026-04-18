@@ -14,6 +14,7 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
   const globeEl = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 400 });
+  const [isTouch, setIsTouch] = useState(false);
   const { theme, systemTheme } = useTheme();
   const { favorites } = useFavorites();
 
@@ -38,21 +39,50 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
     return () => resizeObserver.unobserve(observeTarget);
   }, []);
 
-  // Set initial point of view
+  // Detect touch device
+  useEffect(() => {
+    setIsTouch(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
+
+  // Set initial point of view and interaction settings
   useEffect(() => {
     if (globeEl.current) {
+      // interaction settings for mobile
+      const controls = globeEl.current.controls();
+      if (controls && isTouch) {
+        controls.enabled = false; // Start disabled on mobile to allow scrolling
+      }
+
       // Center on the coordinates
       globeEl.current.pointOfView({ lat: coordinates.lat, lng: coordinates.lon, altitude: 1.5 }, 1000);
       
-      // Auto rotate slowly to bring it to life
-      const controls = globeEl.current.controls();
+      // Auto rotate slowly
       if (controls) {
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.5;
         controls.enableDamping = true;
       }
     }
-  }, [coordinates]);
+  }, [coordinates, isTouch]);
+
+  // Handle touch interactions for mobile (two-finger rotation)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !isTouch) return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length >= 2) {
+        const controls = globeEl.current?.controls();
+        if (controls) controls.enabled = true;
+      } else {
+        const controls = globeEl.current?.controls();
+        if (controls) controls.enabled = false;
+      }
+    };
+
+    container.addEventListener("touchstart", handleTouchStart, { passive: true });
+    return () => container.removeEventListener("touchstart", handleTouchStart);
+  }, [isTouch]);
 
   // Primary coordinate ring (Glowing Red)
   const ringsData = [
@@ -101,9 +131,14 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
+        {isTouch && (
+          <p className="text-[11px] text-center text-muted-foreground py-1 bg-muted/20 border-b border-border/10">
+            Use two fingers to rotate the world
+          </p>
+        )}
         <div 
           ref={containerRef} 
-          className="w-full h-[400px] flex justify-center items-center cursor-grab active:cursor-grabbing overflow-hidden"
+          className="w-full h-[400px] flex justify-center items-center cursor-grab active:cursor-grabbing overflow-hidden relative"
           style={{ background: isDark ? 'radial-gradient(circle, rgba(30,41,59,1) 0%, rgba(2,8,23,1) 100%)' : 'radial-gradient(circle, rgba(248,250,252,1) 0%, rgba(219,234,254,1) 100%)' }}
         >
           {dimensions.width > 0 && (

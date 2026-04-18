@@ -125,7 +125,7 @@ export function WeatherMap({ coordinates }: WeatherMapProps) {
 
   const handleLocateMe = useCallback(() => {
     if (userCoords) {
-      setActiveCoords(userCoords);
+      setActiveCoords({ ...userCoords, _t: Date.now() } as any);
     } else {
       getLocation();
     }
@@ -140,7 +140,7 @@ export function WeatherMap({ coordinates }: WeatherMapProps) {
 
   return (
     <Card className="w-full overflow-hidden flex flex-col border-border/50 bg-card/40 backdrop-blur-md">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 shrink-0">
         <CardTitle className="text-xl flex items-center gap-2">
           <MapIcon className="h-5 w-5 text-primary" />
           Interactive Radar
