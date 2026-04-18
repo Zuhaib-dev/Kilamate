@@ -76,33 +76,10 @@ export default defineConfig({
   build: {
     // Performance optimizations
     target: "esnext",
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console logs in production
-        drop_debugger: true,
-      },
-    },
+    minify: "esbuild", // Revert to faster and more stable esbuild
     rollupOptions: {
       output: {
-        manualChunks: {
-          // React core
-          "react-vendor": ["react", "react-dom", "react-router-dom"],
-          // UI components and animations
-          "ui-vendor": [
-            "@radix-ui/react-dialog", 
-            "@radix-ui/react-dropdown-menu", 
-            "@radix-ui/react-scroll-area",
-            "@radix-ui/react-slot",
-            "@radix-ui/react-tooltip",
-            "framer-motion",
-            "lucide-react"
-          ],
-          // Heavy visuals (Map/Globe)
-          "visual-vendor": ["three", "leaflet", "react-leaflet", "react-globe.gl"],
-          // Data and Utilities
-          "utility-vendor": ["@tanstack/react-query", "recharts", "date-fns", "i18next", "zustand"],
-        },
+        // Rely on Vite's automatic chunking which is more robust for dependency sharing
       },
     },
     // Optimize chunk size

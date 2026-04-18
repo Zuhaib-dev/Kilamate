@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { useNotifications } from "./hooks/use-notifications";
 import { usePreferences } from "./hooks/use-preferences";
 import { useTranslation } from "react-i18next";
-import { ReactLenis } from 'lenis/react';
+import { ReactLenis } from "@studio-freight/react-lenis";
 import { WeatherThemeProvider } from "./context/weather-theme-provider";
 import { HelmetProvider } from "react-helmet-async";
 
