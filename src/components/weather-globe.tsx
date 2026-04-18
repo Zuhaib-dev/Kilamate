@@ -15,6 +15,7 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 400 });
   const [isTouch, setIsTouch] = useState(false);
+  const [isInteracting, setIsInteracting] = useState(false);
   const { theme, systemTheme } = useTheme();
   const { favorites } = useFavorites();
 
@@ -47,25 +48,23 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
   // Set initial point of view and interaction settings
   useEffect(() => {
     if (globeEl.current) {
-      // interaction settings for mobile
       const controls = globeEl.current.controls();
-      if (controls && isTouch) {
-        controls.enabled = false; // Start disabled on mobile to allow scrolling
-      }
-
+      
       // Center on the coordinates
       globeEl.current.pointOfView({ lat: coordinates.lat, lng: coordinates.lon, altitude: 1.5 }, 1000);
       
-      // Auto rotate slowly
       if (controls) {
+        controls.enabled = !isTouch; // Start disabled on mobile to allow scrolling
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.5;
         controls.enableDamping = true;
+        controls.enableZoom = true; // Always allow zoom when controls are active
+        controls.rotateSpeed = isTouch ? 1.50 : 1.0; // Faster rotation for touch
       }
     }
   }, [coordinates, isTouch]);
 
-  // Handle touch interactions for mobile (two-finger rotation)
+  // Handle touch interactions for mobile (two-finger rotation/zoom)
   useEffect(() => {
     const container = containerRef.current;
     if (!container || !isTouch) return;
@@ -75,34 +74,36 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
       if (!controls) return;
 
       if (e.touches.length >= 2) {
-        // Two fingers: enable globe interaction
+        // Two fingers: Claim full control for rotation and zoom
+        setIsInteracting(true);
         controls.enabled = true;
-        // Prevent default only for 2+ fingers to avoid blocking scroll
       } else {
-        // One finger: disable globe interaction to allow page scroll
+        // One finger: Page scroll mode
+        setIsInteracting(false);
         controls.enabled = false;
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      const controls = globeEl.current?.controls();
-      if (!controls) return;
-
       if (e.touches.length >= 2) {
-        // Keep enabled
-        controls.enabled = true;
-      } else {
-        // Ensure disabled
-        controls.enabled = false;
+        // Stop browser from scrolling/panning the whole page while pinching the earth
+        e.preventDefault();
       }
     };
 
+    const handleTouchEnd = () => {
+      setIsInteracting(false);
+    };
+
+    // We use { passive: false } for touchmove to allow preventDefault()
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    container.addEventListener("touchmove", handleTouchMove, { passive: true });
+    container.addEventListener("touchmove", handleTouchMove, { passive: false });
+    container.addEventListener("touchend", handleTouchEnd, { passive: true });
     
     return () => {
       container.removeEventListener("touchstart", handleTouchStart);
       container.removeEventListener("touchmove", handleTouchMove);
+      container.removeEventListener("touchend", handleTouchEnd);
     };
   }, [isTouch]);
 
@@ -163,7 +164,7 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
           className="w-full h-[400px] flex justify-center items-center cursor-grab active:cursor-grabbing overflow-hidden relative"
           style={{ 
             background: isDark ? 'radial-gradient(circle, rgba(30,41,59,1) 0%, rgba(2,8,23,1) 100%)' : 'radial-gradient(circle, rgba(248,250,252,1) 0%, rgba(219,234,254,1) 100%)',
-            touchAction: isTouch ? 'pan-y' : 'auto'
+            touchAction: isInteracting ? 'none' : (isTouch ? 'pan-y' : 'auto')
           }}
         >
           {dimensions.width > 0 && (
