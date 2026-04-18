@@ -1,5 +1,5 @@
 import React from "react";
-import { CardContent, CardHeader } from "./ui/card";
+import { CardContent } from "./ui/card";
 import { ArrowDown, ArrowUp, Droplets, Wind, CloudRain, CloudSnow, Zap, CloudDrizzle, Sun, Cloud } from "lucide-react";
 import type { WeatherData, GeocodingResponse, ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
