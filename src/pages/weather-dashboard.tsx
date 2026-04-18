@@ -19,6 +19,7 @@ import { useWeatherTheme } from "@/context/weather-theme-provider";
 import { useEffect } from "react";
 import { WeatherAlerts } from "@/components/weather-alerts";
 import { WeatherStats } from "@/components/weather-stats";
+import { WeatherMap } from "@/components/weather-map";
 import { SunTracker } from "@/components/sun-tracker";
 import { DailyOutlook } from "@/components/daily-outlook";
 import { ClothingAdvisor } from "@/components/clothing-advisor";
@@ -216,6 +217,13 @@ export function WeatherDashboard() {
                   airPollution={airPollutionQuery.data ?? undefined}
                   forecast={forecastQuery.data ?? undefined}
                 />
+              </AnimateIn>
+            )}
+
+            {/* INTERACTIVE WEATHER MAP */}
+            {coordinates && (
+              <AnimateIn variant="slideUp" className="col-span-full">
+                <WeatherMap coordinates={coordinates} />
               </AnimateIn>
             )}
 
