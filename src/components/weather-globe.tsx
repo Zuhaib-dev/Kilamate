@@ -45,6 +45,7 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
     setIsTouch(window.matchMedia("(pointer: coarse)").matches);
   }, []);
 
+
   // Set initial point of view and interaction settings
   useEffect(() => {
     if (globeEl.current) {
@@ -54,58 +55,32 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
       globeEl.current.pointOfView({ lat: coordinates.lat, lng: coordinates.lon, altitude: 1.5 }, 1000);
       
       if (controls) {
-        controls.enabled = !isTouch; // Start disabled on mobile to allow scrolling
+        controls.enabled = true; // Keep enabled; the overlay will manage access
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.5;
         controls.enableDamping = true;
-        controls.enableZoom = true; // Always allow zoom when controls are active
-        controls.rotateSpeed = isTouch ? 1.50 : 1.0; // Faster rotation for touch
+        controls.enableZoom = true;
+        // Adjust for mobile feel
+        controls.rotateSpeed = isTouch ? 1.8 : 1.0;
+        controls.zoomSpeed = isTouch ? 1.5 : 1.0;
       }
     }
   }, [coordinates, isTouch]);
 
-  // Handle touch interactions for mobile (two-finger rotation/zoom)
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container || !isTouch) return;
+  // Handle 'Gatekeeper' overlay interactions
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length >= 2) {
+      // Two fingers: Unlock the globe interaction
+      setIsInteracting(true);
+    }
+  };
 
-    const handleTouchStart = (e: TouchEvent) => {
-      const controls = globeEl.current?.controls();
-      if (!controls) return;
-
-      if (e.touches.length >= 2) {
-        // Two fingers: Claim full control for rotation and zoom
-        setIsInteracting(true);
-        controls.enabled = true;
-      } else {
-        // One finger: Page scroll mode
-        setIsInteracting(false);
-        controls.enabled = false;
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches.length >= 2) {
-        // Stop browser from scrolling/panning the whole page while pinching the earth
-        e.preventDefault();
-      }
-    };
-
-    const handleTouchEnd = () => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length === 0) {
       setIsInteracting(false);
-    };
+    }
+  };
 
-    // We use { passive: false } for touchmove to allow preventDefault()
-    container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    container.addEventListener("touchmove", handleTouchMove, { passive: false });
-    container.addEventListener("touchend", handleTouchEnd, { passive: true });
-    
-    return () => {
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchmove", handleTouchMove);
-      container.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [isTouch]);
 
   // Primary coordinate ring (Glowing Red)
   const ringsData = [
@@ -164,27 +139,51 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
           className="w-full h-[400px] flex justify-center items-center cursor-grab active:cursor-grabbing overflow-hidden relative"
           style={{ 
             background: isDark ? 'radial-gradient(circle, rgba(30,41,59,1) 0%, rgba(2,8,23,1) 100%)' : 'radial-gradient(circle, rgba(248,250,252,1) 0%, rgba(219,234,254,1) 100%)',
-            touchAction: isInteracting ? 'none' : (isTouch ? 'pan-y' : 'auto')
           }}
         >
-          {dimensions.width > 0 && (
-            <Globe
-              ref={globeEl}
-              width={dimensions.width}
-              height={dimensions.height}
-              globeImageUrl={globeImageUrl}
-              bumpImageUrl={bumpImageUrl}
-              // Data mappings
-              ringsData={ringsData}
-              ringColor={(d: any) => d.color}
-              ringMaxRadius={(d: any) => d.maxR}
-              ringPropagationSpeed={(d: any) => d.propagationSpeed}
-              ringRepeatPeriod={(d: any) => d.repeatPeriod}
-              // Atmosphere
-              atmosphereColor={isDark ? "#3b82f6" : "#0ea5e9"}
-              atmosphereAltitude={0.15}
-              backgroundColor="rgba(0,0,0,0)" // Transparent to show gradient div behind
+          {/* Forced CSS to ensure canvas respects scroll when not interacting */}
+          <style dangerouslySetInnerHTML={{ __html: `
+            .globe-container canvas { 
+              touch-action: ${isInteracting ? 'none' : 'pan-y'} !important;
+              pointer-events: ${isInteracting ? 'auto' : 'none'} !important;
+            }
+          `}} />
+
+          {/* Gatekeeper Overlay */}
+          {isTouch && (
+            <div 
+              className="absolute inset-0 z-10 transition-opacity duration-300"
+              style={{ 
+                pointerEvents: isInteracting ? 'none' : 'auto',
+                touchAction: 'pan-y',
+                backgroundColor: isInteracting ? 'transparent' : 'rgba(0,0,0,0)'
+              }}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
             />
+          )}
+
+          {dimensions.width > 0 && (
+            <div className="globe-container">
+              <Globe
+                ref={globeEl}
+                width={dimensions.width}
+                height={dimensions.height}
+                globeImageUrl={globeImageUrl}
+                bumpImageUrl={bumpImageUrl}
+                // Data mappings
+                ringsData={ringsData}
+                ringColor={(d: any) => d.color}
+                ringMaxRadius={(d: any) => d.maxR}
+                ringPropagationSpeed={(d: any) => d.propagationSpeed}
+                ringRepeatPeriod={(d: any) => d.repeatPeriod}
+                // Atmosphere
+                atmosphereColor={isDark ? "#3b82f6" : "#0ea5e9"}
+                atmosphereAltitude={0.15}
+                backgroundColor="rgba(0,0,0,0)" // Transparent to show gradient div behind
+              />
+            </div>
           )}
         </div>
       </CardContent>
