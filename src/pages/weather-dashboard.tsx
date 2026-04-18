@@ -30,7 +30,7 @@ import { TravelAdvisory } from "@/components/travel-advisory";
 import { MoonPhase } from "@/components/moon-phase";
 import { ComfortLevel } from "@/components/comfort-level";
 import { AgricultureAdvisor } from "@/components/agriculture-advisor";
-import { SEO, webApplicationSchema, organizationSchema } from "@/components/seo";
+import { SEO, webApplicationSchema, organizationSchema, createBreadcrumbSchema } from "@/components/seo";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 
