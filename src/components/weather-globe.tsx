@@ -71,17 +71,39 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
     if (!container || !isTouch) return;
 
     const handleTouchStart = (e: TouchEvent) => {
+      const controls = globeEl.current?.controls();
+      if (!controls) return;
+
       if (e.touches.length >= 2) {
-        const controls = globeEl.current?.controls();
-        if (controls) controls.enabled = true;
+        // Two fingers: enable globe interaction
+        controls.enabled = true;
+        // Prevent default only for 2+ fingers to avoid blocking scroll
       } else {
-        const controls = globeEl.current?.controls();
-        if (controls) controls.enabled = false;
+        // One finger: disable globe interaction to allow page scroll
+        controls.enabled = false;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const controls = globeEl.current?.controls();
+      if (!controls) return;
+
+      if (e.touches.length >= 2) {
+        // Keep enabled
+        controls.enabled = true;
+      } else {
+        // Ensure disabled
+        controls.enabled = false;
       }
     };
 
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    return () => container.removeEventListener("touchstart", handleTouchStart);
+    container.addEventListener("touchmove", handleTouchMove, { passive: true });
+    
+    return () => {
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
+    };
   }, [isTouch]);
 
   // Primary coordinate ring (Glowing Red)
@@ -139,7 +161,10 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
         <div 
           ref={containerRef} 
           className="w-full h-[400px] flex justify-center items-center cursor-grab active:cursor-grabbing overflow-hidden relative"
-          style={{ background: isDark ? 'radial-gradient(circle, rgba(30,41,59,1) 0%, rgba(2,8,23,1) 100%)' : 'radial-gradient(circle, rgba(248,250,252,1) 0%, rgba(219,234,254,1) 100%)' }}
+          style={{ 
+            background: isDark ? 'radial-gradient(circle, rgba(30,41,59,1) 0%, rgba(2,8,23,1) 100%)' : 'radial-gradient(circle, rgba(248,250,252,1) 0%, rgba(219,234,254,1) 100%)',
+            touchAction: isTouch ? 'pan-y' : 'auto'
+          }}
         >
           {dimensions.width > 0 && (
             <Globe
