@@ -103,133 +103,127 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
             aria-label="Sun position arc"
           >
             <defs>
-              {/* Sky gradient background */}
+              {/* Sky gradient background - more vibrant multi-stop */}
               <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor={sky.from} stopOpacity={0.15} />
+                <stop offset="0%" stopColor={sky.from} stopOpacity={0.25} />
+                <stop offset="50%" stopColor={sky.from} stopOpacity={0.1} />
                 <stop offset="100%" stopColor={sky.to} stopOpacity={0.05} />
               </linearGradient>
-              {/* Glowing sun */}
+              
+              {/* Glowing sun core */}
               <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
                 <stop offset="0%"   stopColor={sky.sun} stopOpacity={1} />
-                <stop offset="60%"  stopColor={sky.sun} stopOpacity={0.6} />
+                <stop offset="30%"  stopColor={sky.sun} stopOpacity={0.8} />
                 <stop offset="100%" stopColor={sky.sun} stopOpacity={0} />
               </radialGradient>
-              {/* Arc glow filter */}
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="2" result="blur" />
-                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+
+              {/* Arc glow effect */}
+              <filter id="arcGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
               </filter>
-              {/* Horizon mask — hide below horizon */}
+
+              {/* Horizon mask */}
               <clipPath id="aboveHorizon">
                 <rect x="0" y="0" width="220" height="110" />
               </clipPath>
             </defs>
 
-            {/* Background fill */}
-            <rect x="10" y="0" width="200" height="115" rx="8" fill="url(#skyGrad)" />
+            {/* Background Atmosphere */}
+            <rect x="10" y="5" width="200" height="105" rx="16" fill="url(#skyGrad)" className="transition-all duration-1000" />
 
-            {/* Horizon line */}
-            <line x1="10" y1="110" x2="210" y2="110" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" />
+            {/* Horizon line - subtle and thin */}
+            <line x1="20" y1="110" x2="200" y2="110" stroke="currentColor" strokeOpacity="0.1" strokeWidth="0.5" />
 
-            {/* Arc track (full semicircle) */}
+            {/* Main Arc Track */}
             <path
               d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
               fill="none"
               stroke="currentColor"
-              strokeOpacity="0.12"
-              strokeWidth="2"
+              strokeOpacity="0.08"
+              strokeWidth="1.5"
+              strokeLinecap="round"
               clipPath="url(#aboveHorizon)"
             />
 
-            {/* Completed arc (progress portion) */}
+            {/* Progress Path with Glow */}
             {isDay && progress > 0 && (() => {
               const startPt = polarToXY(180, cx, cy, r);
               const endPt   = polarToXY(sunAngleDeg, cx, cy, r);
               const largeArc = progress > 0.5 ? 1 : 0;
               return (
-                <path
+                <motion.path
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
                   d={`M ${startPt.x} ${startPt.y} A ${r} ${r} 0 ${largeArc} 1 ${endPt.x} ${endPt.y}`}
                   fill="none"
                   stroke={sky.sun}
-                  strokeOpacity={0.5}
-                  strokeWidth="2"
+                  strokeOpacity={0.4}
+                  strokeWidth="3"
+                  strokeLinecap="round"
                   clipPath="url(#aboveHorizon)"
-                  filter="url(#glow)"
+                  filter="url(#arcGlow)"
                 />
               );
             })()}
 
-            {/* Sunrise dot */}
-            <circle cx={cx - r} cy={cy} r="4" fill="#f97316" fillOpacity={0.8} />
-            {/* Sunset dot */}
-            <circle cx={cx + r} cy={cy} r="4" fill="#7c3aed" fillOpacity={0.8} />
+            {/* Terminal points (Sunrise/Sunset) */}
+            <circle cx={cx - r} cy={cy} r="3" fill="#f97316" fillOpacity={0.6} />
+            <circle cx={cx + r} cy={cy} r="3" fill="#7c3aed" fillOpacity={0.6} />
 
-            {/* Sunrise label */}
-            <text x={cx - r} y={cy + 14} textAnchor="middle" fontSize="7" fill="currentColor" fillOpacity={0.5}>
+            {/* Labels for Sunrise/Sunset */}
+            <text x={cx - r} y={cy + 18} textAnchor="middle" fontSize="8" fontWeight="700" fill="currentColor" fillOpacity={0.4} className="font-heading">
               {formatTime(sunrise)}
             </text>
-            {/* Sunset label */}
-            <text x={cx + r} y={cy + 14} textAnchor="middle" fontSize="7" fill="currentColor" fillOpacity={0.5}>
+            <text x={cx + r} y={cy + 18} textAnchor="middle" fontSize="8" fontWeight="700" fill="currentColor" fillOpacity={0.4} className="font-heading">
               {formatTime(sunset)}
             </text>
 
-            {/* Sun position (daytime) */}
+            {/* Interactive Sun Component */}
             {isDay && sunPos && (
-              <>
-                {/* Glow halo — pulsing */}
+              <motion.g
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              >
+                {/* Sun Outer Glow pulsing */}
                 <motion.circle
-                  cx={sunPos.x} cy={sunPos.y} r="14"
+                  cx={sunPos.x} cy={sunPos.y} r="18"
                   fill="url(#sunGlow)"
-                  clipPath="url(#aboveHorizon)"
-                  animate={{ r: [14, 18, 14], opacity: [0.8, 0.4, 0.8] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                  animate={{ r: [18, 24, 18], opacity: [0.6, 0.3, 0.6] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 />
-                {/* Sun core */}
-                <motion.circle
-                  cx={sunPos.x} cy={sunPos.y} r="6"
+                {/* Sun Core */}
+                <circle
+                  cx={sunPos.x} cy={sunPos.y} r="7"
                   fill={sky.sun}
-                  clipPath="url(#aboveHorizon)"
-                  filter="url(#glow)"
-                  initial={{ r: 0, opacity: 0 }}
-                  animate={{ r: 6, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.3 }}
+                  className="shadow-xl"
                 />
-                {/* Sun rays */}
-                {[0, 45, 90, 135].map((ang) => {
-                  const rad = (ang * Math.PI) / 180;
-                  const dx = Math.cos(rad) * 10;
-                  const dy = Math.sin(rad) * 10;
-                  return (
-                    <motion.line
-                      key={ang}
-                      x1={sunPos.x - dx} y1={sunPos.y - dy}
-                      x2={sunPos.x + dx} y2={sunPos.y + dy}
-                      stroke={sky.sun} strokeOpacity={0.35} strokeWidth={1.5}
-                      strokeLinecap="round"
-                      clipPath="url(#aboveHorizon)"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.5 + ang * 0.003 }}
-                    />
-                  );
-                })}
-              </>
+                
+                {/* Vertical Indicator */}
+                <line
+                  x1={sunPos.x} y1={sunPos.y + 10}
+                  x2={sunPos.x} y2={cy}
+                  stroke={sky.sun} strokeOpacity={0.2}
+                  strokeWidth="0.5"
+                  strokeDasharray="2 2"
+                />
+              </motion.g>
             )}
 
-            {/* Moon (nighttime) */}
+            {/* Night Visuals */}
             {!isDay && (
-              <text x={cx} y={cy - 30} textAnchor="middle" fontSize="28" fill="#94a3b8">🌙</text>
-            )}
-
-            {/* Vertical dotted "now" line from sun to horizon */}
-            {isDay && sunPos && (
-              <line
-                x1={sunPos.x} y1={sunPos.y + 8}
-                x2={sunPos.x} y2={cy}
-                stroke={sky.sun} strokeOpacity={0.25} strokeWidth={1}
-                strokeDasharray="3 2"
-                clipPath="url(#aboveHorizon)"
-              />
+              <motion.g
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <text x={cx} y={cy - 20} textAnchor="middle" fontSize="32">🌙</text>
+                <text x={cx} y={cy - 60} textAnchor="middle" fontSize="10" fontWeight="800" fill="currentColor" fillOpacity={0.3} className="uppercase tracking-[0.2em]">
+                  {t("sun.nighttime")}
+                </text>
+              </motion.g>
             )}
           </svg>
         </div>

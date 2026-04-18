@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent } from "./ui/card";
+import { CardContent, CardHeader } from "./ui/card";
 import { ArrowDown, ArrowUp, Droplets, Wind, CloudRain, CloudSnow, Zap, CloudDrizzle, Sun, Cloud } from "lucide-react";
 import type { WeatherData, GeocodingResponse, ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
@@ -9,6 +9,7 @@ import { translateCityName, translateStateName } from "@/lib/translate-city";
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { staggerContainerFast, slideInLeft, slideUp, scaleInBounce } from "@/lib/animations";
+import { SpotlightCard } from "./motion/SpotlightCard";
 
 interface CurrentWeatherProps {
   data: WeatherData;
@@ -71,14 +72,9 @@ export const CurrentWeather = memo(function CurrentWeather({
   const precipChip    = getPrecipChip(upcomingPop);
 
   return (
-    <motion.div
-      whileHover={{ scale: 1.01, y: -2 }}
-      transition={{ type: "spring", stiffness: 300, damping: 28 }}
-    >
-      <Card className="overflow-hidden">
-        <CardContent className="p-6">
+    <SpotlightCard className="h-full">
+      <CardContent className="p-6">
           <div className="grid gap-6 md:grid-cols-2">
-
             {/* LEFT — info */}
             <motion.div
               className="space-y-4"
@@ -244,7 +240,6 @@ export const CurrentWeather = memo(function CurrentWeather({
             </div>
           </div>
         </CardContent>
-      </Card>
-    </motion.div>
+    </SpotlightCard>
   );
 });

@@ -115,7 +115,17 @@ export const createBreadcrumbSchema = (items: { name: string; item: string }[]) 
 /**
  * Creates a localized Weather Forecast schema for rich snippets
  */
-export const createWeatherSchema = (city: string, country: string, temp: number, condition: string, lat: number, lon: number) => ({
+export const createWeatherSchema = (
+    city: string, 
+    country: string, 
+    temp: number, 
+    condition: string, 
+    lat: number, 
+    lon: number,
+    humidity?: number,
+    windSpeed?: number,
+    aqi?: number
+) => ({
     "@context": "https://schema.org",
     "@type": "Place",
     "name": city,
@@ -124,11 +134,24 @@ export const createWeatherSchema = (city: string, country: string, temp: number,
         "latitude": lat,
         "longitude": lon
     },
-    "hasMap": `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`,
     "mainEntity": {
         "@type": "WeatherReport",
-        "text": `${condition} in ${city}`,
-        "temperature": `${temp} °C`,
+        "name": `Weather in ${city}`,
+        "description": `Current weather condition in ${city} is ${condition} with a temperature of ${temp}°C.`,
+        "url": `https://kilamate.netlify.app/?lat=${lat}&lon=${lon}`,
+        "datePublished": new Date().toISOString(),
+        "temperature": {
+            "@type": "QuantitativeValue",
+            "value": temp,
+            "unitCode": "CEL"
+        },
+        "humidity": humidity ? `${humidity}%` : undefined,
+        "windSpeed": windSpeed ? {
+            "@type": "QuantitativeValue",
+            "value": Math.round(windSpeed * 3.6 * 10) / 10,
+            "unitCode": "KMH"
+        } : undefined,
+        "airQualityIndex": aqi,
         "address": {
             "@type": "PostalAddress",
             "addressLocality": city,

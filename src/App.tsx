@@ -45,6 +45,8 @@ const queryClient = new QueryClient({
   },
 });
 
+import { MeshBackground } from "./components/motion/MeshBackground";
+
 function AppContent() {
   const [showShortcuts, setShowShortcuts] = useState(false);
   const { setTheme, theme } = useTheme();
@@ -139,6 +141,7 @@ function AppContent() {
 
   return (
     <>
+      <MeshBackground />
       <Layout>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div

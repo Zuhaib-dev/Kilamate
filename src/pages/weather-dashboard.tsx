@@ -16,11 +16,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FavoriteCities } from "@/components/favorite-cities";
 import { AirPollution } from "@/components/air-pollution";
 import { useWeatherTheme } from "@/context/weather-theme-provider";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { WeatherAlerts } from "@/components/weather-alerts";
 import { WeatherStats } from "@/components/weather-stats";
-import { WeatherMap } from "@/components/weather-map";
-import { WeatherGlobe } from "@/components/weather-globe";
+
+// Lazy loaded components
+const WeatherMap = lazy(() => import("@/components/weather-map").then(m => ({ default: m.WeatherMap })));
+const WeatherGlobe = lazy(() => import("@/components/weather-globe").then(m => ({ default: m.WeatherGlobe })));
 import { SunTracker } from "@/components/sun-tracker";
 import { DailyOutlook } from "@/components/daily-outlook";
 import { ClothingAdvisor } from "@/components/clothing-advisor";
@@ -30,7 +32,7 @@ import { TravelAdvisory } from "@/components/travel-advisory";
 import { MoonPhase } from "@/components/moon-phase";
 import { ComfortLevel } from "@/components/comfort-level";
 import { AgricultureAdvisor } from "@/components/agriculture-advisor";
-import { SEO, webApplicationSchema, organizationSchema, createBreadcrumbSchema } from "@/components/seo";
+import { SEO, webApplicationSchema, organizationSchema, createBreadcrumbSchema, createWeatherSchema } from "@/components/seo";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 
@@ -112,9 +114,21 @@ export function WeatherDashboard() {
           organizationSchema, 
           webApplicationSchema,
           createBreadcrumbSchema([
-            { name: "Home", item: "https://kilamate.netlify.app" }
-          ])
-        ]}
+            { name: "Home", item: "https://kilamate.netlify.app" },
+            { name: locationName?.name || "Dashboard", item: window.location.href }
+          ]),
+          weatherQuery.data && createWeatherSchema(
+            locationName?.name || "Current Location",
+            locationName?.country || "IN",
+            weatherQuery.data.main.temp,
+            weatherQuery.data.weather[0].description,
+            coordinates?.lat || 0,
+            coordinates?.lon || 0,
+            weatherQuery.data.main.humidity,
+            weatherQuery.data.wind.speed,
+            airPollutionQuery.data?.list[0].main.aqi
+          )
+        ].filter(Boolean) as object[]}
       />
 
       <div className="space-y-4">
@@ -227,11 +241,15 @@ export function WeatherDashboard() {
               </AnimateIn>
             )}
 
-            {/* INTERACTIVE WEATHER MAP */}
+            {/* INTERACTIVE DATA VISUALS */}
             {coordinates && (
               <AnimateIn variant="slideUp" className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <WeatherMap coordinates={coordinates} />
-                <WeatherGlobe coordinates={coordinates} />
+                <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-xl" />}>
+                  <WeatherMap coordinates={coordinates} />
+                </Suspense>
+                <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-xl" />}>
+                  <WeatherGlobe coordinates={coordinates} />
+                </Suspense>
               </AnimateIn>
             )}
 

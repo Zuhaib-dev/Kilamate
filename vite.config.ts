@@ -86,11 +86,22 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // Split vendor chunks for better caching
+          // React core
           "react-vendor": ["react", "react-dom", "react-router-dom"],
-          "chart-vendor": ["recharts"],
-          "query-vendor": ["@tanstack/react-query"],
-          "ui-vendor": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu"],
+          // UI components and animations
+          "ui-vendor": [
+            "@radix-ui/react-dialog", 
+            "@radix-ui/react-dropdown-menu", 
+            "@radix-ui/react-scroll-area",
+            "@radix-ui/react-slot",
+            "@radix-ui/react-tooltip",
+            "framer-motion",
+            "lucide-react"
+          ],
+          // Heavy visuals (Map/Globe)
+          "visual-vendor": ["three", "leaflet", "react-leaflet", "react-globe.gl"],
+          // Data and Utilities
+          "utility-vendor": ["@tanstack/react-query", "recharts", "date-fns", "i18next", "zustand"],
         },
       },
     },
