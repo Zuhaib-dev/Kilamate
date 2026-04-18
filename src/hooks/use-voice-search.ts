@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 
-// Declare the browser SpeechRecognition API type
-type SpeechRecognitionType = typeof window extends { SpeechRecognition: infer T } ? T : never;
 
 interface UseVoiceSearchReturn {
   isListening: boolean;
