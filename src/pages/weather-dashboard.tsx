@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import { WeatherAlerts } from "@/components/weather-alerts";
 import { WeatherStats } from "@/components/weather-stats";
 import { WeatherMap } from "@/components/weather-map";
+import { WeatherGlobe } from "@/components/weather-globe";
 import { SunTracker } from "@/components/sun-tracker";
 import { DailyOutlook } from "@/components/daily-outlook";
 import { ClothingAdvisor } from "@/components/clothing-advisor";
@@ -222,8 +223,9 @@ export function WeatherDashboard() {
 
             {/* INTERACTIVE WEATHER MAP */}
             {coordinates && (
-              <AnimateIn variant="slideUp" className="col-span-full">
+              <AnimateIn variant="slideUp" className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <WeatherMap coordinates={coordinates} />
+                <WeatherGlobe coordinates={coordinates} />
               </AnimateIn>
             )}
 
