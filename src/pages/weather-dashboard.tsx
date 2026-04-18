@@ -105,10 +105,16 @@ export function WeatherDashboard() {
   return (
     <>
       <SEO
-        title="Kilamate | Real-Time Weather Forecast for Jammu & Kashmir"
-        description="Get accurate, real-time weather forecasts and Air Quality Index (AQI) for all districts of Jammu & Kashmir. Track weather in Srinagar, Budgam, Baramulla, Pulwama, and more."
+        title={locationName ? `${locationName.name} Weather: ${Math.round(weatherQuery.data?.main.temp ?? 0)}°C & ${weatherQuery.data?.weather[0].main ?? 'Live Forecast'} | Kilamate` : "Kilamate | Real-Time Weather Forecast for Jammu & Kashmir"}
+        description={locationName ? `Check live weather in ${locationName.name}, J&K. Current temp: ${Math.round(weatherQuery.data?.main.temp ?? 0)}°C with ${weatherQuery.data?.weather[0].description}. Detailed hourly and 5-day forecast.` : "Get accurate, real-time weather forecasts and Air Quality Index (AQI) for all districts of Jammu & Kashmir. Track weather in Srinagar, Budgam, Baramulla, Pulwama, and more."}
         keywords="weather forecast J&K, Jammu Kashmir weather, Srinagar weather, real-time AQI, air quality index, weather app Kashmir, Kilamate"
-        structuredData={[organizationSchema, webApplicationSchema]}
+        structuredData={[
+          organizationSchema, 
+          webApplicationSchema,
+          createBreadcrumbSchema([
+            { name: "Home", item: "https://kilamate.netlify.app" }
+          ])
+        ]}
       />
 
       <div className="space-y-4">

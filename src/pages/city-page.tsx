@@ -21,7 +21,7 @@ import { ClothingAdvisor } from "../components/clothing-advisor";
 import { MoonPhase } from "../components/moon-phase";
 import { ComfortLevel } from "../components/comfort-level";
 import { AgricultureAdvisor } from "../components/agriculture-advisor";
-import { SEO, createCitySchema } from "@/components/seo";
+import { SEO, createWeatherSchema, createBreadcrumbSchema } from "@/components/seo";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 
@@ -60,11 +60,17 @@ export function CityPage() {
   return (
     <>
       <SEO
-        title={`${cityName} Weather Forecast | Current Temperature & AQI - Kilamate`}
-        description={`Current weather in ${cityName}, ${country}: ${temp}°C, ${description}. Get real-time weather forecast, hourly temperature, air quality index (AQI), and 5-day weather predictions for ${cityName}.`}
-        keywords={`${cityName} weather, weather in ${cityName}, ${cityName} temperature, ${cityName} AQI, ${cityName} air quality, ${cityName} forecast, weather ${country}`}
+        title={`${cityName} Weather: ${temp}°C & ${description} | Current AQI - Kilamate`}
+        description={`Live weather forecast for ${cityName}, ${country}. Current temperature: ${temp}°C, Conditions: ${description}. View real-time Air Quality Index (AQI), hourly updates, and 5-day predictions.`}
+        keywords={`${cityName} weather, weather in ${cityName}, ${cityName} temperature, ${cityName} AQI, ${cityName} air quality, ${cityName} forecast, Kashmir weather`}
         canonicalUrl={`https://kilamate.netlify.app/city/${cityName}?lat=${lat}&lon=${lon}`}
-        structuredData={createCitySchema(cityName, lat, lon)}
+        structuredData={[
+          createWeatherSchema(cityName, country, temp, description, lat, lon),
+          createBreadcrumbSchema([
+            { name: "Home", item: "https://kilamate.netlify.app" },
+            { name: cityName, item: `https://kilamate.netlify.app/city/${cityName}?lat=${lat}&lon=${lon}` }
+          ])
+        ]}
       />
 
       <div className="space-y-4">

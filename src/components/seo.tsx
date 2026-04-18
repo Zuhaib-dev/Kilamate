@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 
 interface SEOProps {
     title?: string;
@@ -7,20 +8,25 @@ interface SEOProps {
     ogImage?: string;
     ogType?: string;
     canonicalUrl?: string;
-    structuredData?: object;
+    structuredData?: object | object[];
 }
 
 export function SEO({
     title = "Kilamate | Weather Forecast in Jammu & Kashmir",
-    description = "Get accurate weather forecasts, real-time Air Quality Index (AQI), and a specialized Kashmir Apple Farming Advisory (SKUAST spray schedules, Apple Scab Risk) for all districts of Jammu & Kashmir with Kilamate.",
-    keywords = "Weather in Srinagar, AQI in Srinagar, Air Quality Index Jammu Kashmir, Weather in Budgam, Weather in Chadoora, Weather in Baramulla, Weather in Pulwama, Weather in Anantnag, Weather in Kupwara, Weather in Ganderbal, Weather in Shopian, Weather in Bandipora, Weather in Kulgam, Jammu Kashmir weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, pollution levels, Agriculture Advisor J&K, Kashmir Apple Farming, SKUAST Spray Schedule, Apple Scab Risk",
+    description = "Get accurate weather forecasts, real-time Air Quality Index (AQI), and a specialized Kashmir Apple Farming Advisory for Jammu & Kashmir with Kilamate.",
+    keywords = "Weather in Srinagar, AQI in Srinagar, Air Quality Index Jammu Kashmir, Jammu Kashmir weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, Agriculture Advisor J&K, Kashmir Apple Farming, SKUAST Spray Schedule, Apple Scab Risk",
     ogImage = "https://www.zuhaibrashid.com/SEO.png",
     ogType = "website",
     canonicalUrl = "https://kilamate.netlify.app/",
     structuredData,
 }: SEOProps) {
+    const { i18n } = useTranslation();
+
     return (
         <Helmet>
+            {/* HTML Language Sync */}
+            <html lang={i18n.language} />
+
             {/* Primary Meta Tags */}
             <title>{title}</title>
             <meta name="title" content={title} />
@@ -29,14 +35,15 @@ export function SEO({
             <meta name="author" content="Zuhaib Rashid" />
             <meta name="publisher" content="Kilamate" />
             <meta name="robots" content="index, follow" />
+            
+            {/* Theme Colors */}
             <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
             <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 
-            {/* Canonical URL & Localization */}
+            {/* Canonical URL */}
             <link rel="canonical" href={canonicalUrl} />
-            <meta httpEquiv="content-language" content="en, hi, ur" />
 
-            {/* Apple / Progressive Web App Tags */}
+            {/* Apple / PWA */}
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="default" />
             <meta name="apple-mobile-web-app-title" content="Kilamate" />
@@ -48,7 +55,7 @@ export function SEO({
             <meta property="og:description" content={description} />
             <meta property="og:image" content={ogImage} />
             <meta property="og:site_name" content="Kilamate Weather" />
-            <meta property="og:locale" content="en_US" />
+            <meta property="og:locale" content={i18n.language === 'en' ? 'en_US' : i18n.language === 'hi' ? 'hi_IN' : 'ur_PK'} />
 
             {/* Twitter */}
             <meta property="twitter:card" content="summary_large_image" />
@@ -57,33 +64,29 @@ export function SEO({
             <meta property="twitter:description" content={description} />
             <meta property="twitter:image" content={ogImage} />
             <meta name="twitter:creator" content="@xuhaib_x9" />
-            <meta name="twitter:site" content="@xuhaib_x9" />
 
             {/* Structured Data */}
             {structuredData && (
                 <script type="application/ld+json">
-                    {JSON.stringify(structuredData)}
+                    {Array.isArray(structuredData) 
+                        ? JSON.stringify(structuredData.map(s => ({ ...s })))
+                        : JSON.stringify(structuredData)
+                    }
                 </script>
             )}
         </Helmet>
     );
 }
 
-// Structured Data Templates
+// --- Schema Templates ---
+
 export const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Kilamate",
     "url": "https://kilamate.netlify.app",
     "logo": "https://www.zuhaibrashid.com/SEO.png",
-    "description": "Weather forecasting application for Jammu & Kashmir",
-    "founder": {
-        "@type": "Person",
-        "name": "Zuhaib Rashid"
-    },
-    "sameAs": [
-        "https://www.zuhaibrashid.com"
-    ]
+    "sameAs": ["https://www.zuhaibrashid.com"]
 };
 
 export const webApplicationSchema = {
@@ -91,32 +94,45 @@ export const webApplicationSchema = {
     "@type": "WebApplication",
     "name": "Kilamate Weather App",
     "url": "https://kilamate.netlify.app",
-    "applicationCategory": "Weather",
-    "operatingSystem": "Any",
-    "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    },
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "150"
-    }
+    "applicationCategory": "WeatherApplication",
+    "operatingSystem": "Any"
 };
 
-export const createCitySchema = (cityName: string, lat: number, lon: number) => ({
+/**
+ * Creates a breadcrumb schema for search engines
+ */
+export const createBreadcrumbSchema = (items: { name: string; item: string }[]) => ({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": items.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": item.name,
+        "item": item.item
+    }))
+});
+
+/**
+ * Creates a localized Weather Forecast schema for rich snippets
+ */
+export const createWeatherSchema = (city: string, country: string, temp: number, condition: string, lat: number, lon: number) => ({
     "@context": "https://schema.org",
     "@type": "Place",
-    "name": cityName,
+    "name": city,
     "geo": {
         "@type": "GeoCoordinates",
         "latitude": lat,
         "longitude": lon
     },
-    "address": {
-        "@type": "PostalAddress",
-        "addressRegion": "Jammu and Kashmir",
-        "addressCountry": "IN"
+    "hasMap": `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`,
+    "mainEntity": {
+        "@type": "WeatherReport",
+        "text": `${condition} in ${city}`,
+        "temperature": `${temp} °C`,
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": city,
+            "addressCountry": country
+        }
     }
 });
