@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { Search, Loader2, Clock, Star, XCircle } from "lucide-react";
+import { Search, Loader2, Clock, Star, XCircle, Mic, MicOff } from "lucide-react";
 import { useLocationSearch } from "@/hooks/use-weather";
 import { useSearchHistory } from "@/hooks/use-search-history";
 import { useTranslation } from "react-i18next";
+import { useVoiceSearch } from "@/hooks/use-voice-search";
 import {
   Command,
   CommandDialog,
@@ -27,6 +28,14 @@ export function CitySearch() {
   const { data: locations, isLoading } = useLocationSearch(query);
   const { favorites } = useFavorites();
   const { history, clearHistory, addToHistory } = useSearchHistory();
+
+  // Voice search handler – called with the extracted city name
+  const handleVoiceResult = useCallback((city: string) => {
+    setOpen(true);
+    setQuery(city);
+  }, []);
+
+  const { isListening, isSupported, startListening, stopListening } = useVoiceSearch(handleVoiceResult);
 
   // Listen for the global keyboard shortcut event (Alt+K)
   useEffect(() => {
@@ -53,16 +62,41 @@ export function CitySearch() {
 
   return (
     <>
-      <Button
-        variant="outline"
-        className="relative justify-center text-sm text-muted-foreground w-9 px-0 md:w-40 md:justify-start md:px-4 lg:w-64"
-        onClick={() => setOpen(true)}
-        aria-label={t("search.placeholder")}
-      >
-        <Search className="h-4 w-4 md:mr-2" />
-        <span className="hidden md:inline">{t("search.placeholder")}</span>
-        <kbd className="hidden md:inline-flex ml-auto h-5 items-center gap-1 rounded border bg-muted px-1.5 font-sans text-[10px] font-medium text-muted-foreground opacity-100">K</kbd>
-      </Button>
+      <div className="flex items-center gap-1">
+        <Button
+          variant="outline"
+          className="relative justify-center text-sm text-muted-foreground w-9 px-0 md:w-40 md:justify-start md:px-4 lg:w-64"
+          onClick={() => setOpen(true)}
+          aria-label={t("search.placeholder")}
+        >
+          <Search className="h-4 w-4 md:mr-2" />
+          <span className="hidden md:inline">{t("search.placeholder")}</span>
+          <kbd className="hidden md:inline-flex ml-auto h-5 items-center gap-1 rounded border bg-muted px-1.5 font-sans text-[10px] font-medium text-muted-foreground opacity-100">K</kbd>
+        </Button>
+        {isSupported && (
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={isListening ? "Stop listening" : "Voice search"}
+            onClick={isListening ? stopListening : startListening}
+            className={`relative h-9 w-9 shrink-0 transition-all duration-300 ${
+              isListening
+                ? "border-red-500 bg-red-500/10 text-red-500 shadow-[0_0_12px_rgba(239,68,68,0.5)]"
+                : "text-muted-foreground"
+            }`}
+          >
+            {isListening ? (
+              <>
+                <MicOff className="h-4 w-4" />
+                {/* Pulsing ring animation */}
+                <span className="absolute inset-0 rounded-md animate-ping bg-red-500/30" />
+              </>
+            ) : (
+              <Mic className="h-4 w-4" />
+            )}
+          </Button>
+        )}
+      </div>
       <CommandDialog
         open={open}
         onOpenChange={(isOpen) => {
