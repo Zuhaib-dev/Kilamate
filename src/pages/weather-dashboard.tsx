@@ -342,7 +342,7 @@ export function WeatherDashboard() {
 
             {/* ROW 9: TRAVEL ADVISORY */}
             <AnimateIn variant="slideUp" className="col-span-full">
-              <TravelAdvisory />
+              <TravelAdvisory weather={weatherQuery.data} />
             </AnimateIn>
           </div>
         )}

@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import { getAppleStagesStatus } from "@/lib/kashmir-apple-stages";
 import { motion } from "framer-motion";
 import { AnimateIn } from "./motion/AnimateIn";
+import { isInJandK } from "@/lib/location-utils";
 
 interface AgricultureAdvisorProps {
   weather: WeatherData;
@@ -81,18 +82,7 @@ function getFrostCountdown(forecast: ForecastData | null | undefined) {
   return { hoursAway, minTemp, dt: frostEntry.dt };
 }
 
-const JK_CITIES = [
-  "srinagar","baramulla","anantnag","pulwama","kupwara","shopian","bandipora","ganderbal","budgam","kulgam",
-  "jammu","udhampur","rajouri","poonch","doda","ramban","kishtwar","reasi","samba","kathua",
-  "leh","kargil",
-];
 
-function isInJandK(weather: WeatherData): boolean {
-  const name = weather.name.toLowerCase();
-  if (JK_CITIES.some(c => name.includes(c))) return true;
-  const { lat, lon } = weather.coord;
-  return lat > 32 && lat < 37.5 && lon > 73 && lon < 80;
-}
 
 export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProps) {
   const { windSpeedUnit } = usePreferences();

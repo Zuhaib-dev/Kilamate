@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatWindSpeed } from "@/lib/units";
+import { isInJandK } from "@/lib/location-utils";
+import type { WeatherData } from "@/api/types";
 
 const TRAVEL_POINTS = [
   { 
@@ -166,8 +168,11 @@ const AdvisoryCard = memo(({ point }: { point: typeof TRAVEL_POINTS[0] }) => {
   );
 });
 
-export function TravelAdvisory() {
+export function TravelAdvisory({ weather }: { weather?: WeatherData | null }) {
   const { t } = useTranslation();
+  
+  if (!weather || !isInJandK(weather)) return null;
+
   return (
     <Card className="border-none shadow-none bg-transparent mb-8">
       <CardHeader className="px-0 pt-0 pb-6">
