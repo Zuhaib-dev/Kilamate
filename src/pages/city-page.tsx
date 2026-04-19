@@ -1,5 +1,5 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { useWeatherQuery, useForecastQuery, useAirPollutionQuery } from "@/hooks/use-weather";
+import { useWeatherQuery, useForecastQuery, useAirPollutionQuery, useReverseGeocodeQuery } from "@/hooks/use-weather";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { CurrentWeather } from "../components/current-weather";
@@ -36,6 +36,7 @@ export function CityPage() {
   const weatherQuery = useWeatherQuery(coordinates);
   const forecastQuery = useForecastQuery(coordinates);
   const airPollutionQuery = useAirPollutionQuery(coordinates);
+  const locationQuery = useReverseGeocodeQuery(coordinates);
 
   if (weatherQuery.error || forecastQuery.error) {
     return (
@@ -169,7 +170,7 @@ export function CityPage() {
 
           {/* REGIONAL */}
           <AnimateIn variant="slideUp" className="col-span-full">
-            <RegionalOverview />
+            <RegionalOverview state={locationQuery.data?.[0]?.state} />
           </AnimateIn>
 
           {/* AQI */}
