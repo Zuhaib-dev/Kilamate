@@ -330,7 +330,7 @@ export function WeatherDashboard() {
 
             {/* ROW 7: REGIONAL OVERVIEW */}
             <AnimateIn variant="slideUp" className="col-span-full">
-              <RegionalOverview />
+              <RegionalOverview state={locationName?.state} />
             </AnimateIn>
 
             {/* ROW 8: AQI */}

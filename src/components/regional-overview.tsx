@@ -7,15 +7,9 @@ import { Skeleton } from "./ui/skeleton";
 import { Link } from "react-router-dom";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
+import { STATE_CITIES, DEFAULT_STATE } from "@/lib/regional-data";
 
-const REGIONAL_CITIES = [
-  { name: "Srinagar", lat: 34.0837, lon: 74.7973 },
-  { name: "Jammu", lat: 32.7186, lon: 74.8581 },
-  { name: "Gulmarg", lat: 34.0484, lon: 74.3805 },
-  { name: "Leh", lat: 34.1526, lon: 77.5771 },
-  { name: "Pahalgam", lat: 34.0161, lon: 75.3150 },
-  { name: "Badgam", lat: 34.0154721, lon: 74.7220085 },
-];
+
 
 const CityWeatherCard = memo(({ cityName, lat, lon }: { cityName: string; lat: number; lon: number }) => {
   const { data, isLoading } = useWeatherQuery({ lat, lon });
@@ -65,8 +59,12 @@ const CityWeatherCard = memo(({ cityName, lat, lon }: { cityName: string; lat: n
   );
 });
 
-export function RegionalOverview() {
+export function RegionalOverview({ state }: { state?: string }) {
   const { t } = useTranslation();
+  
+  const currentState = (state && STATE_CITIES[state]) ? state : DEFAULT_STATE;
+  const cities = STATE_CITIES[currentState];
+
   return (
     <Card className="border-none shadow-none bg-transparent mb-8">
       <CardHeader className="px-0 pt-0 pb-6">
@@ -75,14 +73,18 @@ export function RegionalOverview() {
                 <Cloud className="h-5 w-5 text-primary" />
             </div>
             <div>
-                <CardTitle className="text-xl font-black tracking-tight uppercase leading-none">{t("regionalOverview.title")}</CardTitle>
-                <p className="text-xs text-muted-foreground font-medium mt-1">{t("regionalOverview.desc")}</p>
+                <CardTitle className="text-xl font-black tracking-tight uppercase leading-none">
+                  {currentState === DEFAULT_STATE ? t("regionalOverview.title") : `${currentState} Region Overview`}
+                </CardTitle>
+                <p className="text-xs text-muted-foreground font-medium mt-1">
+                  {currentState === DEFAULT_STATE ? t("regionalOverview.desc") : `Weather updates for key districts in ${currentState}`}
+                </p>
             </div>
         </div>
       </CardHeader>
       <CardContent className="px-0 pb-0">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {REGIONAL_CITIES.map((city) => (
+          {cities.map((city) => (
             <CityWeatherCard
               key={city.name}
               cityName={city.name}
