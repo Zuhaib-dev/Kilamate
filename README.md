@@ -238,7 +238,7 @@ This project is licensed under the [MIT License](LICENSE).
 - [ ] Voice search integration
 - [ ] Mobile app (React Native)
 
----            
+---        
 
 <div align="center">
   Made with ❤️ by Zuhaib Rashid 
