@@ -179,7 +179,7 @@ export function CityPage() {
 
           {/* TRAVEL */}
           <AnimateIn variant="slideUp" className="col-span-full">
-            <TravelAdvisory />
+            <TravelAdvisory weather={weatherQuery.data} />
           </AnimateIn>
         </div>
       </div>
