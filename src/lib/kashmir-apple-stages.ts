@@ -202,7 +202,7 @@ export const KASHMIR_APPLE_STAGES: PhenologicalStage[] = [
       "• Dodine 65 WP 60g",
       "• Tebuconazole 38.9% SC (40 ml)"
     ],
-    durationDays: 12
+    durationDays: 11
   },
   {
     id: "fruitDev1",
@@ -419,9 +419,9 @@ export const KASHMIR_APPLE_STAGES: PhenologicalStage[] = [
   }
 ];
 
-// The anchor date based on the user stating petal fall started 3 days ago (April 14, 2026)
-const ANCHOR_DATE_MS = new Date("2026-04-14T00:00:00").getTime();
-const ANCHOR_STAGE_ID = "petalFall";
+// The anchor date based on the user stating fruit let stage started 2 days ago (April 17, 2026)
+const ANCHOR_DATE_MS = new Date("2026-04-17T00:00:00").getTime();
+const ANCHOR_STAGE_ID = "fruitLet";
 
 export interface ScheduledStage extends PhenologicalStage {
   startDate: Date;
