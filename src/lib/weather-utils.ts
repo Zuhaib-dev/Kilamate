@@ -80,8 +80,10 @@ export function isInJandK(weather: WeatherData): boolean {
  */
 export function getClothingAdvice(temp: number, conditionId: number) {
   if (temp < 5) return { key: "bundle", icon: "GiMonclerJacket" };
-  if (temp < 15) return { key: "jacket", icon: "TbJacket" };
+  if (temp < 10) return { key: "jacket", icon: "TbJacket" };
+  if (temp < 15) return { key: "hoodie", icon: "PiHoodieFill" };
+  if (temp < 20) return { key: "sweatshirt", icon: "PiHoodieFill" };
   if (conditionId < 600 && conditionId >= 200) return { key: "umbrella", icon: "PiUmbrellaFill" };
-  if (temp > 25) return { key: "light", icon: "PiTShirtFill" };
+  if (temp >= 20) return { key: "summer", icon: "PiTShirtFill" };
   return { key: "comfort", icon: "PiTShirtFill" };
 }
