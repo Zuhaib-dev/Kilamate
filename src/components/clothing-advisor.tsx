@@ -65,14 +65,15 @@ export const ClothingAdvisor = memo(function ClothingAdvisor({ data }: ClothingA
     items.push({ icon: GiMonclerJacket, labelKey: "clothing.items.heavyCoat", color: "text-blue-500" });
     items.push({ icon: PiThermometerFill, labelKey: "clothing.items.thermal", color: "text-cyan-500" });
     items.push({ icon: GiWinterGloves, labelKey: "clothing.items.gloves", color: "text-slate-400" });
-  } else if (temp < 15) {
+  } else if (temp < 10) {
     items.push({ icon: TbJacket, labelKey: "clothing.items.jacket", color: "text-sky-500" });
     items.push({ icon: GiTrousers, labelKey: "clothing.items.pants", color: "text-slate-500" });
-  } else if (temp < 22) {
+  } else if (temp < 15) {
     items.push({ icon: PiHoodieFill, labelKey: "clothing.items.hoodie", color: "text-emerald-500" });
-  } else if (temp < 30) {
-    items.push({ icon: PiTShirtFill, labelKey: "clothing.items.tshirt", color: "text-orange-400" });
+  } else if (temp < 20) {
+    items.push({ icon: PiHoodieFill, labelKey: "clothing.items.sweatshirt", color: "text-indigo-400" });
   } else {
+    items.push({ icon: PiTShirtFill, labelKey: "clothing.items.shirt", color: "text-orange-400" });
     items.push({ icon: GiShorts, labelKey: "clothing.items.shorts", color: "text-red-400" });
   }
 
