@@ -142,8 +142,10 @@ export function WeatherDashboard() {
         <WeatherSnapshot 
           ref={snapshotRef} 
           weather={weatherQuery.data} 
-          locationName={locationName?.name || "Current Location"} 
-          temperatureUnit={temperatureUnit} 
+          locationName={locationName?.name || "Current Location"}
+          country={weatherQuery.data.sys.country}
+          temperatureUnit={temperatureUnit}
+          shareUrl={coordinates ? `https://kilamate.netlify.app/city/${encodeURIComponent(locationName?.name || "location")}?lat=${coordinates.lat}&lon=${coordinates.lon}` : undefined}
         />
       )}
 
@@ -192,7 +194,12 @@ export function WeatherDashboard() {
                 </motion.span>
               )}
               
-              <ShareButton snapshotRef={snapshotRef} cityName={locationName?.name || "Current Location"} />
+              <ShareButton 
+                snapshotRef={snapshotRef} 
+                cityName={locationName?.name || "Current Location"}
+                lat={coordinates?.lat}
+                lon={coordinates?.lon}
+              />
 
               <motion.div
                 whileHover={{ scale: 1.08 }}

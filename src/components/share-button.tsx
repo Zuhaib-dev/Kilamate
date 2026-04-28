@@ -8,62 +8,86 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/t
 interface ShareButtonProps {
   snapshotRef: React.RefObject<HTMLDivElement>;
   cityName: string;
+  lat?: number;
+  lon?: number;
 }
 
-export function ShareButton({ snapshotRef, cityName }: ShareButtonProps) {
+export function ShareButton({ snapshotRef, cityName, lat, lon }: ShareButtonProps) {
   const [isSharing, setIsSharing] = useState(false);
+
+  // Build canonical city-page URL
+  const shareUrl = lat && lon
+    ? `https://kilamate.netlify.app/city/${encodeURIComponent(cityName)}?lat=${lat}&lon=${lon}`
+    : `https://kilamate.netlify.app`;
 
   const handleShare = async () => {
     if (!snapshotRef.current) return;
 
     try {
       setIsSharing(true);
-      toast.loading("Generating snapshot...", { id: "share-toast" });
+      toast.loading("Generating snapshot…", { id: "share-toast" });
 
-      // Generate canvas
+      // Capture the hidden snapshot at 2× for retina quality
       const canvas = await html2canvas(snapshotRef.current, {
-        scale: 2, // High quality
-        useCORS: true, // Allow external images (like weather icons)
-        backgroundColor: null, // Transparent to keep gradient
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
         logging: false,
       });
 
-      // Convert to blob
+      // Convert canvas → blob
       const blob = await new Promise<Blob | null>((resolve) => {
         canvas.toBlob((b) => resolve(b), "image/png", 1.0);
       });
 
-      if (!blob) {
-        throw new Error("Failed to generate image blob");
-      }
+      if (!blob) throw new Error("Failed to generate image blob");
 
-      const file = new File([blob], `kilamate-${cityName.toLowerCase().replace(/\\s+/g, '-')}-weather.png`, {
+      const safeName = cityName.toLowerCase().replace(/\s+/g, "-");
+      const file = new File([blob], `kilamate-${safeName}-weather.png`, {
         type: "image/png",
       });
 
       toast.dismiss("share-toast");
 
-      // Check native share support
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title: `${cityName} Weather`,
-          text: `Current weather in ${cityName} via Kilamate`,
-          files: [file],
-        });
+      // ── Native Web Share (mobile) ──
+      if (navigator.share) {
+        const shareData: ShareData = {
+          title: `${cityName} Weather on Kilamate`,
+          text: `📍 Check out the current weather in ${cityName}! View the full forecast here:`,
+          url: shareUrl,
+        };
+
+        // Attach image only if the browser supports file sharing
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          (shareData as any).files = [file];
+        }
+
+        await navigator.share(shareData);
         toast.success("Shared successfully!");
-      } else {
-        // Fallback to download
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.download = file.name;
-        link.href = url;
-        link.click();
-        URL.revokeObjectURL(url);
+        return;
+      }
+
+      // ── Desktop fallback: download image + copy link ──
+      const objUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = file.name;
+      link.href = objUrl;
+      link.click();
+      URL.revokeObjectURL(objUrl);
+
+      // Also copy the link to clipboard
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("Image downloaded & link copied to clipboard!");
+      } catch {
         toast.success("Snapshot downloaded!");
       }
-    } catch (error) {
-      console.error("Error sharing snapshot:", error);
-      toast.error("Failed to share snapshot. Please try again.", { id: "share-toast" });
+    } catch (error: any) {
+      // User dismissed the native share sheet — not a real error
+      if (error?.name === "AbortError") return;
+      console.error("Share error:", error);
+      toast.error("Failed to share. Please try again.", { id: "share-toast" });
     } finally {
       setIsSharing(false);
     }
@@ -78,7 +102,11 @@ export function ShareButton({ snapshotRef, cityName }: ShareButtonProps) {
             size="icon"
             onClick={handleShare}
             disabled={isSharing}
-            className={`transition-all duration-300 ${isSharing ? "opacity-70" : "hover:border-primary/50 hover:bg-primary/5 hover:text-primary"}`}
+            className={`transition-all duration-300 ${
+              isSharing
+                ? "opacity-70"
+                : "hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+            }`}
           >
             {isSharing ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -88,7 +116,7 @@ export function ShareButton({ snapshotRef, cityName }: ShareButtonProps) {
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Share Weather Snapshot</p>
+          <p>Share weather snapshot + link</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

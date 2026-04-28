@@ -85,8 +85,10 @@ export function CityPage() {
       <WeatherSnapshot 
         ref={snapshotRef} 
         weather={weatherQuery.data} 
-        locationName={cityName} 
-        temperatureUnit={temperatureUnit} 
+        locationName={cityName}
+        country={country}
+        temperatureUnit={temperatureUnit}
+        shareUrl={`https://kilamate.netlify.app/city/${encodeURIComponent(cityName)}?lat=${lat}&lon=${lon}`}
       />
 
       <div className="space-y-4">
@@ -102,7 +104,7 @@ export function CityPage() {
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <ShareButton snapshotRef={snapshotRef} cityName={cityName} />
+              <ShareButton snapshotRef={snapshotRef} cityName={cityName} lat={lat} lon={lon} />
               <motion.div
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
