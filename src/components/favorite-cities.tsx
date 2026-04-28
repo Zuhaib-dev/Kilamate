@@ -166,9 +166,9 @@ export function FavoriteCities() {
         {t('search.favorites')}
       </motion.h1>
 
-      <ScrollArea className="w-full pb-4">
+      <ScrollArea className="w-full">
         <motion.div
-          className="flex gap-4"
+          className="flex gap-4 py-4 px-1"
           variants={staggerContainerFast}
           initial="hidden"
           animate="visible"
