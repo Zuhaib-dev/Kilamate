@@ -21,7 +21,7 @@ export function LazyView({
   
   const isInView = useInView(ref, {
     once: true,
-    margin,
+    margin: margin as any,
   });
 
   if (isInView && !hasRendered) {
