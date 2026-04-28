@@ -1,5 +1,4 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { useRef } from "react";
 import { useWeatherQuery, useForecastQuery, useAirPollutionQuery, useReverseGeocodeQuery } from "@/hooks/use-weather";
 import { usePreferences } from "@/hooks/use-preferences";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -19,7 +18,6 @@ import { TravelAdvisory } from "../components/travel-advisory";
 import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favorite-button";
 import { ShareButton } from "@/components/share-button";
-import { WeatherSnapshot } from "@/components/weather-snapshot";
 import { ActivityPlanner } from "../components/activity-planner";
 import { ClothingAdvisor } from "../components/clothing-advisor";
 import { MoonPhase } from "../components/moon-phase";
@@ -32,7 +30,6 @@ import { AnimateIn } from "@/components/motion/AnimateIn";
 export function CityPage() {
   const [searchParams] = useSearchParams();
   const params = useParams();
-  const snapshotRef = useRef<HTMLDivElement>(null);
   const { temperatureUnit } = usePreferences();
 
   const lat = parseFloat(searchParams.get("lat") || "0");
@@ -81,15 +78,6 @@ export function CityPage() {
         ]}
       />
 
-      {/* Hidden Snapshot Component for Sharing */}
-      <WeatherSnapshot 
-        ref={snapshotRef} 
-        weather={weatherQuery.data} 
-        locationName={cityName}
-        country={country}
-        temperatureUnit={temperatureUnit}
-        shareUrl={`https://kilamate.netlify.app/city/${encodeURIComponent(cityName)}?lat=${lat}&lon=${lon}`}
-      />
 
       <div className="space-y-4">
         <AnimateIn variant="slideDown">
@@ -104,7 +92,14 @@ export function CityPage() {
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <ShareButton snapshotRef={snapshotRef} cityName={cityName} lat={lat} lon={lon} />
+              <ShareButton
+                weather={weatherQuery.data}
+                locationName={cityName}
+                country={country}
+                temperatureUnit={temperatureUnit}
+                lat={lat}
+                lon={lon}
+              />
               <motion.div
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}

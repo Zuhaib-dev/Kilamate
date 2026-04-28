@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FavoriteCities } from "@/components/favorite-cities";
 import { AirPollution } from "@/components/air-pollution";
 import { useWeatherTheme } from "@/context/weather-theme-provider";
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { WeatherAlerts } from "@/components/weather-alerts";
 import { WeatherStats } from "@/components/weather-stats";
 
@@ -37,7 +37,6 @@ import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 import { LazyView } from "@/components/motion/lazy-view";
 import { ShareButton } from "@/components/share-button";
-import { WeatherSnapshot } from "@/components/weather-snapshot";
 import { usePreferences } from "@/hooks/use-preferences";
 
 export function WeatherDashboard() {
@@ -48,7 +47,6 @@ export function WeatherDashboard() {
     getLocation,
   } = useGeolocation();
 
-  const snapshotRef = useRef<HTMLDivElement>(null);
   const { temperatureUnit } = usePreferences();
 
   const weatherQuery = useWeatherQuery(coordinates);
@@ -138,16 +136,7 @@ export function WeatherDashboard() {
         ].filter(Boolean) as object[]}
       />
 
-      {weatherQuery.data && (
-        <WeatherSnapshot 
-          ref={snapshotRef} 
-          weather={weatherQuery.data} 
-          locationName={locationName?.name || "Current Location"}
-          country={weatherQuery.data.sys.country}
-          temperatureUnit={temperatureUnit}
-          shareUrl={coordinates ? `https://kilamate.netlify.app/city/${encodeURIComponent(locationName?.name || "location")}?lat=${coordinates.lat}&lon=${coordinates.lon}` : undefined}
-        />
-      )}
+
 
       <div className="space-y-4">
         {/* Favorite Cities */}
@@ -194,9 +183,11 @@ export function WeatherDashboard() {
                 </motion.span>
               )}
               
-              <ShareButton 
-                snapshotRef={snapshotRef} 
-                cityName={locationName?.name || "Current Location"}
+              <ShareButton
+                weather={weatherQuery.data ?? undefined}
+                locationName={locationName?.name || "Current Location"}
+                country={weatherQuery.data?.sys.country}
+                temperatureUnit={temperatureUnit}
                 lat={coordinates?.lat}
                 lon={coordinates?.lon}
               />
