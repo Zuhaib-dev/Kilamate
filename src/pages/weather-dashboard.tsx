@@ -252,7 +252,7 @@ export function WeatherDashboard() {
                 </AnimateIn>
                 <AnimateIn variant="slideUp" className="h-full">
                   <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-xl" />}>
-                    <WeatherGlobe coordinates={coordinates} />
+                    <WeatherGlobe coordinates={coordinates} locationName={locationName?.name} />
                   </Suspense>
                 </AnimateIn>
               </LazyView>

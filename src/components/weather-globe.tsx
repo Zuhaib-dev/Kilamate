@@ -11,10 +11,11 @@ import { useInView } from "framer-motion";
 
 interface WeatherGlobeProps {
   coordinates: Coordinates;
+  locationName?: string;
   onCitySelect?: (lat: number, lon: number, name: string) => void;
 }
 
-export const WeatherGlobe = memo(function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
+export const WeatherGlobe = memo(function WeatherGlobe({ coordinates, locationName }: WeatherGlobeProps) {
   const globeEl = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -121,7 +122,7 @@ export const WeatherGlobe = memo(function WeatherGlobe({ coordinates }: WeatherG
     labels.push({
       lat: coordinates.lat,
       lng: coordinates.lon,
-      text: "📍 Current Location",
+      text: locationName ? `📍 ${locationName}` : "📍 Current Location",
       size: 1.1,
       color: '#ef4444'
     });
