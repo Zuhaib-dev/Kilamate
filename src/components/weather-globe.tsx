@@ -114,7 +114,7 @@ export const WeatherGlobe = memo(function WeatherGlobe({ coordinates, locationNa
     const labels = (favorites || []).map(fav => ({
       lat: fav.lat,
       lng: fav.lon,
-      text: `🏙️ ${fav.name}`,
+      text: fav.name,
       size: 0.8,
       color: '#60a5fa'
     }));
@@ -122,7 +122,7 @@ export const WeatherGlobe = memo(function WeatherGlobe({ coordinates, locationNa
     labels.push({
       lat: coordinates.lat,
       lng: coordinates.lon,
-      text: locationName ? `📍 ${locationName}` : "📍 Current Location",
+      text: locationName ? locationName : "Current Location",
       size: 1.1,
       color: '#ef4444'
     });
@@ -265,8 +265,7 @@ export const WeatherGlobe = memo(function WeatherGlobe({ coordinates, locationNa
                 labelColor={(d: any) => d.color}
                 onLabelClick={(label: any) => {
                   if (isInteracting) {
-                    const cleanName = label.text.replace(/🏙️ |📍 /, "");
-                    navigate(`/city/${encodeURIComponent(cleanName)}?lat=${label.lat}&lon=${label.lng}`);
+                    navigate(`/city/${encodeURIComponent(label.text)}?lat=${label.lat}&lon=${label.lng}`);
                   }
                 }}
                 backgroundColor="rgba(0,0,0,0)" 
