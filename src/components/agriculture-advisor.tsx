@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Sprout,
