@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { formatTemperature } from "@/lib/units";
 import { format } from "date-fns";
 import { Droplets, Wind, MapPin } from "lucide-react";
