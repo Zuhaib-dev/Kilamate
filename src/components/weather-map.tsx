@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import { MapContainer, TileLayer, Marker, useMap, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -110,7 +110,7 @@ function MobileTouchHandler() {
   return null;
 }
 
-export function WeatherMap({ coordinates }: WeatherMapProps) {
+export const WeatherMap = memo(function WeatherMap({ coordinates }: WeatherMapProps) {
   const [activeLayer, setActiveLayer] = useState(LAYERS[0]);
   const [tilesLoading, setTilesLoading] = useState(true);
   const [activeCoords, setActiveCoords] = useState<Coordinates | null>(null);
@@ -245,4 +245,4 @@ export function WeatherMap({ coordinates }: WeatherMapProps) {
       </CardContent>
     </Card>
   );
-}
+});
