@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, memo } from "react";
 import Globe from "react-globe.gl";
 import { useTheme } from "next-themes";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -7,13 +7,14 @@ import type { Coordinates } from "@/api/types";
 import { useFavorites } from "@/hooks/use-favorite";
 import * as THREE from "three";
 import { useNavigate } from "react-router-dom";
+import { useInView } from "framer-motion";
 
 interface WeatherGlobeProps {
   coordinates: Coordinates;
   onCitySelect?: (lat: number, lon: number, name: string) => void;
 }
 
-export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
+export const WeatherGlobe = memo(function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
   const globeEl = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -22,6 +23,12 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
   const [isInteracting, setIsInteracting] = useState(false);
   const { theme, systemTheme } = useTheme();
   const { favorites } = useFavorites();
+  const isInView = useInView(containerRef, { margin: "200px" });
+  const inViewRef = useRef(isInView);
+  
+  useEffect(() => {
+    inViewRef.current = isInView;
+  }, [isInView]);
 
   const currentTheme = theme === "system" ? systemTheme : theme;
   const isDark = currentTheme === "dark";
@@ -62,7 +69,7 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
       
       if (controls) {
         controls.enabled = true;
-        controls.autoRotate = !isInteracting;
+        controls.autoRotate = !isInteracting && isInView;
         controls.autoRotateSpeed = 0.5; // Slower, more premium feel
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
@@ -72,7 +79,7 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
         controls.rotateSpeed = isTouch ? 1.5 : 1.0;
       }
     }
-  }, [coordinates.lat, coordinates.lon, isTouch, isInteracting]);
+  }, [coordinates.lat, coordinates.lon, isTouch, isInteracting, isInView]);
 
   // Add Clouds Layer
   useEffect(() => {
@@ -84,13 +91,15 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
 
       new THREE.TextureLoader().load(cloudsUrl, (clouds) => {
         const cloudsObj = new THREE.Mesh(
-          new THREE.SphereGeometry(globe.getGlobeRadius() * (1 + CLOUDS_ALT), 75, 75),
+          new THREE.SphereGeometry(globe.getGlobeRadius() * (1 + CLOUDS_ALT), 32, 32),
           new THREE.MeshPhongMaterial({ map: clouds, transparent: true, opacity: 0.8 })
         );
         globe.scene().add(cloudsObj);
 
         const rotateClouds = () => {
-          cloudsObj.rotation.y += (CLOUDS_ROTATION_SPEED * Math.PI) / 180;
+          if (inViewRef.current) {
+            cloudsObj.rotation.y += (CLOUDS_ROTATION_SPEED * Math.PI) / 180;
+          }
           requestAnimationFrame(rotateClouds);
         };
         rotateClouds();
@@ -281,5 +290,5 @@ export function WeatherGlobe({ coordinates }: WeatherGlobeProps) {
       </CardContent>
     </Card>
   );
-}
+});
 
