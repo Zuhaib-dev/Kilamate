@@ -119,7 +119,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
               <motion.div
                 key={day.date}
                 className="grid items-center gap-x-2 py-2.5 border-b last:border-b-0 rounded-md px-1"
-                style={{ gridTemplateColumns: "36px 1fr 1fr 48px 48px" }}
+                style={{ gridTemplateColumns: "36px minmax(85px, 1.5fr) 1fr 40px 40px" }}
                 variants={rowVariant}
                 whileHover={{
                   backgroundColor: "hsl(var(--muted) / 0.5)",
@@ -139,7 +139,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
                 />
 
                 {/* Day name + precip info */}
-                <div className="min-w-0">
+                <div className="min-w-0 pr-1">
                   <p className="text-sm font-semibold leading-tight">
                     {language === "ur"
                       ? formatUrduDate(new Date(day.date * 1000))
@@ -148,15 +148,15 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
                   {(() => {
                     const precip = getPrecipInfo(day.pop);
                     return precip.show ? (
-                      <div className={`flex items-center gap-1 mt-0.5 ${precip.color}`}>
-                        <Droplets className="h-3 w-3 flex-shrink-0" />
-                        <span className="text-[10px] font-medium leading-tight truncate">
+                      <div className={`flex items-start gap-1 mt-0.5 ${precip.color}`}>
+                        <Droplets className="h-3 w-3 flex-shrink-0 mt-[2px]" />
+                        <span className="text-[10px] font-medium leading-tight">
                           {precip.label}
                         </span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1 mt-0.5 text-muted-foreground">
-                        <span className="text-[10px]">{day.weather.description}</span>
+                      <div className="flex items-start gap-1 mt-0.5 text-muted-foreground">
+                        <span className="text-[10px] leading-tight break-words">{day.weather.description}</span>
                       </div>
                     );
                   })()}
