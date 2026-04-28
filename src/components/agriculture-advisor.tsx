@@ -84,7 +84,7 @@ function getFrostCountdown(forecast: ForecastData | null | undefined) {
 
 
 
-export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProps) {
+export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProps) {
   const { windSpeedUnit } = usePreferences();
   const { t } = useTranslation();
 
@@ -471,5 +471,5 @@ export function AgricultureAdvisor({ weather, forecast }: AgricultureAdvisorProp
       </div>
     </Card>
   );
-}
+});
 
