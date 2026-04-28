@@ -1,5 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
+import { useRef } from "react";
 import { useWeatherQuery, useForecastQuery, useAirPollutionQuery, useReverseGeocodeQuery } from "@/hooks/use-weather";
+import { usePreferences } from "@/hooks/use-preferences";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { CurrentWeather } from "../components/current-weather";
@@ -16,6 +18,8 @@ import { RegionalOverview } from "../components/regional-overview";
 import { TravelAdvisory } from "../components/travel-advisory";
 import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favorite-button";
+import { ShareButton } from "@/components/share-button";
+import { WeatherSnapshot } from "@/components/weather-snapshot";
 import { ActivityPlanner } from "../components/activity-planner";
 import { ClothingAdvisor } from "../components/clothing-advisor";
 import { MoonPhase } from "../components/moon-phase";
@@ -28,6 +32,9 @@ import { AnimateIn } from "@/components/motion/AnimateIn";
 export function CityPage() {
   const [searchParams] = useSearchParams();
   const params = useParams();
+  const snapshotRef = useRef<HTMLDivElement>(null);
+  const { temperatureUnit } = usePreferences();
+
   const lat = parseFloat(searchParams.get("lat") || "0");
   const lon = parseFloat(searchParams.get("lon") || "0");
 
@@ -74,6 +81,14 @@ export function CityPage() {
         ]}
       />
 
+      {/* Hidden Snapshot Component for Sharing */}
+      <WeatherSnapshot 
+        ref={snapshotRef} 
+        weather={weatherQuery.data} 
+        locationName={cityName} 
+        temperatureUnit={temperatureUnit} 
+      />
+
       <div className="space-y-4">
         <AnimateIn variant="slideDown">
           <FavoriteCities />
@@ -86,13 +101,16 @@ export function CityPage() {
                 {cityName}, {country}
               </h1>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.92 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <FavoriteButton data={{ ...weatherQuery.data, name: cityName }} />
-            </motion.div>
+            <div className="flex items-center gap-2">
+              <ShareButton snapshotRef={snapshotRef} cityName={cityName} />
+              <motion.div
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              >
+                <FavoriteButton data={{ ...weatherQuery.data, name: cityName }} />
+              </motion.div>
+            </div>
           </div>
         </AnimateIn>
 

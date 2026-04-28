@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FavoriteCities } from "@/components/favorite-cities";
 import { AirPollution } from "@/components/air-pollution";
 import { useWeatherTheme } from "@/context/weather-theme-provider";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { WeatherAlerts } from "@/components/weather-alerts";
 import { WeatherStats } from "@/components/weather-stats";
 
@@ -36,6 +36,9 @@ import { SEO, webApplicationSchema, organizationSchema, createBreadcrumbSchema, 
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 import { LazyView } from "@/components/motion/lazy-view";
+import { ShareButton } from "@/components/share-button";
+import { WeatherSnapshot } from "@/components/weather-snapshot";
+import { usePreferences } from "@/hooks/use-preferences";
 
 export function WeatherDashboard() {
   const {
@@ -44,6 +47,9 @@ export function WeatherDashboard() {
     isLoading: locationLoading,
     getLocation,
   } = useGeolocation();
+
+  const snapshotRef = useRef<HTMLDivElement>(null);
+  const { temperatureUnit } = usePreferences();
 
   const weatherQuery = useWeatherQuery(coordinates);
   const forecastQuery = useForecastQuery(coordinates);
@@ -132,6 +138,15 @@ export function WeatherDashboard() {
         ].filter(Boolean) as object[]}
       />
 
+      {weatherQuery.data && (
+        <WeatherSnapshot 
+          ref={snapshotRef} 
+          weather={weatherQuery.data} 
+          locationName={locationName?.name || "Current Location"} 
+          temperatureUnit={temperatureUnit} 
+        />
+      )}
+
       <div className="space-y-4">
         {/* Favorite Cities */}
         <AnimateIn variant="slideDown">
@@ -176,6 +191,9 @@ export function WeatherDashboard() {
                   }
                 </motion.span>
               )}
+              
+              <ShareButton snapshotRef={snapshotRef} cityName={locationName?.name || "Current Location"} />
+
               <motion.div
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.9, rotate: -15 }}
