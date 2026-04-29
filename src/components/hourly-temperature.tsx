@@ -1,14 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
-  LineChart,
-  Line,
-  BarChart,
+  ComposedChart,
+  Area,
   Bar,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
   Cell,
+  CartesianGrid,
 } from "recharts";
 import { format } from "date-fns";
 import { enUS, hi } from "date-fns/locale";
@@ -30,8 +30,6 @@ interface ChartData {
   pop: number;
 }
 
-
-
 export const HourlyTemperature = memo(function HourlyTemperature({
   data,
 }: HourlyTemperatureProps) {
@@ -41,13 +39,9 @@ export const HourlyTemperature = memo(function HourlyTemperature({
   // Determine the correct locale for date-fns
   const getDateLocale = () => {
     switch (language) {
-      case "hi":
-        return hi;
-      case "ur":
-        // ur locale isn't available in date-fns v4 by default, use enUS as fallback
-        return enUS;
-      default:
-        return enUS;
+      case "hi": return hi;
+      case "ur": return enUS; // ur locale isn't available in date-fns v4 by default, use enUS as fallback
+      default: return enUS;
     }
   };
   const currentLocale = getDateLocale();
@@ -55,11 +49,7 @@ export const HourlyTemperature = memo(function HourlyTemperature({
   // Helper function to format Urdu hours manually if language is Urdu
   const formatUrduTime = (date: Date) => {
     const formatted = format(date, "ha", { locale: enUS });
-
-    // Replace AM/PM with Urdu equivalents
     let urduFormatted = formatted.replace("AM", " صبح").replace("PM", " شام");
-
-    // Replace numbers 1-12 with Urdu numerals if desired, but English numerals are often fine in Urdu context
     return urduFormatted;
   };
 
@@ -67,157 +57,185 @@ export const HourlyTemperature = memo(function HourlyTemperature({
   const chartData: ChartData[] = data.list
     .slice(0, 8) // Get next 24 hours (3-hour intervals)
     .map((item) => ({
-      time:
-        language === "ur"
-          ? formatUrduTime(new Date(item.dt * 1000))
-          : format(new Date(item.dt * 1000), "ha", { locale: currentLocale }),
+      time: language === "ur"
+        ? formatUrduTime(new Date(item.dt * 1000))
+        : format(new Date(item.dt * 1000), "ha", { locale: currentLocale }),
       temp: Math.round(convertTemperature(item.main.temp, temperatureUnit)),
-      feels_like: Math.round(
-        convertTemperature(item.main.feels_like, temperatureUnit),
-      ),
+      feels_like: Math.round(convertTemperature(item.main.feels_like, temperatureUnit)),
       pop: Math.round((item.pop ?? 0) * 100),
     }));
 
   const unitSymbol = temperatureUnit === "celsius" ? "°C" : "°F";
+  const minTemp = Math.min(...chartData.map(d => d.temp));
+  const maxTemp = Math.max(...chartData.map(d => d.temp));
 
   return (
     <motion.div
       whileHover={{ scale: 1.005, y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 28 }}
     >
-    <Card className="flex-1">
-      <CardHeader className="pb-0">
-        <div className="flex items-center justify-between">
-          <CardTitle>{t("weather.hourly")}</CardTitle>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-4 h-0.5 bg-blue-600 rounded-full" />
-              {t("weather.temperature")}
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-4 h-0.5 bg-slate-400 rounded-full" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #94a3b8 0, #94a3b8 4px, transparent 4px, transparent 9px)' }} />
-              {t("weather.feelsLike")}
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-3 h-3 bg-sky-500/50 rounded-sm" />
-              {t("weather.rainChance")}
-            </span>
+      <Card className="flex-1 overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/50 shadow-sm">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg font-bold tracking-tight">{t("weather.hourly")}</CardTitle>
+            <div className="flex items-center gap-4 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                {t("weather.temperature")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block w-3 h-3 rounded-full bg-sky-400/40 border border-sky-400/60" />
+                {t("weather.rainChance")}
+              </span>
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <motion.div
-          className="flex flex-col gap-0 pt-2"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.1 }}
-        >
-          {/* Temperature Line Chart */}
-          <div className="h-[150px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="time" hide />
-                <YAxis
-                  stroke="#888888"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(value) => `${value}°`}
-                  domain={['dataMin - 2', 'dataMax + 2']}
-                />
-                <Tooltip
-                  cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1, strokeDasharray: "4 4" }}
-                  content={({ active, payload, label }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="rounded-lg border bg-background p-2.5 shadow-md">
-                          <p className="text-xs text-muted-foreground mb-1.5 font-medium">{label}</p>
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-2">
-                              <span className="inline-block w-3 h-0.5 bg-blue-600 rounded-full" />
-                              <span className="text-xs text-muted-foreground">{t("weather.temperature")}</span>
-                              <span className="text-sm font-bold text-blue-600 ml-auto">{payload[0]?.value}{unitSymbol}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="inline-block w-3 h-0.5 bg-slate-400 rounded-full" />
-                              <span className="text-xs text-muted-foreground">{t("weather.feelsLike")}</span>
-                              <span className="text-sm font-bold text-slate-500 ml-auto">{payload[1]?.value}{unitSymbol}</span>
-                            </div>
-                            {payload[2] && (
-                             <div className="flex items-center gap-2 mt-1 pt-1 border-t">
-                                <span className="inline-block w-3 h-3 bg-sky-500 rounded-sm" />
-                                <span className="text-xs text-muted-foreground">{t("weather.rainChance")}</span>
-                                <span className="text-sm font-bold text-sky-600 ml-auto">{payload[2]?.value}%</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="temp"
-                  stroke="#2563eb"
-                  strokeWidth={2.5}
-                  dot={false}
-                  activeDot={{ r: 5, strokeWidth: 0, fill: "#2563eb" }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="feels_like"
-                  stroke="#94a3b8"
-                  strokeWidth={1.5}
-                  dot={false}
-                  strokeDasharray="5 5"
-                  activeDot={{ r: 4, strokeWidth: 0, fill: "#94a3b8" }}
-                />
-                <Line dataKey="pop" hide />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Rain Probability Bar Chart */}
+        </CardHeader>
+        <CardContent className="p-0 sm:p-6 sm:pt-0">
           <motion.div
-            className="h-[60px] w-full"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.35 }}
+            className="flex flex-col gap-0 pt-2"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.1 }}
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
-                <XAxis
-                  dataKey="time"
-                  stroke="#888888"
-                  fontSize={10}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis hide domain={[0, 100]} />
-                <Bar
-                  dataKey="pop"
-                  radius={[2, 2, 0, 0]}
-                  fill="#0ea5e9"
-                  fillOpacity={0.4}
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={entry.pop > 20 ? "#0ea5e9" : "#94a3b8"}
-                      fillOpacity={entry.pop > 20 ? 0.6 : 0.2}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="h-[240px] w-full px-2 sm:px-0 mt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={chartData} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
+                  <defs>
+                    <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="rainGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#0ea5e9" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor="#0ea5e9" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
+                  
+                  <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="hsl(var(--border))" strokeOpacity={0.4} />
+                  
+                  <XAxis 
+                    dataKey="time" 
+                    stroke="hsl(var(--muted-foreground))" 
+                    fontSize={11} 
+                    tickLine={false} 
+                    axisLine={false} 
+                    dy={10}
+                  />
+                  
+                  <YAxis
+                    yAxisId="temp"
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `${value}°`}
+                    domain={[minTemp - 3, maxTemp + 3]}
+                    dx="-10"
+                  />
+                  
+                  <YAxis 
+                    yAxisId="pop" 
+                    orientation="right" 
+                    hide 
+                    domain={[0, 100]} 
+                  />
+
+                  <Tooltip
+                    cursor={{ stroke: "hsl(var(--primary))", strokeWidth: 1, strokeDasharray: "4 4", opacity: 0.5 }}
+                    content={({ active, payload, label }) => {
+                      if (active && payload && payload.length) {
+                        const tempPayload = payload.find(p => p.dataKey === "temp");
+                        const popPayload = payload.find(p => p.dataKey === "pop");
+                        const feelsLikePayload = payload.find(p => p.dataKey === "feels_like");
+
+                        return (
+                          <div className="rounded-xl border border-border/50 bg-background/80 backdrop-blur-md p-3 shadow-xl ring-1 ring-black/5">
+                            <p className="text-xs text-muted-foreground mb-2 font-bold uppercase tracking-wider">{label}</p>
+                            <div className="flex flex-col gap-2">
+                              {tempPayload && (
+                                <div className="flex items-center gap-3">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="inline-block w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.6)]" />
+                                    <span className="text-xs text-muted-foreground font-medium">{t("weather.temperature")}</span>
+                                  </div>
+                                  <span className="text-sm font-black text-foreground ml-auto">{tempPayload.value}{unitSymbol}</span>
+                                </div>
+                              )}
+                              
+                              {feelsLikePayload && (
+                                <div className="flex items-center gap-3">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="inline-block w-2 h-2 bg-slate-400 rounded-full" />
+                                    <span className="text-xs text-muted-foreground font-medium">{t("weather.feelsLike")}</span>
+                                  </div>
+                                  <span className="text-sm font-bold text-muted-foreground ml-auto">{feelsLikePayload.value}{unitSymbol}</span>
+                                </div>
+                              )}
+
+                              {popPayload && typeof popPayload.value === 'number' && popPayload.value > 0 && (
+                                <div className="flex items-center gap-3 mt-1 pt-2 border-t border-border/50">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="inline-block w-2 h-2 bg-sky-500 rounded-sm" />
+                                    <span className="text-xs text-sky-500 font-medium">{t("weather.rainChance")}</span>
+                                  </div>
+                                  <span className="text-sm font-black text-sky-500 ml-auto">{popPayload.value}%</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  
+                  {/* Precipitation Bars underneath */}
+                  <Bar
+                    yAxisId="pop"
+                    dataKey="pop"
+                    radius={[4, 4, 0, 0]}
+                    maxBarSize={40}
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill="url(#rainGradient)"
+                        fillOpacity={entry.pop > 10 ? 0.8 : 0.2}
+                      />
+                    ))}
+                  </Bar>
+
+                  {/* Feels Like Line (Background) */}
+                  <Area
+                    yAxisId="temp"
+                    type="monotone"
+                    dataKey="feels_like"
+                    stroke="#94a3b8"
+                    strokeWidth={2}
+                    fill="transparent"
+                    strokeDasharray="4 4"
+                    dot={false}
+                    activeDot={false}
+                  />
+
+                  {/* Temperature Area (Foreground) */}
+                  <Area
+                    yAxisId="temp"
+                    type="monotone"
+                    dataKey="temp"
+                    stroke="#3b82f6"
+                    strokeWidth={3}
+                    fill="url(#tempGradient)"
+                    dot={{ r: 3, fill: "hsl(var(--background))", stroke: "#3b82f6", strokeWidth: 2 }}
+                    activeDot={{ r: 6, fill: "#3b82f6", stroke: "hsl(var(--background))", strokeWidth: 2, className: "drop-shadow-md" }}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
           </motion.div>
-        </motion.div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 });
