@@ -150,10 +150,7 @@ export function FavoriteCities() {
     return null;
   }
 
-  const childVariant = {
-    hidden: { opacity: 0, x: -10, scale: 0.95 },
-    visible: { opacity: 1, x: 0, scale: 1, transition: { type: "spring", stiffness: 350, damping: 28 } },
-  } as const;
+
 
   return (
     <>
@@ -167,15 +164,17 @@ export function FavoriteCities() {
       </motion.h1>
 
       <ScrollArea className="w-full">
-        <motion.div
-          className="flex gap-4 py-4 px-1"
-          variants={staggerContainerFast}
-          initial="hidden"
-          animate="visible"
-        >
-          <AnimatePresence>
-            {favorites.map((city) => (
-              <motion.div key={city.id} variants={childVariant} layout exit={{ opacity: 0, scale: 0.8, x: -20 }}>
+        <div className="flex gap-4 py-4 px-1">
+          <AnimatePresence mode="popLayout">
+            {favorites.map((city, index) => (
+              <motion.div 
+                key={city.id} 
+                initial={{ opacity: 0, x: -10, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                transition={{ type: "spring", stiffness: 350, damping: 28, delay: index * 0.05 }}
+                layout 
+                exit={{ opacity: 0, scale: 0.8, x: -20 }}
+              >
                 <FavoriteCityTablet
                   {...city}
                   onRemove={() => removeFavorite.mutate(city.id)}
@@ -183,7 +182,7 @@ export function FavoriteCities() {
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
         <ScrollBar orientation="horizontal" className="mt-2" />
       </ScrollArea>
     </>
