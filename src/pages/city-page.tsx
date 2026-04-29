@@ -25,6 +25,7 @@ import { MoonPhase } from "../components/moon-phase";
 import { ComfortLevel } from "../components/comfort-level";
 import { AgricultureAdvisor } from "../components/agriculture-advisor";
 import { SEO, createWeatherSchema, createBreadcrumbSchema } from "@/components/seo";
+import { BestDayThisWeek } from "@/components/best-day-this-week";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 
@@ -143,6 +144,14 @@ export function CityPage() {
           {/* STATS */}
           <AnimateIn variant="slideUp" className="col-span-full">
             <WeatherStats data={weatherQuery.data} />
+          </AnimateIn>
+
+          {/* BEST DAY THIS WEEK */}
+          <AnimateIn variant="slideUp" className="col-span-full">
+            <BestDayThisWeek
+              forecast={forecastQuery.data}
+              airPollution={airPollutionQuery.data ?? undefined}
+            />
           </AnimateIn>
 
           {/* SUN + MOON */}

@@ -20,6 +20,7 @@ import { useWeatherTheme } from "@/context/weather-theme-provider";
 import { lazy, Suspense, useEffect } from "react";
 import { WeatherAlerts } from "@/components/weather-alerts";
 import { WeatherStats } from "@/components/weather-stats";
+import { BestDayThisWeek } from "@/components/best-day-this-week";
 
 // Lazy loaded components
 const WeatherMap = lazy(() => import("@/components/weather-map").then(m => ({ default: m.WeatherMap })));
@@ -286,6 +287,16 @@ export function WeatherDashboard() {
             {weatherQuery.data && (
               <AnimateIn variant="slideUp" className="col-span-full">
                 <WeatherStats data={weatherQuery.data} />
+              </AnimateIn>
+            )}
+
+            {/* BEST DAY THIS WEEK */}
+            {forecastQuery.data && (
+              <AnimateIn variant="slideUp" className="col-span-full">
+                <BestDayThisWeek
+                  forecast={forecastQuery.data}
+                  airPollution={airPollutionQuery.data ?? undefined}
+                />
               </AnimateIn>
             )}
 
