@@ -32,6 +32,7 @@ import { ActivityPlanner } from "@/components/activity-planner";
 import { RegionalOverview } from "@/components/regional-overview";
 import { TravelAdvisory } from "@/components/travel-advisory";
 import { MoonPhase } from "@/components/moon-phase";
+import { WindCompass } from "@/components/wind-compass";
 import { ComfortLevel } from "@/components/comfort-level";
 import { AgricultureAdvisor } from "@/components/agriculture-advisor";
 import { SEO, webApplicationSchema, organizationSchema, createBreadcrumbSchema, createWeatherSchema } from "@/components/seo";
@@ -300,7 +301,7 @@ export function WeatherDashboard() {
               </AnimateIn>
             )}
 
-            {/* ROW 3: SUN TRACKER & MOON PHASE */}
+            {/* ROW 3: SUN TRACKER, WIND COMPASS & MOON PHASE */}
             {weatherQuery.isLoading ? (
               <Skeleton className="h-[350px] w-full rounded-xl" />
             ) : weatherQuery.data ? (
@@ -310,6 +311,14 @@ export function WeatherDashboard() {
                 </AnimateIn>
               </LazyView>
             ) : null}
+
+            {weatherQuery.data && (
+              <LazyView margin="400px">
+                <AnimateIn variant="slideUp">
+                  <WindCompass data={weatherQuery.data} />
+                </AnimateIn>
+              </LazyView>
+            )}
 
             <LazyView margin="400px">
               <AnimateIn variant="slideInRight">
