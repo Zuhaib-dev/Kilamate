@@ -122,3 +122,71 @@
   @apply bg-muted-foreground/20 rounded-full transition-colors hover:bg-muted-foreground/40;
 }
 
+/* Premium Weather Animations */
+@keyframes rain-fall {
+  0% { transform: translateY(-100vh) translateX(0) scaleY(1); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; transform: translateY(100vh) translateX(-20vh) scaleY(1.5); }
+  100% { transform: translateY(110vh) translateX(-22vh) scaleY(1); opacity: 0; }
+}
+
+@keyframes snow-drift {
+  0% { transform: translateY(-10vh) translateX(-10vw) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.8; }
+  50% { transform: translateY(50vh) translateX(10vw) rotate(180deg); opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(110vh) translateX(-10vw) rotate(360deg); opacity: 0; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px 2px rgba(255,255,255,0.4); }
+}
+
+@keyframes lightning-flash {
+  0%, 95%, 98%, 100% { opacity: 0; background-color: transparent; }
+  96%, 99% { opacity: 1; background-color: rgba(255, 255, 255, 0.4); }
+}
+
+@keyframes cloud-pan {
+  0% { transform: translateX(-10vw); opacity: 0; }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% { transform: translateX(100vw); opacity: 0; }
+}
+
+.weather-particle-rain {
+  position: absolute;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.6));
+  width: 2px;
+  height: 60px;
+  border-radius: 4px;
+  animation: rain-fall linear infinite;
+  will-change: transform;
+}
+
+.weather-particle-snow {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: snow-drift linear infinite;
+  will-change: transform;
+  filter: blur(1px);
+}
+
+.weather-particle-star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+.weather-lightning {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: lightning-flash 10s infinite;
+  z-index: 10;
+}
+
