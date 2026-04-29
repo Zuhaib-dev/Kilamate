@@ -54,7 +54,7 @@ export function WeatherDashboard() {
   const forecastQuery = useForecastQuery(coordinates);
   const locationQuery = useReverseGeocodeQuery(coordinates);
   const airPollutionQuery = useAirPollutionQuery(coordinates);
-  const { favorites } = useFavorites();
+  const { favorites, isLoading: favoritesLoading } = useFavorites();
 
   const { setThemeByCondition } = useWeatherTheme();
 
@@ -142,7 +142,7 @@ export function WeatherDashboard() {
 
       <div className="space-y-4">
         {/* Favorite Cities — only render when there are favorites so AnimateIn doesn't leave phantom space */}
-        {favorites.length > 0 && (
+        {!favoritesLoading && favorites.length > 0 && (
           <AnimateIn variant="slideDown">
             <FavoriteCities />
           </AnimateIn>

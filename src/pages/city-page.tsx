@@ -32,7 +32,7 @@ export function CityPage() {
   const [searchParams] = useSearchParams();
   const params = useParams();
   const { temperatureUnit } = usePreferences();
-  const { favorites } = useFavorites();
+  const { favorites, isLoading: favoritesLoading } = useFavorites();
 
   const lat = parseFloat(searchParams.get("lat") || "0");
   const lon = parseFloat(searchParams.get("lon") || "0");
@@ -82,7 +82,7 @@ export function CityPage() {
 
 
       <div className="space-y-4">
-        {favorites.length > 0 && (
+        {!favoritesLoading && favorites.length > 0 && (
           <AnimateIn variant="slideDown">
             <FavoriteCities />
           </AnimateIn>

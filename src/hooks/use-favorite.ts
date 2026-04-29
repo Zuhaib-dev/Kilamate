@@ -61,7 +61,8 @@ export function useFavorites() {
   });
 
   return {
-    favorites: favoritesQuery.data,
+    favorites,                    // ← direct from localStorage, always in sync
+    isLoading: favoritesQuery.isLoading,
     addFavorite,
     removeFavorite,
     isFavorite: (lat: number, lon: number) =>
