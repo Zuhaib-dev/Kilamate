@@ -12,6 +12,14 @@ interface BestDayProps {
   airPollution?: AirPollutionResponse;
 }
 
+interface ActivityTag {
+  emoji: string;
+  label: string;
+  bgClass: string;
+  textClass: string;
+  borderClass: string;
+}
+
 interface DayScore {
   date: Date;
   dateKey: string;
@@ -22,8 +30,10 @@ interface DayScore {
   avgAqi: number;
   weatherIcon: string;
   weatherDesc: string;
+  dominantWeatherId: number;
   reasons: string[];
   badge: { emoji: string; label: string; color: string };
+  activities: ActivityTag[];
 }
 
 const AQI_LABELS: Record<number, { label: string; color: string }> = {
@@ -46,11 +56,92 @@ function getWeatherEmoji(weatherId: number): string {
   return "🌡️";
 }
 
+/** Returns a list of activity suggestions based on conditions */
+function getActivityTags(
+  avgTemp: number,
+  maxRainChance: number,
+  avgAqi: number,
+  weatherId: number
+): ActivityTag[] {
+  const tags: ActivityTag[] = [];
+  const isRainy = maxRainChance > 40 || (weatherId >= 300 && weatherId <= 531);
+  const isStorm = weatherId >= 200 && weatherId <= 232;
+  const isSnow = weatherId >= 600 && weatherId <= 622;
+  const isClear = weatherId === 800;
+  const isPartlyCloudy = weatherId >= 801 && weatherId <= 802;
+  const isHazy = weatherId >= 700 && weatherId <= 781;
+  const goodAqi = avgAqi <= 2;
+  const comfortableTemp = avgTemp >= 15 && avgTemp <= 28;
+  const warmTemp = avgTemp >= 20 && avgTemp <= 32;
+  const coolTemp = avgTemp >= 5 && avgTemp < 18;
+  const highRain = maxRainChance > 60;
+
+  // ─── Picnic ───
+  if (!isRainy && !isStorm && comfortableTemp && goodAqi && (isClear || isPartlyCloudy)) {
+    tags.push({ emoji: "🧺", label: "Picnic", bgClass: "bg-green-500/10", textClass: "text-green-600 dark:text-green-400", borderClass: "border-green-500/20" });
+  }
+
+  // ─── Photography / Golden Hour ───
+  if (!isRainy && !isStorm && !isHazy) {
+    tags.push({ emoji: "📸", label: "Photography", bgClass: "bg-amber-500/10", textClass: "text-amber-600 dark:text-amber-400", borderClass: "border-amber-500/20" });
+  }
+
+  // ─── Hiking / Trekking ───
+  if (!isRainy && !isStorm && !isSnow && goodAqi && avgTemp >= 10 && avgTemp <= 30) {
+    tags.push({ emoji: "🥾", label: "Hiking", bgClass: "bg-lime-500/10", textClass: "text-lime-600 dark:text-lime-400", borderClass: "border-lime-500/20" });
+  }
+
+  // ─── Cycling ───
+  if (!isRainy && !isStorm && !isSnow && comfortableTemp) {
+    tags.push({ emoji: "🚴", label: "Cycling", bgClass: "bg-sky-500/10", textClass: "text-sky-600 dark:text-sky-400", borderClass: "border-sky-500/20" });
+  }
+
+  // ─── Running / Jogging ───
+  if (!isRainy && !isStorm && goodAqi && avgTemp <= 26) {
+    tags.push({ emoji: "🏃", label: "Running", bgClass: "bg-orange-500/10", textClass: "text-orange-500 dark:text-orange-400", borderClass: "border-orange-500/20" });
+  }
+
+  // ─── Stargazing ───
+  if (isClear && maxRainChance < 10) {
+    tags.push({ emoji: "🔭", label: "Stargazing", bgClass: "bg-indigo-500/10", textClass: "text-indigo-500 dark:text-indigo-400", borderClass: "border-indigo-500/20" });
+  }
+
+  // ─── Snow Activities ───
+  if (isSnow) {
+    tags.push({ emoji: "⛷️", label: "Skiing", bgClass: "bg-blue-500/10", textClass: "text-blue-400", borderClass: "border-blue-500/20" });
+    tags.push({ emoji: "☃️", label: "Snowman!", bgClass: "bg-slate-500/10", textClass: "text-slate-400", borderClass: "border-slate-500/20" });
+  }
+
+  // ─── Stay Indoors warnings ───
+  if (isStorm) {
+    tags.push({ emoji: "🏠", label: "Stay Indoors", bgClass: "bg-red-500/10", textClass: "text-red-500", borderClass: "border-red-500/20" });
+  } else if (highRain) {
+    tags.push({ emoji: "☔", label: "Carry Umbrella", bgClass: "bg-blue-500/10", textClass: "text-blue-400", borderClass: "border-blue-500/20" });
+  }
+
+  // ─── Cozy indoors day ───
+  if (coolTemp && maxRainChance < 30) {
+    tags.push({ emoji: "☕", label: "Cozy Café Day", bgClass: "bg-rose-500/10", textClass: "text-rose-500 dark:text-rose-400", borderClass: "border-rose-500/20" });
+  }
+
+  // ─── Beach / Pool ───
+  if (warmTemp && isClear && maxRainChance < 15) {
+    tags.push({ emoji: "🏖️", label: "Beach Day", bgClass: "bg-cyan-500/10", textClass: "text-cyan-500 dark:text-cyan-400", borderClass: "border-cyan-500/20" });
+  }
+
+  // ─── Gardening ───
+  if (!isRainy && !isStorm && comfortableTemp && goodAqi) {
+    tags.push({ emoji: "🌱", label: "Gardening", bgClass: "bg-emerald-500/10", textClass: "text-emerald-500 dark:text-emerald-400", borderClass: "border-emerald-500/20" });
+  }
+
+  // Return max 5 most relevant tags
+  return tags.slice(0, 5);
+}
+
 export const BestDayThisWeek = memo(function BestDayThisWeek({ forecast, airPollution }: BestDayProps) {
   const { temperatureUnit } = usePreferences();
 
   const rankedDays = useMemo<DayScore[]>(() => {
-    // Group forecast list items by date (YYYY-MM-DD)
     const byDay: Record<string, typeof forecast.list> = {};
     for (const item of forecast.list) {
       const key = item.dt_txt.slice(0, 10);
@@ -58,11 +149,9 @@ export const BestDayThisWeek = memo(function BestDayThisWeek({ forecast, airPoll
       byDay[key].push(item);
     }
 
-    // Skip today — we're scoring future days
     const today = format(new Date(), "yyyy-MM-dd");
     const futureDays = Object.entries(byDay).filter(([k]) => k > today).slice(0, 5);
 
-    // Build AQI map by date
     const aqiByDay: Record<string, number[]> = {};
     if (airPollution) {
       for (const item of airPollution.list) {
@@ -74,13 +163,12 @@ export const BestDayThisWeek = memo(function BestDayThisWeek({ forecast, airPoll
 
     return futureDays.map(([dateKey, items]) => {
       const date = new Date(items[0].dt * 1000);
-      const dayLabel = format(date, "EEEE"); // Monday, Tuesday...
+      const dayLabel = format(date, "EEEE");
 
       const temps = items.map(i => i.main.temp);
       const avgTemp = temps.reduce((a, b) => a + b, 0) / temps.length;
       const maxRainChance = Math.max(...items.map(i => (i.pop ?? 0) * 100));
 
-      // Count weather: sunny conditions give more "clear" weight
       const weatherIds = items.map(i => i.weather[0].id);
       const primaryWeather = weatherIds.reduce<Record<number, number>>((acc, id) => {
         acc[id] = (acc[id] ?? 0) + 1;
@@ -92,63 +180,49 @@ export const BestDayThisWeek = memo(function BestDayThisWeek({ forecast, airPoll
       const aqiValues = aqiByDay[dateKey] ?? [];
       const avgAqi = aqiValues.length > 0
         ? Math.round(aqiValues.reduce((a, b) => a + b, 0) / aqiValues.length)
-        : 2; // default to "fair" if no data
+        : 2;
 
-      // SCORING ALGORITHM
-      // Temperature sweet spot: ~22°C = max score, drop off aggressively above 38 and below 0
-      let tempScore = 0;
+      // SCORING
       const idealTemp = 22;
       const tempDiff = Math.abs(avgTemp - idealTemp);
-      if (tempDiff <= 5) tempScore = 100;
-      else if (tempDiff <= 10) tempScore = 80;
-      else if (tempDiff <= 18) tempScore = 50;
-      else tempScore = 20;
-
-      // Rain penalty — steep drop-off for high precipitation
+      let tempScore = tempDiff <= 5 ? 100 : tempDiff <= 10 ? 80 : tempDiff <= 18 ? 50 : 20;
       const rainScore = Math.max(0, 100 - maxRainChance * 1.8);
-
-      // AQI score (1=Good → 5=VeryPoor)
       const aqiScore = Math.max(0, 100 - (avgAqi - 1) * 25);
-
-      // Weather condition bonus
       let conditionBonus = 0;
-      if (dominantWeatherId === 800) conditionBonus = 25; // Clear sky
-      else if (dominantWeatherId >= 801 && dominantWeatherId <= 802) conditionBonus = 15; // Few/scattered clouds
-      else if (dominantWeatherId >= 803 && dominantWeatherId <= 804) conditionBonus = 0; // Overcast
-      else if (dominantWeatherId >= 700 && dominantWeatherId <= 781) conditionBonus = -10; // Haze/mist
-      else conditionBonus = -20; // Rain/snow/thunderstorm
+      if (dominantWeatherId === 800) conditionBonus = 25;
+      else if (dominantWeatherId >= 801 && dominantWeatherId <= 802) conditionBonus = 15;
+      else if (dominantWeatherId >= 803 && dominantWeatherId <= 804) conditionBonus = 0;
+      else if (dominantWeatherId >= 700 && dominantWeatherId <= 781) conditionBonus = -10;
+      else conditionBonus = -20;
 
-      const score = Math.round(
-        tempScore * 0.35 + rainScore * 0.4 + aqiScore * 0.15 + conditionBonus * 0.1
-      );
+      const score = Math.round(tempScore * 0.35 + rainScore * 0.4 + aqiScore * 0.15 + conditionBonus * 0.1);
 
-      // Reasons
       const reasons: string[] = [];
       if (maxRainChance < 10) reasons.push("No rain expected");
       else if (maxRainChance < 30) reasons.push("Very low rain chance");
       if (dominantWeatherId === 800) reasons.push("Clear sunny skies");
-      if (avgAqi <= 2) reasons.push(airPollution ? "Clean air quality" : "");
+      if (avgAqi <= 2 && airPollution) reasons.push("Clean air quality");
       if (tempDiff <= 8) reasons.push("Comfortable temperature");
 
-      // Badge
       let badge: DayScore["badge"];
       if (score >= 80) badge = { emoji: "🏆", label: "Perfect Day!", color: "text-amber-500" };
       else if (score >= 65) badge = { emoji: "🌟", label: "Great Day", color: "text-yellow-400" };
       else if (score >= 45) badge = { emoji: "👍", label: "Decent Day", color: "text-blue-400" };
       else badge = { emoji: "😐", label: "Average Day", color: "text-muted-foreground" };
 
+      const activities = getActivityTags(avgTemp, maxRainChance, avgAqi, dominantWeatherId);
+
       return {
-        date,
-        dateKey,
-        dayLabel,
-        score,
+        date, dateKey, dayLabel, score,
         avgTemp: Math.round(avgTemp),
         maxRainChance: Math.round(maxRainChance),
         avgAqi,
         weatherIcon: dominantWeatherItem.weather[0].icon,
         weatherDesc: dominantWeatherItem.weather[0].description,
+        dominantWeatherId,
         reasons: reasons.filter(Boolean),
         badge,
+        activities,
       };
     }).sort((a, b) => b.score - a.score);
   }, [forecast, airPollution]);
@@ -224,7 +298,7 @@ export const BestDayThisWeek = memo(function BestDayThisWeek({ forecast, airPoll
                 </p>
 
                 {/* Stats Row */}
-                <div className="flex flex-wrap items-center gap-3 mt-4">
+                <div className="flex flex-wrap items-center gap-2 mt-4">
                   <div className="flex items-center gap-1.5 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-border/40">
                     <Thermometer className="h-3.5 w-3.5 text-orange-400" />
                     <span className="text-sm font-bold tabular-nums">{convertedTemp}{unitSymbol}</span>
@@ -259,6 +333,36 @@ export const BestDayThisWeek = memo(function BestDayThisWeek({ forecast, airPoll
                     ))}
                   </div>
                 )}
+
+                {/* ─── ACTIVITY TAGS ─── */}
+                {bestDay.activities.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                      Perfect for
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {bestDay.activities.map((act, i) => (
+                        <motion.div
+                          key={act.label}
+                          initial={{ opacity: 0, y: 6, scale: 0.9 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 380,
+                            damping: 22,
+                            delay: 0.45 + i * 0.08,
+                          }}
+                          whileHover={{ scale: 1.08, y: -1 }}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border cursor-default select-none
+                            ${act.bgClass} ${act.textClass} ${act.borderClass}`}
+                        >
+                          <span className="text-base leading-none">{act.emoji}</span>
+                          {act.label}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Weather Emoji */}
@@ -267,7 +371,7 @@ export const BestDayThisWeek = memo(function BestDayThisWeek({ forecast, airPoll
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="text-6xl select-none shrink-0 drop-shadow-lg"
               >
-                {getWeatherEmoji(forecast.list.find(i => i.dt_txt.startsWith(bestDay.dateKey))?.weather[0].id ?? 800)}
+                {getWeatherEmoji(bestDay.dominantWeatherId)}
               </motion.div>
             </div>
 
@@ -300,18 +404,28 @@ export const BestDayThisWeek = memo(function BestDayThisWeek({ forecast, airPoll
                   key={day.dateKey}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.45 + i * 0.07, type: "spring", stiffness: 300, damping: 26 }}
+                  transition={{ delay: 0.5 + i * 0.07, type: "spring", stiffness: 300, damping: 26 }}
                   className="relative flex flex-col items-center gap-1 rounded-xl border border-border/50 bg-muted/30 p-3 text-center hover:bg-muted/60 transition-colors cursor-default"
                 >
                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">{day.dayLabel.slice(0, 3)}</p>
-                  <span className="text-2xl">{getWeatherEmoji(forecast.list.find(i => i.dt_txt.startsWith(day.dateKey))?.weather[0].id ?? 800)}</span>
-                  <p className="text-sm font-bold tabular-nums">{Math.round(convertTemperature(day.avgTemp, temperatureUnit))}{unitSymbol}</p>
+                  <span className="text-2xl">{getWeatherEmoji(day.dominantWeatherId)}</span>
+                  <p className="text-sm font-bold tabular-nums">
+                    {Math.round(convertTemperature(day.avgTemp, temperatureUnit))}{unitSymbol}
+                  </p>
+                  {/* Activity preview — show just top 2 emojis */}
+                  {day.activities.length > 0 && (
+                    <div className="flex gap-0.5 mt-0.5">
+                      {day.activities.slice(0, 3).map(a => (
+                        <span key={a.label} className="text-base leading-none" title={a.label}>{a.emoji}</span>
+                      ))}
+                    </div>
+                  )}
                   {/* Mini score bar */}
                   <div className="w-full h-1.5 rounded-full bg-background/70 overflow-hidden mt-1">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${day.score}%` }}
-                      transition={{ duration: 1, ease: "easeOut", delay: 0.6 + i * 0.07 }}
+                      transition={{ duration: 1, ease: "easeOut", delay: 0.65 + i * 0.07 }}
                       className={`h-full rounded-full ${day.score >= 65 ? 'bg-amber-400' : day.score >= 45 ? 'bg-sky-400' : 'bg-muted-foreground/40'}`}
                     />
                   </div>
