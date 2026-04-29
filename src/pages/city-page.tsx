@@ -29,6 +29,7 @@ import { BestDayThisWeek } from "@/components/best-day-this-week";
 import { WeatherVsHistory } from "@/components/weather-vs-history";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
+import { WeatherNewsFeed } from "@/components/weather-news-feed";
 
 export function CityPage() {
   const [searchParams] = useSearchParams();
@@ -214,6 +215,11 @@ export function CityPage() {
           {/* AQI */}
           <AnimateIn variant="slideUp" className="col-span-full">
             <AirPollution data={airPollutionQuery.data} />
+          </AnimateIn>
+
+          {/* WEATHER NEWS */}
+          <AnimateIn variant="slideUp" className="col-span-full">
+            <WeatherNewsFeed locationName={cityName} />
           </AnimateIn>
 
           {/* TRAVEL */}

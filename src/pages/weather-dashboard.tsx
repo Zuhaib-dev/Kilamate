@@ -41,6 +41,7 @@ import { AnimateIn } from "@/components/motion/AnimateIn";
 import { LazyView } from "@/components/motion/lazy-view";
 import { ShareButton } from "@/components/share-button";
 import { usePreferences } from "@/hooks/use-preferences";
+import { WeatherNewsFeed } from "@/components/weather-news-feed";
 
 export function WeatherDashboard() {
   const {
@@ -408,6 +409,15 @@ export function WeatherDashboard() {
               <LazyView margin="400px" className="col-span-full">
                 <AnimateIn variant="slideUp">
                   <AirPollution data={airPollutionQuery.data} />
+                </AnimateIn>
+              </LazyView>
+            )}
+
+            {/* ROW: WEATHER NEWS FEED */}
+            {locationName && (
+              <LazyView margin="400px" className="col-span-full">
+                <AnimateIn variant="slideUp">
+                  <WeatherNewsFeed locationName={locationName.name} />
                 </AnimateIn>
               </LazyView>
             )}
