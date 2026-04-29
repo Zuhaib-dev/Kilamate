@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { usePreferences } from "@/hooks/use-preferences";
 import { formatTemperature } from "@/lib/units";
 import { motion, AnimatePresence } from "framer-motion";
-import { staggerContainerFast } from "@/lib/animations";
+
 
 
 interface FavoriteCityTabletProps {
