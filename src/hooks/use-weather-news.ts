@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-const GNEWS_KEY = import.meta.env.VITE_GNEWS_API_KEY as string;
-
 export interface NewsArticle {
   title: string;
   description: string;
@@ -16,12 +14,23 @@ export interface NewsArticle {
 }
 
 async function fetchWeatherNews(locationName: string): Promise<NewsArticle[]> {
-  // Build a smart query: location-specific + general weather/climate
   const query = `${locationName} weather OR climate OR storm OR flood OR drought`;
-  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=8&sortby=publishedAt&apikey=${GNEWS_KEY}`;
+
+  // In production → call our own Netlify serverless proxy (no CORS)
+  // In dev → call GNews directly (localhost is allowed)
+  const isDev = import.meta.env.DEV;
+  const GNEWS_KEY = import.meta.env.VITE_GNEWS_API_KEY as string;
+
+  let url: string;
+  if (isDev && GNEWS_KEY) {
+    url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=8&sortby=publishedAt&apikey=${GNEWS_KEY}`;
+  } else {
+    // Netlify function at /.netlify/functions/news
+    url = `/.netlify/functions/news?q=${encodeURIComponent(query)}`;
+  }
 
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`GNews error: ${res.statusText}`);
+  if (!res.ok) throw new Error(`News fetch error: ${res.statusText}`);
 
   const data = await res.json();
   return (data.articles ?? []) as NewsArticle[];
@@ -31,8 +40,9 @@ export function useWeatherNews(locationName: string | undefined) {
   return useQuery({
     queryKey: ["weather-news", locationName],
     queryFn: () => fetchWeatherNews(locationName!),
-    enabled: !!locationName && !!GNEWS_KEY,
-    staleTime: 1000 * 60 * 30, // Cache 30 minutes — news doesn't refresh every second
+    enabled: !!locationName,
+    staleTime: 1000 * 60 * 30,
     retry: 1,
   });
 }
+
