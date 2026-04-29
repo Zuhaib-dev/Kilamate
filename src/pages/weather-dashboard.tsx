@@ -141,11 +141,15 @@ export function WeatherDashboard() {
 
 
       <div className="space-y-4">
-        {/* Favorite Cities — only render when there are favorites so AnimateIn doesn't leave phantom space */}
+        {/* Favorite Cities — animate on mount, not scroll, to avoid whileInView missing already-visible elements */}
         {!favoritesLoading && favorites.length > 0 && (
-          <AnimateIn variant="slideDown">
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 320, damping: 28 }}
+          >
             <FavoriteCities />
-          </AnimateIn>
+          </motion.div>
         )}
 
         {locationError && (
