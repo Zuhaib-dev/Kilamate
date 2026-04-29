@@ -28,17 +28,19 @@ Designed with a focus on user experience, it features a beautiful, responsive in
 ## 🚀 Key Features
 
 - 🌍 **Live Weather:** Accurate current weather data for any city worldwide
-- 🌫️ **Air Quality Index (AQI):** Real-time US AQI scores with color-coded scale
-- 📉 **AQI Trends:** Interactive graphs visualizing air quality forecast
-- 🍎 **Agriculture Advisor:** Kashmir Apple SKUAST-K Spray Schedules, Apple Scab risk warnings, and localized cultural practices
-- 🧪 **Pollutant Details:** Detailed breakdown of PM2.5, PM10, NO2, and SO2 levels
-- ⚠️ **Weather Alerts:** Smart alerts for extreme weather conditions
-- 🌡️ **Unit Preferences:** Toggle between Celsius/Fahrenheit and wind speed units
-- 🔍 **Smart Search:** Search functionality with history and favorite cities
-- 📊 **Interactive Charts:** Temperature, humidity, and wind trends using Recharts
-- ⚡ **High Performance:** Optimized API caching with TanStack Query
-- ✨ **Modern UI:** Clean, dark-mode-first design using Shadcn UI + Tailwind CSS
-- 🛡️ **Error Handling:** Robust error boundaries for stability
+- 📰 **Live Weather News:** Real-time, location-based weather & climate news feed via GNews API
+- 🏆 **Best Day Suggester:** Smart scoring algorithm identifying the optimal day for outdoor activities
+- ⏳ **History vs Now:** Deep comparison of current conditions against 5-year historical averages
+- 🌫️ **Air Quality Index (AQI):** Real-time US AQI scores with color-coded scale and pollutant breakdown
+- 🧭 **Advanced Wind Compass:** Beautifully animated SVG compass rose with Beaufort scale tracking
+- ☀️ **Sun & Golden Hour Tracker:** Interactive arc visualization with photography-focused "Golden Hour" indicators
+- 🎨 **Dynamic Backgrounds:** Immersive, animated weather environments (Rain, Snow, Stars, Lightning)
+- 🍎 **Agriculture Advisor:** Specialized Kashmir Apple phenology tracking and SKUAST-K spray schedules
+- 🌡️ **Unit Preferences:** Toggle between Celsius/Fahrenheit and multiple wind speed units
+- 🔍 **Smart Search:** Search functionality with history, favorite cities, and shareable weather cards
+- 📊 **Interactive Charts:** Temperature, humidity, and precipitation trends using Recharts
+- ⚡ **High Performance:** Optimized API caching with TanStack Query and Framer Motion animations
+- ✨ **Modern UI:** Clean, glassmorphic design using Shadcn UI + Tailwind CSS
 
 ---
 
@@ -51,7 +53,7 @@ Designed with a focus on user experience, it features a beautiful, responsive in
 - **State Management:** TanStack Query + Zustand
 - **Charts:** Recharts
 - **Icons:** Lucide React
-- **API:** OpenWeather API
+- **API:** OpenWeather API, GNews API, Open-Meteo Historical API
 
 ---
 
@@ -61,6 +63,7 @@ Designed with a focus on user experience, it features a beautiful, responsive in
 
 - Node.js 18+ and npm
 - OpenWeather API key ([Get one free here](https://openweathermap.org/api))
+- GNews API key ([Get one free here](https://gnews.io/))
 
 ### Installation
 
@@ -91,7 +94,8 @@ Designed with a focus on user experience, it features a beautiful, responsive in
    
    Edit `.env` and add your OpenWeather API key:
    ```
-   VITE_OPENWEATHER_API_KEY=your_api_key_here
+   VITE_OPENWEATHER_API_KEY=your_openweather_key
+   VITE_GNEWS_API_KEY=your_gnews_key
    ```
 
 5. **Start the development server**
@@ -135,6 +139,12 @@ Customize your experience:
 - 24-hour forecast trends
 - Detailed pollutant breakdown
 - Health recommendations
+
+### 🌟 Premium Data Visualizations
+- **Best Day This Week:** Analyzes rain chance, temperature, AQI, and sky conditions to score the best day for a picnic or photography.
+- **Historical Comparison:** Fetches 5 years of archive data to tell you if today is an anomaly or typical for the season.
+- **Dynamic Weather System:** The app background physically rains, snows, or twinkles with stars based on live conditions.
+- **Sun & Golden Hour:** Specifically tuned for photographers to track the best lighting windows.
 
 ### Kashmir Agricultural Insights
 - **SKUAST-K Spray Schedule:** Highly detailed duration-based phenological tracking for apple orchards.
@@ -233,8 +243,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 - [ ] PWA support with offline mode
 - [ ] Extended 7-14 day forecasts
-- [ ] Weather comparison between cities
-- [ ] Social sharing features
 - [ ] Voice search integration
 - [ ] Mobile app (React Native)
 
