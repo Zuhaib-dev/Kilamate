@@ -13,6 +13,7 @@ import { DailyOutlook } from "../components/daily-outlook";
 import { AirPollution } from "../components/air-pollution";
 import { WeatherAlerts } from "../components/weather-alerts";
 import { FavoriteCities } from "../components/favorite-cities";
+import { useFavorites } from "@/hooks/use-favorite";
 import { RegionalOverview } from "../components/regional-overview";
 import { TravelAdvisory } from "../components/travel-advisory";
 import WeatherSkeleton from "../components/loading-skeleton";
@@ -31,6 +32,7 @@ export function CityPage() {
   const [searchParams] = useSearchParams();
   const params = useParams();
   const { temperatureUnit } = usePreferences();
+  const { favorites } = useFavorites();
 
   const lat = parseFloat(searchParams.get("lat") || "0");
   const lon = parseFloat(searchParams.get("lon") || "0");
@@ -80,9 +82,11 @@ export function CityPage() {
 
 
       <div className="space-y-4">
-        <AnimateIn variant="slideDown">
-          <FavoriteCities />
-        </AnimateIn>
+        {favorites.length > 0 && (
+          <AnimateIn variant="slideDown">
+            <FavoriteCities />
+          </AnimateIn>
+        )}
 
         <AnimateIn variant="slideInLeft">
           <div className="flex items-center justify-between">

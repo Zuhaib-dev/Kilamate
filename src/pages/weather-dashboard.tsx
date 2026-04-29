@@ -14,6 +14,7 @@ import { WeatherForecast } from "@/components/weather-forecast";
 import { HourlyTemperature } from "@/components/hourly-temperature";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FavoriteCities } from "@/components/favorite-cities";
+import { useFavorites } from "@/hooks/use-favorite";
 import { AirPollution } from "@/components/air-pollution";
 import { useWeatherTheme } from "@/context/weather-theme-provider";
 import { lazy, Suspense, useEffect } from "react";
@@ -53,6 +54,7 @@ export function WeatherDashboard() {
   const forecastQuery = useForecastQuery(coordinates);
   const locationQuery = useReverseGeocodeQuery(coordinates);
   const airPollutionQuery = useAirPollutionQuery(coordinates);
+  const { favorites } = useFavorites();
 
   const { setThemeByCondition } = useWeatherTheme();
 
@@ -139,10 +141,12 @@ export function WeatherDashboard() {
 
 
       <div className="space-y-4">
-        {/* Favorite Cities */}
-        <AnimateIn variant="slideDown">
-          <FavoriteCities />
-        </AnimateIn>
+        {/* Favorite Cities — only render when there are favorites so AnimateIn doesn't leave phantom space */}
+        {favorites.length > 0 && (
+          <AnimateIn variant="slideDown">
+            <FavoriteCities />
+          </AnimateIn>
+        )}
 
         {locationError && (
           <AnimateIn variant="scaleIn">
