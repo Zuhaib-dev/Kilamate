@@ -41,18 +41,14 @@ function getVisibility(m?: number) {
   return m >= 10000 ? "10+ km" : `${(m / 1000).toFixed(1)} km`;
 }
 
+// Load with CORS only — never fall back to no-crossOrigin, that taints the canvas
+// and makes toBlob() throw SecurityError on mobile.
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.onload = () => resolve(img);
-    img.onerror = () => {
-      // Try without crossOrigin as a fallback (some CDNs)
-      const fallback = new Image();
-      fallback.onload = () => resolve(fallback);
-      fallback.onerror = reject;
-      fallback.src = src;
-    };
+    img.onload  = () => resolve(img);
+    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
     img.src = src;
   });
 }
@@ -342,50 +338,71 @@ export function ShareButton({ weather, locationName, country = "", temperatureUn
       setIsSharing(true);
       toast.loading("Generating snapshot…", { id: "share-toast" });
 
-      const canvas = await generateWeatherCanvas(weather, locationName, country, temperatureUnit, shareUrl);
+      // ── Step 1: try to generate the canvas image ──────────────────────────
+      let blob: Blob | null = null;
+      let file: File | null = null;
 
-      const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob((b) => resolve(b), "image/png", 0.95);
-      });
-
-      if (!blob) throw new Error("Canvas conversion failed");
-
-      const safeName = locationName.toLowerCase().replace(/\s+/g, "-");
-      const file = new File([blob], `kilamate-${safeName}-weather.png`, { type: "image/png" });
+      try {
+        const canvas = await generateWeatherCanvas(
+          weather, locationName, country, temperatureUnit, shareUrl
+        );
+        // toBlob can throw SecurityError if canvas is tainted
+        blob = await new Promise<Blob | null>((resolve, reject) => {
+          try {
+            canvas.toBlob((b) => resolve(b), "image/png", 0.92);
+          } catch (e) {
+            reject(e);
+          }
+        });
+        if (blob) {
+          const safeName = locationName.toLowerCase().replace(/\s+/g, "-");
+          file = new File([blob], `kilamate-${safeName}-weather.png`, { type: "image/png" });
+        }
+      } catch (canvasErr) {
+        // Canvas failed (CORS taint / memory limit) — continue with URL-only share
+        console.warn("Canvas generation skipped:", canvasErr);
+      }
 
       toast.dismiss("share-toast");
 
-      // ── Native share (mobile first) ──────────────────────────────────────
+      // ── Step 2: native share sheet (works in PWA on iOS & Android) ────────
       if (navigator.share) {
         const shareData: ShareData = {
-          title: `${locationName} Weather on Kilamate`,
-          text: `📍 Current weather in ${locationName}! See the full forecast:`,
+          title: `${locationName} Weather — Kilamate`,
+          text: `📍 Current weather in ${locationName}! Check the full forecast:`,
           url: shareUrl,
         };
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+
+        // Attach image only if the browser explicitly supports file sharing
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
           (shareData as any).files = [file];
         }
+
         await navigator.share(shareData);
-        toast.success("Shared successfully!");
+        toast.success(file ? "Shared with snapshot!" : "Link shared!");
         return;
       }
 
-      // ── Desktop: download + copy link ────────────────────────────────────
-      const objUrl = URL.createObjectURL(blob);
-      const link   = document.createElement("a");
-      link.download = file.name;
-      link.href     = objUrl;
-      link.click();
-      URL.revokeObjectURL(objUrl);
+      // ── Step 3: desktop fallback — download image + copy link ──────────────
+      if (file && blob) {
+        const objUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.download = file.name;
+        a.href = objUrl;
+        a.click();
+        URL.revokeObjectURL(objUrl);
+      }
 
+      // Copy link regardless
       try {
         await navigator.clipboard.writeText(shareUrl);
-        toast.success("Image downloaded & link copied!");
+        toast.success(file ? "Image downloaded & link copied!" : "Link copied to clipboard!");
       } catch {
-        toast.success("Snapshot downloaded!");
+        toast.success(file ? "Snapshot downloaded!" : "Share not supported on this browser.");
       }
+
     } catch (err: any) {
-      if (err?.name === "AbortError") return; // User cancelled
+      if (err?.name === "AbortError") return; // User dismissed the share sheet — not an error
       console.error("Share error:", err);
       toast.error("Could not share. Please try again.", { id: "share-toast" });
     } finally {
