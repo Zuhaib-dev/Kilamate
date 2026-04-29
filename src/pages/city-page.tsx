@@ -26,6 +26,7 @@ import { ComfortLevel } from "../components/comfort-level";
 import { AgricultureAdvisor } from "../components/agriculture-advisor";
 import { SEO, createWeatherSchema, createBreadcrumbSchema } from "@/components/seo";
 import { BestDayThisWeek } from "@/components/best-day-this-week";
+import { WeatherVsHistory } from "@/components/weather-vs-history";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 
@@ -165,6 +166,11 @@ export function CityPage() {
           {/* DETAILS */}
           <AnimateIn variant="slideUp" className="col-span-full">
             <WeatherDetails data={weatherQuery.data} />
+          </AnimateIn>
+
+          {/* NOW VS HISTORY */}
+          <AnimateIn variant="slideUp" className="col-span-full">
+            <WeatherVsHistory data={weatherQuery.data} coordinates={coordinates} />
           </AnimateIn>
 
           {/* DAILY OUTLOOK + COMFORT */}

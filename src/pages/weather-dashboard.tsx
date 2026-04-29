@@ -21,6 +21,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { WeatherAlerts } from "@/components/weather-alerts";
 import { WeatherStats } from "@/components/weather-stats";
 import { BestDayThisWeek } from "@/components/best-day-this-week";
+import { WeatherVsHistory } from "@/components/weather-vs-history";
 
 // Lazy loaded components
 const WeatherMap = lazy(() => import("@/components/weather-map").then(m => ({ default: m.WeatherMap })));
@@ -331,6 +332,15 @@ export function WeatherDashboard() {
               <LazyView margin="400px" className="col-span-full">
                 <AnimateIn variant="slideUp">
                   <WeatherDetails data={weatherQuery.data} />
+                </AnimateIn>
+              </LazyView>
+            )}
+
+            {/* ROW 4b: NOW VS HISTORY */}
+            {weatherQuery.data && coordinates && (
+              <LazyView margin="400px" className="col-span-full">
+                <AnimateIn variant="slideUp">
+                  <WeatherVsHistory data={weatherQuery.data} coordinates={coordinates} />
                 </AnimateIn>
               </LazyView>
             )}

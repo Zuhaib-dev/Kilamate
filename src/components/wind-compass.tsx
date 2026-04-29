@@ -330,7 +330,7 @@ export const WindCompass = memo(function WindCompass({ data }: WindCompassProps)
           <div className="space-y-2">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Beaufort Wind Scale</p>
             <div className="flex gap-0.5 h-3 rounded-full overflow-hidden">
-              {BEAUFORT.filter(b => b.max !== Infinity).map((b, i) => {
+              {BEAUFORT.filter(b => b.max !== Infinity).map((b) => {
                 const isActive = getBeaufort(speedMs).label === b.label;
                 return (
                   <motion.div
