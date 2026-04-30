@@ -12,9 +12,9 @@ interface SEOProps {
 }
 
 export function SEO({
-    title = "Kilamate | Weather Forecast in Jammu & Kashmir",
-    description = "Get accurate weather forecasts, real-time Air Quality Index (AQI), and a specialized Kashmir Apple Farming Advisory for Jammu & Kashmir with Kilamate.",
-    keywords = "Weather in Srinagar, AQI in Srinagar, Air Quality Index Jammu Kashmir, Jammu Kashmir weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, Agriculture Advisor J&K, Kashmir Apple Farming, SKUAST Spray Schedule, Apple Scab Risk",
+    title = "Kilamate | Premium Weather Forecast in Jammu & Kashmir",
+    description = "Kilamate provides ultra-accurate weather forecasts, real-time Air Quality Index (AQI), and specialized Agriculture advisories for Jammu & Kashmir. Stay ahead with live weather insights and Kashmir Apple farming guides.",
+    keywords = "Weather in Srinagar, AQI Srinagar, Air Quality Index Jammu Kashmir, J&K weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, Agriculture Advisor J&K, Kashmir Apple Farming, SKUAST Spray Schedule, Apple Scab Risk, Weather Forecast Kashmir, Srinagar Weather Update",
     ogImage = "https://www.zuhaibrashid.com/SEO.png",
     ogType = "website",
     canonicalUrl = "https://kilamate.netlify.app/",
@@ -34,7 +34,8 @@ export function SEO({
             <meta name="keywords" content={keywords} />
             <meta name="author" content="Zuhaib Rashid" />
             <meta name="publisher" content="Kilamate" />
-            <meta name="robots" content="index, follow" />
+            <meta name="robots" content="index, follow, max-image-preview:large" />
+            <meta name="language" content={i18n.language === 'en' ? 'English' : i18n.language === 'hi' ? 'Hindi' : 'Urdu'} />
             
             {/* Theme Colors */}
             <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
@@ -45,8 +46,9 @@ export function SEO({
 
             {/* Apple / PWA */}
             <meta name="apple-mobile-web-app-capable" content="yes" />
-            <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             <meta name="apple-mobile-web-app-title" content="Kilamate" />
+            <meta name="mobile-web-app-capable" content="yes" />
 
             {/* Open Graph / Facebook */}
             <meta property="og:type" content={ogType} />
@@ -54,6 +56,10 @@ export function SEO({
             <meta property="og:title" content={title} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={ogImage} />
+            <meta property="og:image:alt" content="Kilamate Weather App Interface" />
+            <meta property="og:image:type" content="image/png" />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
             <meta property="og:site_name" content="Kilamate Weather" />
             <meta property="og:locale" content={i18n.language === 'en' ? 'en_US' : i18n.language === 'hi' ? 'hi_IN' : 'ur_PK'} />
 
@@ -63,6 +69,8 @@ export function SEO({
             <meta property="twitter:title" content={title} />
             <meta property="twitter:description" content={description} />
             <meta property="twitter:image" content={ogImage} />
+            <meta property="twitter:image:alt" content="Kilamate Weather App Interface" />
+            <meta name="twitter:site" content="@xuhaib_x9" />
             <meta name="twitter:creator" content="@xuhaib_x9" />
 
             {/* Structured Data */}
