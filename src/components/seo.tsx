@@ -56,6 +56,7 @@ export function SEO({
             <meta property="og:title" content={title} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={ogImage} />
+            <meta property="og:image:secure_url" content={ogImage} />
             <meta property="og:image:alt" content="Kilamate Weather App Interface" />
             <meta property="og:image:type" content="image/png" />
             <meta property="og:image:width" content="1200" />
@@ -72,6 +73,9 @@ export function SEO({
             <meta property="twitter:image:alt" content="Kilamate Weather App Interface" />
             <meta name="twitter:site" content="@xuhaib_x9" />
             <meta name="twitter:creator" content="@xuhaib_x9" />
+
+            {/* Extra Meta */}
+            <meta name="format-detection" content="telephone=no, address=no, email=no" />
 
             {/* Structured Data */}
             {structuredData && (
