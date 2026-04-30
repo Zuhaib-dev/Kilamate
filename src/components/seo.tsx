@@ -15,7 +15,7 @@ export function SEO({
     title = "Kilamate | Premium Weather Forecast in Jammu & Kashmir",
     description = "Kilamate provides ultra-accurate weather forecasts, real-time Air Quality Index (AQI), and specialized Agriculture advisories for Jammu & Kashmir. Stay ahead with live weather insights and Kashmir Apple farming guides.",
     keywords = "Weather in Srinagar, AQI Srinagar, Air Quality Index Jammu Kashmir, J&K weather forecast, live weather J&K, Kilamate weather app, Zuhaib Rashid, real-time AQI, Agriculture Advisor J&K, Kashmir Apple Farming, SKUAST Spray Schedule, Apple Scab Risk, Weather Forecast Kashmir, Srinagar Weather Update",
-    ogImage = "https://www.zuhaibrashid.com/SEO.png",
+    ogImage = "https://kilamate.netlify.app/og-image.png",
     ogType = "website",
     canonicalUrl = "https://kilamate.netlify.app/",
     structuredData,
