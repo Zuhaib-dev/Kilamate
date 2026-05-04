@@ -28,7 +28,7 @@ Designed with a focus on user experience, it features a beautiful, responsive in
 ## 🚀 Key Features
 
 - 🌍 **Live Weather:** Accurate current weather data for any city worldwide
-- 📰 **Live Weather News:** Real-time, location-based weather & climate news feed via GNews API
+- 📰 **Live Weather News:** Real-time, location-based weather & climate news feed via GNews API 
 - 🏆 **Best Day Suggester:** Smart scoring algorithm identifying the optimal day for outdoor activities
 - ⏳ **History vs Now:** Deep comparison of current conditions against 5-year historical averages
 - 🌫️ **Air Quality Index (AQI):** Real-time US AQI scores with color-coded scale and pollutant breakdown
