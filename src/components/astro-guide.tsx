@@ -1,9 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Telescope, Star, Moon, Eye, Wind, Cloud, MapPin, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Telescope, Star, Moon, Eye, Cloud, MapPin, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import { memo, useMemo } from "react";
 import { Badge } from "./ui/badge";
-import { useTranslation } from "react-i18next";
 import type { WeatherData, ForecastData } from "@/api/types";
 
 interface AstroGuideProps {
@@ -11,9 +10,7 @@ interface AstroGuideProps {
   forecast?: ForecastData | null;
 }
 
-export const AstroGuide = memo(function AstroGuide({ weather, forecast }: AstroGuideProps) {
-  const { t } = useTranslation();
-
+export const AstroGuide = memo(function AstroGuide({ weather }: AstroGuideProps) {
   const astroData = useMemo(() => {
     const clouds = weather.clouds.all;
     const visibility = (weather.visibility || 10000) / 1000; // km
@@ -25,10 +22,6 @@ export const AstroGuide = memo(function AstroGuide({ weather, forecast }: AstroG
     score -= clouds * 0.8; // Clouds are the biggest killer
     if (visibility < 5) score -= (5 - visibility) * 10;
     if (humidity > 70) score -= (humidity - 70) * 0.5;
-    
-    // Night bonus (check if it's currently night or approaching night)
-    const now = Date.now() / 1000;
-    const isNight = now < weather.sys.sunrise || now > weather.sys.sunset;
     
     const finalScore = Math.max(0, Math.min(100, score));
     
@@ -51,7 +44,6 @@ export const AstroGuide = memo(function AstroGuide({ weather, forecast }: AstroG
       quality,
       color,
       glow,
-      isNight,
       clouds,
       visibility,
       planets,
@@ -275,7 +267,7 @@ export const AstroGuide = memo(function AstroGuide({ weather, forecast }: AstroG
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                  </span>
-                 <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold">Live Sync</span>
+                 <span className="text-[9px]  uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold">Live Sync</span>
               </div>
             </div>
           </div>
