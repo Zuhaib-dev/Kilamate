@@ -3,6 +3,7 @@ import { Telescope, Star, Moon, Eye, Cloud, MapPin, Sparkles } from "lucide-reac
 import { motion } from "framer-motion";
 import { memo, useMemo } from "react";
 import { Badge } from "./ui/badge";
+import { staggerContainer, slideUp } from "@/lib/animations";
 import type { WeatherData, ForecastData } from "@/api/types";
 
 interface AstroGuideProps {
@@ -113,10 +114,16 @@ export const AstroGuide = memo(function AstroGuide({ weather }: AstroGuideProps)
       </CardHeader>
 
       <CardContent className="relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <motion.div 
+          variants={staggerContainer} 
+          initial="hidden" 
+          whileInView="visible" 
+          viewport={{ once: true, margin: "-40px" }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
           
           {/* Column 1: Main Quality Score */}
-          <div className="flex flex-col items-center justify-center py-8 rounded-2xl bg-muted/30 backdrop-blur-md border shadow-sm relative overflow-hidden group-hover:bg-muted/40 transition-colors duration-500">
+          <motion.div variants={slideUp} className="flex flex-col items-center justify-center py-8 rounded-2xl bg-muted/30 backdrop-blur-md border shadow-sm relative overflow-hidden group-hover:bg-muted/40 transition-colors duration-500">
             <div 
               className="absolute inset-0 opacity-10 blur-2xl transition-opacity duration-1000"
               style={{ backgroundColor: astroData.color }}
@@ -173,11 +180,12 @@ export const AstroGuide = memo(function AstroGuide({ weather }: AstroGuideProps)
                 {astroData.quality} Conditions
               </Badge>
             </motion.div>
-          </div>
+          </motion.div>
 
           {/* Column 2: Sky Details */}
           <div className="flex flex-col gap-4">
             <motion.div 
+              variants={slideUp}
               whileHover={{ scale: 1.02 }}
               className="flex-1 rounded-2xl border bg-muted/20 p-5 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:bg-muted/40 hover:border-border/80"
             >
@@ -197,6 +205,7 @@ export const AstroGuide = memo(function AstroGuide({ weather }: AstroGuideProps)
             </motion.div>
 
             <motion.div 
+              variants={slideUp}
               whileHover={{ scale: 1.02 }}
               className="flex-1 rounded-2xl border bg-muted/20 p-5 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:bg-muted/40 hover:border-border/80"
             >
@@ -217,7 +226,7 @@ export const AstroGuide = memo(function AstroGuide({ weather }: AstroGuideProps)
           </div>
 
           {/* Column 3: Planetary Visibility & Details */}
-          <div className="flex flex-col rounded-2xl border bg-muted/20 p-5 h-full relative overflow-hidden group-hover:border-border/80 transition-all duration-500">
+          <motion.div variants={slideUp} className="flex flex-col rounded-2xl border bg-muted/20 p-5 h-full relative overflow-hidden group-hover:border-border/80 transition-all duration-500">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-[50px] rounded-full pointer-events-none" />
             
             <div className="flex items-center gap-2 mb-6">
@@ -270,9 +279,9 @@ export const AstroGuide = memo(function AstroGuide({ weather }: AstroGuideProps)
                  <span className="text-[9px]  uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold">Live Sync</span>
               </div>
             </div>
-          </div>
+          </motion.div>
           
-        </div>
+        </motion.div>
       </CardContent>
 
       {/* Decorative Glow Elements */}
