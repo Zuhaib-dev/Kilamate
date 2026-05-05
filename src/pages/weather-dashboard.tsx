@@ -35,6 +35,7 @@ import { TravelAdvisory } from "@/components/travel-advisory";
 import { MoonPhase } from "@/components/moon-phase";
 import { ComfortLevel } from "@/components/comfort-level";
 import { AgricultureAdvisor } from "@/components/agriculture-advisor";
+import { AstroGuide } from "@/components/astro-guide";
 import { SEO, webApplicationSchema, organizationSchema, createBreadcrumbSchema, createWeatherSchema } from "@/components/seo";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
@@ -318,6 +319,14 @@ export function WeatherDashboard() {
                 <MoonPhase />
               </AnimateIn>
             </LazyView>
+
+            {weatherQuery.data && (
+              <LazyView margin="400px" className="col-span-full">
+                <AnimateIn variant="slideUp">
+                  <AstroGuide weather={weatherQuery.data} forecast={forecastQuery.data} />
+                </AnimateIn>
+              </LazyView>
+            )}
 
             {/* ROW 4: WEATHER DETAILS */}
             {weatherQuery.data && (

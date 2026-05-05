@@ -24,6 +24,7 @@ import { ClothingAdvisor } from "../components/clothing-advisor";
 import { MoonPhase } from "../components/moon-phase";
 import { ComfortLevel } from "../components/comfort-level";
 import { AgricultureAdvisor } from "../components/agriculture-advisor";
+import { AstroGuide } from "../components/astro-guide";
 import { SEO, createWeatherSchema, createBreadcrumbSchema } from "@/components/seo";
 import { BestDayThisWeek } from "@/components/best-day-this-week";
 import { WeatherVsHistory } from "@/components/weather-vs-history";
@@ -163,6 +164,12 @@ export function CityPage() {
           <AnimateIn variant="slideInRight">
             <MoonPhase />
           </AnimateIn>
+
+          {weatherQuery.data && (
+            <AnimateIn variant="slideUp" className="col-span-full">
+              <AstroGuide weather={weatherQuery.data} forecast={forecastQuery.data} />
+            </AnimateIn>
+          )}
 
           {/* DETAILS */}
           <AnimateIn variant="slideUp" className="col-span-full">
