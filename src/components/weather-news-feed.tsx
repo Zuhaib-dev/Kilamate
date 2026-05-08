@@ -7,6 +7,7 @@ import { memo, useState } from "react";
 
 interface WeatherNewsFeedProps {
   locationName: string;
+  state?: string;
 }
 
 function timeAgo(dateStr: string): string {
@@ -35,8 +36,8 @@ function SkeletonCard({ delay }: { delay: number }) {
   );
 }
 
-export const WeatherNewsFeed = memo(function WeatherNewsFeed({ locationName }: WeatherNewsFeedProps) {
-  const { data: articles, isLoading, isError, refetch, isFetching } = useWeatherNews(locationName);
+export const WeatherNewsFeed = memo(function WeatherNewsFeed({ locationName, state }: WeatherNewsFeedProps) {
+  const { data: articles, isLoading, isError, refetch, isFetching } = useWeatherNews(locationName, state);
   const [expanded, setExpanded] = useState<number | null>(null);
   const [imgErrors, setImgErrors] = useState<Set<number>>(new Set());
 
@@ -87,7 +88,7 @@ export const WeatherNewsFeed = memo(function WeatherNewsFeed({ locationName }: W
             </div>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Latest weather & climate news for <span className="font-semibold text-foreground">{locationName}</span>
+            Latest weather & climate news for <span className="font-semibold text-foreground">{locationName}{state ? `, ${state}` : ""}</span>
           </p>
         </CardHeader>
 

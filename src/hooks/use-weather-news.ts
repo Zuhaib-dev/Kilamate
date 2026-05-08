@@ -13,8 +13,9 @@ export interface NewsArticle {
   };
 }
 
-async function fetchWeatherNews(locationName: string): Promise<NewsArticle[]> {
-  const query = `${locationName} weather OR climate OR storm OR flood OR drought`;
+async function fetchWeatherNews(locationName: string, state?: string): Promise<NewsArticle[]> {
+  const baseLocation = state ? `("${locationName}" OR "${state}")` : `"${locationName}"`;
+  const query = `${baseLocation} AND (weather OR climate OR storm OR flood OR drought)`;
 
   // In production → call our own Netlify serverless proxy (no CORS)
   // In dev → call GNews directly (localhost is allowed)
@@ -36,10 +37,10 @@ async function fetchWeatherNews(locationName: string): Promise<NewsArticle[]> {
   return (data.articles ?? []) as NewsArticle[];
 }
 
-export function useWeatherNews(locationName: string | undefined) {
+export function useWeatherNews(locationName: string | undefined, state?: string) {
   return useQuery({
-    queryKey: ["weather-news", locationName],
-    queryFn: () => fetchWeatherNews(locationName!),
+    queryKey: ["weather-news", locationName, state],
+    queryFn: () => fetchWeatherNews(locationName!, state),
     enabled: !!locationName,
     staleTime: 1000 * 60 * 30,
     retry: 1,

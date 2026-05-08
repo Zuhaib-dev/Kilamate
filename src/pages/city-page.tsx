@@ -226,7 +226,7 @@ export function CityPage() {
 
           {/* WEATHER NEWS */}
           <AnimateIn variant="slideUp" className="col-span-full">
-            <WeatherNewsFeed locationName={cityName} />
+            <WeatherNewsFeed locationName={cityName} state={locationQuery.data?.[0]?.state} />
           </AnimateIn>
 
           {/* TRAVEL */}

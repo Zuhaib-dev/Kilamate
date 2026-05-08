@@ -426,7 +426,7 @@ export function WeatherDashboard() {
             {locationName && (
               <LazyView margin="400px" className="col-span-full">
                 <AnimateIn variant="slideUp">
-                  <WeatherNewsFeed locationName={locationName.name} />
+                  <WeatherNewsFeed locationName={locationName.name} state={locationName.state} />
                 </AnimateIn>
               </LazyView>
             )}
