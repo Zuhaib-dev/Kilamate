@@ -14,6 +14,7 @@ interface CityWebcamsProps {
 export const CityWebcams = memo(function CityWebcams({ coordinates, locationName }: CityWebcamsProps) {
   const [activeCoords, setActiveCoords] = useState<Coordinates>(coordinates);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [waitingForLocate, setWaitingForLocate] = useState(false);
   const { coordinates: userCoords, getLocation, isLoading: isLocating } = useGeolocation();
 
   // If props.coordinates change (e.g., user searches new city), reset to those
@@ -24,19 +25,22 @@ export const CityWebcams = memo(function CityWebcams({ coordinates, locationName
 
   const handleLocateMe = () => {
     if (userCoords) {
-      setActiveCoords(userCoords);
+      // Force an update with a new object reference just in case
+      setActiveCoords({ lat: userCoords.lat, lon: userCoords.lon });
       setIsLoaded(true);
     } else {
+      setWaitingForLocate(true);
       getLocation();
     }
   };
 
   useEffect(() => {
-    if (userCoords && isLocating === false && !isLoaded) {
-      setActiveCoords(userCoords);
+    if (waitingForLocate && userCoords && isLocating === false) {
+      setActiveCoords({ lat: userCoords.lat, lon: userCoords.lon });
       setIsLoaded(true);
+      setWaitingForLocate(false);
     }
-  }, [userCoords, isLocating, isLoaded]);
+  }, [userCoords, isLocating, waitingForLocate]);
 
   return (
     <Card className="w-full overflow-hidden border-border/50 bg-card/40 backdrop-blur-md">
@@ -94,6 +98,7 @@ export const CityWebcams = memo(function CityWebcams({ coordinates, locationName
             </div>
           ) : (
             <iframe
+              key={`${activeCoords.lat}-${activeCoords.lon}`}
               width="100%"
               height="100%"
               src={`https://embed.windy.com/embed2.html?lat=${activeCoords.lat}&lon=${activeCoords.lon}&zoom=11&level=surface&overlay=webcams&menu=&message=true&marker=true&calendar=now&city=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`}
