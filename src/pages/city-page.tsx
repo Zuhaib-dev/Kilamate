@@ -33,6 +33,7 @@ import { AnimateIn } from "@/components/motion/AnimateIn";
 import { WeatherNewsFeed } from "@/components/weather-news-feed";
 import { CityWebcams } from "../components/city-webcams";
 import { AIWeatherBriefing } from "../components/ai-weather-briefing";
+import { SmartHomeAdvisor } from "../components/smart-home-advisor";
 
 export function CityPage() {
   const [searchParams] = useSearchParams();
@@ -222,6 +223,14 @@ export function CityPage() {
             <AgricultureAdvisor
               weather={weatherQuery.data}
               forecast={forecastQuery.data}
+            />
+          </AnimateIn>
+
+          {/* SMART HOME */}
+          <AnimateIn variant="slideUp" className="col-span-full">
+            <SmartHomeAdvisor 
+              weather={weatherQuery.data}
+              forecast={forecastQuery.data ?? undefined}
             />
           </AnimateIn>
 

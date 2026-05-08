@@ -45,6 +45,7 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { WeatherNewsFeed } from "@/components/weather-news-feed";
 import { CityWebcams } from "@/components/city-webcams";
 import { AIWeatherBriefing } from "@/components/ai-weather-briefing";
+import { SmartHomeAdvisor } from "@/components/smart-home-advisor";
 
 export function WeatherDashboard() {
   const {
@@ -412,6 +413,18 @@ export function WeatherDashboard() {
               <LazyView margin="400px" className="col-span-full">
                 <AnimateIn variant="slideUp">
                   <AgricultureAdvisor
+                    weather={weatherQuery.data}
+                    forecast={forecastQuery.data ?? undefined}
+                  />
+                </AnimateIn>
+              </LazyView>
+            )}
+
+            {/* ROW 7b: SMART HOME ADVISOR */}
+            {weatherQuery.data && (
+              <LazyView margin="400px" className="col-span-full">
+                <AnimateIn variant="slideUp">
+                  <SmartHomeAdvisor
                     weather={weatherQuery.data}
                     forecast={forecastQuery.data ?? undefined}
                   />
