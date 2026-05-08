@@ -4,6 +4,7 @@ const GNEWS_KEY = process.env.VITE_GNEWS_API_KEY;
 
 export const handler: Handler = async (event: HandlerEvent) => {
   const query = event.queryStringParameters?.q;
+  const from = event.queryStringParameters?.from;
 
   if (!query) {
     return {
@@ -19,7 +20,10 @@ export const handler: Handler = async (event: HandlerEvent) => {
     };
   }
 
-  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=8&sortby=publishedAt&apikey=${GNEWS_KEY}`;
+  let url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=8&sortby=publishedAt&apikey=${GNEWS_KEY}`;
+  if (from) {
+    url += `&from=${encodeURIComponent(from)}`;
+  }
 
   try {
     const res = await fetch(url);

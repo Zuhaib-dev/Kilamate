@@ -17,17 +17,18 @@ async function fetchWeatherNews(locationName: string, state?: string): Promise<N
   const baseLocation = state ? `("${locationName}" OR "${state}")` : `"${locationName}"`;
   const query = `${baseLocation} AND (weather OR climate OR storm OR flood OR drought)`;
 
-  // In production → call our own Netlify serverless proxy (no CORS)
-  // In dev → call GNews directly (localhost is allowed)
   const isDev = import.meta.env.DEV;
   const GNEWS_KEY = import.meta.env.VITE_GNEWS_API_KEY as string;
 
+  // Calculate 3 days ago for fresher news
+  const fromDate = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+
   let url: string;
   if (isDev && GNEWS_KEY) {
-    url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=8&sortby=publishedAt&apikey=${GNEWS_KEY}`;
+    url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=8&sortby=publishedAt&from=${fromDate}&apikey=${GNEWS_KEY}`;
   } else {
     // Netlify function at /.netlify/functions/news
-    url = `/.netlify/functions/news?q=${encodeURIComponent(query)}`;
+    url = `/.netlify/functions/news?q=${encodeURIComponent(query)}&from=${fromDate}`;
   }
 
   const res = await fetch(url);
