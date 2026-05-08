@@ -43,6 +43,7 @@ import { LazyView } from "@/components/motion/lazy-view";
 import { ShareButton } from "@/components/share-button";
 import { usePreferences } from "@/hooks/use-preferences";
 import { WeatherNewsFeed } from "@/components/weather-news-feed";
+import { CityWebcams } from "@/components/city-webcams";
 
 export function WeatherDashboard() {
   const {
@@ -418,6 +419,15 @@ export function WeatherDashboard() {
               <LazyView margin="400px" className="col-span-full">
                 <AnimateIn variant="slideUp">
                   <AirPollution data={airPollutionQuery.data} />
+                </AnimateIn>
+              </LazyView>
+            )}
+
+            {/* ROW: CITY WEBCAMS */}
+            {coordinates && (
+              <LazyView margin="400px" className="col-span-full">
+                <AnimateIn variant="slideUp">
+                  <CityWebcams coordinates={coordinates} locationName={locationName?.name} />
                 </AnimateIn>
               </LazyView>
             )}

@@ -31,6 +31,7 @@ import { WeatherVsHistory } from "@/components/weather-vs-history";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 import { WeatherNewsFeed } from "@/components/weather-news-feed";
+import { CityWebcams } from "../components/city-webcams";
 
 export function CityPage() {
   const [searchParams] = useSearchParams();
@@ -222,6 +223,11 @@ export function CityPage() {
           {/* AQI */}
           <AnimateIn variant="slideUp" className="col-span-full">
             <AirPollution data={airPollutionQuery.data} />
+          </AnimateIn>
+
+          {/* CITY WEBCAMS */}
+          <AnimateIn variant="slideUp" className="col-span-full">
+            <CityWebcams coordinates={coordinates} locationName={cityName} />
           </AnimateIn>
 
           {/* WEATHER NEWS */}
