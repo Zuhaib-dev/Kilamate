@@ -1,15 +1,15 @@
 import { Card, CardContent } from "./ui/card";
 import { Sparkles, Bot } from "lucide-react";
-import type { WeatherData, ForecastData, AirPollutionData } from "@/api/types";
+import type { WeatherData, ForecastData, AirPollutionResponse } from "@/api/types";
 import { memo, useMemo, useState, useEffect } from "react";
 
 interface AIBriefingProps {
   weather: WeatherData;
   forecast?: ForecastData;
-  airPollution?: AirPollutionData;
+  airPollution?: AirPollutionResponse;
 }
 
-function generateBriefing(weather: WeatherData, forecast?: ForecastData, aqiData?: AirPollutionData) {
+function generateBriefing(weather: WeatherData, forecast?: ForecastData, aqiData?: AirPollutionResponse) {
   const currentHour = new Date().getHours();
   let greeting = "Good evening";
   if (currentHour < 12) greeting = "Good morning";
