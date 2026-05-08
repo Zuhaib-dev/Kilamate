@@ -32,6 +32,7 @@ import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
 import { WeatherNewsFeed } from "@/components/weather-news-feed";
 import { CityWebcams } from "../components/city-webcams";
+import { AIWeatherBriefing } from "../components/ai-weather-briefing";
 
 export function CityPage() {
   const [searchParams] = useSearchParams();
@@ -125,6 +126,15 @@ export function CityPage() {
         </AnimateIn>
 
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+          {/* AI BRIEFING */}
+          <AnimateIn variant="fadeIn" className="col-span-full">
+            <AIWeatherBriefing 
+              weather={weatherQuery.data} 
+              forecast={forecastQuery.data ?? undefined} 
+              airPollution={airPollutionQuery.data ?? undefined} 
+            />
+          </AnimateIn>
+
           {/* ROW 1 */}
           <AnimateIn variant="slideInLeft">
             <CurrentWeather

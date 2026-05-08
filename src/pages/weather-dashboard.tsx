@@ -44,6 +44,7 @@ import { ShareButton } from "@/components/share-button";
 import { usePreferences } from "@/hooks/use-preferences";
 import { WeatherNewsFeed } from "@/components/weather-news-feed";
 import { CityWebcams } from "@/components/city-webcams";
+import { AIWeatherBriefing } from "@/components/ai-weather-briefing";
 
 export function WeatherDashboard() {
   const {
@@ -238,6 +239,17 @@ export function WeatherDashboard() {
           </div>
         ) : (
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+
+            {/* AI BRIEFING */}
+            {weatherQuery.data && (
+              <AnimateIn variant="fadeIn" className="col-span-full">
+                <AIWeatherBriefing 
+                  weather={weatherQuery.data} 
+                  forecast={forecastQuery.data ?? undefined} 
+                  airPollution={airPollutionQuery.data ?? undefined} 
+                />
+              </AnimateIn>
+            )}
 
             {/* ROW 1: TOP 2 CARDS */}
             {weatherQuery.isLoading ? (
