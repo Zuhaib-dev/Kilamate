@@ -34,6 +34,7 @@ import { WeatherNewsFeed } from "@/components/weather-news-feed";
 import { CityWebcams } from "../components/city-webcams";
 import { AIWeatherBriefing } from "../components/ai-weather-briefing";
 import { SmartHomeAdvisor } from "../components/smart-home-advisor";
+import { AllergyForecast } from "../components/allergy-forecast";
 
 export function CityPage() {
   const [searchParams] = useSearchParams();
@@ -242,6 +243,11 @@ export function CityPage() {
           {/* AQI */}
           <AnimateIn variant="slideUp" className="col-span-full">
             <AirPollution data={airPollutionQuery.data} />
+          </AnimateIn>
+
+          {/* ALLERGY FORECAST */}
+          <AnimateIn variant="slideUp" className="col-span-full">
+            <AllergyForecast weather={weatherQuery.data} airPollution={airPollutionQuery.data ?? undefined} />
           </AnimateIn>
 
           {/* CITY WEBCAMS */}

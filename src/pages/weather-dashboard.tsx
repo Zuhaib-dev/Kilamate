@@ -46,6 +46,7 @@ import { WeatherNewsFeed } from "@/components/weather-news-feed";
 import { CityWebcams } from "@/components/city-webcams";
 import { AIWeatherBriefing } from "@/components/ai-weather-briefing";
 import { SmartHomeAdvisor } from "@/components/smart-home-advisor";
+import { AllergyForecast } from "@/components/allergy-forecast";
 
 export function WeatherDashboard() {
   const {
@@ -444,6 +445,15 @@ export function WeatherDashboard() {
               <LazyView margin="400px" className="col-span-full">
                 <AnimateIn variant="slideUp">
                   <AirPollution data={airPollutionQuery.data} />
+                </AnimateIn>
+              </LazyView>
+            )}
+
+            {/* ROW 8B: ALLERGY FORECAST */}
+            {weatherQuery.data && (
+              <LazyView margin="400px" className="col-span-full">
+                <AnimateIn variant="slideUp">
+                  <AllergyForecast weather={weatherQuery.data} airPollution={airPollutionQuery.data ?? undefined} />
                 </AnimateIn>
               </LazyView>
             )}
