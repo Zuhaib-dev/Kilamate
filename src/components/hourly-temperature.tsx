@@ -16,7 +16,7 @@ import type { ForecastData } from "@/api/types";
 import { usePreferences } from "@/hooks/use-preferences";
 import { convertTemperature } from "@/lib/units";
 import { useTranslation } from "react-i18next";
-import { memo } from "react";
+import { memo, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
 interface HourlyTemperatureProps {
@@ -36,6 +36,38 @@ export const HourlyTemperature = memo(function HourlyTemperature({
   data,
 }: HourlyTemperatureProps) {
   const { temperatureUnit, language } = usePreferences();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Prevent vertical page scroll when user is swiping horizontally inside the timeline
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    let startX = 0;
+    let startY = 0;
+
+    const onTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      const dx = Math.abs(e.touches[0].clientX - startX);
+      const dy = Math.abs(e.touches[0].clientY - startY);
+      // If swiping more horizontally than vertically, lock the scroll to this element
+      if (dx > dy) {
+        e.preventDefault();
+      }
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false }); // passive:false required to call preventDefault
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+    };
+  }, []);
   const { t } = useTranslation();
 
   // Determine the correct locale for date-fns
@@ -103,7 +135,11 @@ export const HourlyTemperature = memo(function HourlyTemperature({
             transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.1 }}
           >
             {/* Horizontal Visual Timeline (Google-like) */}
-            <div className="flex gap-2 overflow-x-auto pb-4 pt-4 px-4 sm:px-0 scrollbar-hide overscroll-x-contain touch-pan-x relative w-full">
+            <div
+              ref={scrollRef}
+              className="flex gap-2 overflow-x-auto pb-4 pt-4 px-4 sm:px-0 scrollbar-hide overscroll-x-contain relative w-full"
+              style={{ WebkitOverflowScrolling: "touch" }}
+            >
               {chartData.map((d, i) => (
                 <div key={i} className="flex flex-col items-center justify-center min-w-[70px] hover:bg-muted/50 rounded-xl py-2 transition-colors cursor-default">
                   <p className="text-xs font-semibold text-muted-foreground whitespace-nowrap">{d.time}</p>
