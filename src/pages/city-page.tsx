@@ -30,6 +30,7 @@ import { BestDayThisWeek } from "@/components/best-day-this-week";
 import { WeatherVsHistory } from "@/components/weather-vs-history";
 import { motion } from "framer-motion";
 import { AnimateIn } from "@/components/motion/AnimateIn";
+import { LazyView } from "@/components/motion/lazy-view";
 import { WeatherNewsFeed } from "@/components/weather-news-feed";
 import { CityWebcams } from "../components/city-webcams";
 import { AIWeatherBriefing } from "../components/ai-weather-briefing";
@@ -171,99 +172,135 @@ export function CityPage() {
           </AnimateIn>
 
           {/* SUN + MOON */}
-          <AnimateIn variant="slideInLeft">
-            <SunTracker data={weatherQuery.data} />
-          </AnimateIn>
-          <AnimateIn variant="slideInRight">
-            <MoonPhase />
-          </AnimateIn>
+          <LazyView margin="400px">
+            <AnimateIn variant="slideInLeft">
+              <SunTracker data={weatherQuery.data} />
+            </AnimateIn>
+          </LazyView>
+          <LazyView margin="400px">
+            <AnimateIn variant="slideInRight">
+              <MoonPhase />
+            </AnimateIn>
+          </LazyView>
 
           {weatherQuery.data && (
-            <AnimateIn variant="slideUp" className="col-span-full">
-              <AstroGuide weather={weatherQuery.data} forecast={forecastQuery.data} />
-            </AnimateIn>
+            <LazyView margin="400px" className="col-span-full">
+              <AnimateIn variant="slideUp">
+                <AstroGuide weather={weatherQuery.data} forecast={forecastQuery.data} />
+              </AnimateIn>
+            </LazyView>
           )}
 
           {/* DETAILS */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <WeatherDetails data={weatherQuery.data} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <WeatherDetails data={weatherQuery.data} />
+            </AnimateIn>
+          </LazyView>
 
           {/* NOW VS HISTORY */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <WeatherVsHistory data={weatherQuery.data} coordinates={coordinates} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <WeatherVsHistory data={weatherQuery.data} coordinates={coordinates} />
+            </AnimateIn>
+          </LazyView>
 
           {/* DAILY OUTLOOK + COMFORT */}
-          <AnimateIn variant="slideInLeft">
-            <DailyOutlook
-              weather={weatherQuery.data}
-              forecast={forecastQuery.data}
-              airPollution={airPollutionQuery.data}
-            />
-          </AnimateIn>
-          <AnimateIn variant="slideInRight">
-            <ComfortLevel data={weatherQuery.data} />
-          </AnimateIn>
+          <LazyView margin="400px">
+            <AnimateIn variant="slideInLeft">
+              <DailyOutlook
+                weather={weatherQuery.data}
+                forecast={forecastQuery.data}
+                airPollution={airPollutionQuery.data}
+              />
+            </AnimateIn>
+          </LazyView>
+          <LazyView margin="400px">
+            <AnimateIn variant="slideInRight">
+              <ComfortLevel data={weatherQuery.data} />
+            </AnimateIn>
+          </LazyView>
 
           {/* ADVISORS */}
-          <AnimateIn variant="slideInLeft">
-            <ClothingAdvisor data={weatherQuery.data} />
-          </AnimateIn>
-          <AnimateIn variant="slideInRight">
-            <ActivityPlanner data={forecastQuery.data} />
-          </AnimateIn>
+          <LazyView margin="400px">
+            <AnimateIn variant="slideInLeft">
+              <ClothingAdvisor data={weatherQuery.data} />
+            </AnimateIn>
+          </LazyView>
+          <LazyView margin="400px">
+            <AnimateIn variant="slideInRight">
+              <ActivityPlanner data={forecastQuery.data} />
+            </AnimateIn>
+          </LazyView>
 
           {/* FORECAST */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <WeatherForecast data={forecastQuery.data} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <WeatherForecast data={forecastQuery.data} />
+            </AnimateIn>
+          </LazyView>
 
           {/* AGRICULTURE */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <AgricultureAdvisor
-              weather={weatherQuery.data}
-              forecast={forecastQuery.data}
-            />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <AgricultureAdvisor
+                weather={weatherQuery.data}
+                forecast={forecastQuery.data}
+              />
+            </AnimateIn>
+          </LazyView>
 
           {/* SMART HOME */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <SmartHomeAdvisor 
-              weather={weatherQuery.data}
-              forecast={forecastQuery.data ?? undefined}
-            />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <SmartHomeAdvisor 
+                weather={weatherQuery.data}
+                forecast={forecastQuery.data ?? undefined}
+              />
+            </AnimateIn>
+          </LazyView>
 
           {/* REGIONAL */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <RegionalOverview state={locationQuery.data?.[0]?.state} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <RegionalOverview state={locationQuery.data?.[0]?.state} />
+            </AnimateIn>
+          </LazyView>
 
           {/* AQI */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <AirPollution data={airPollutionQuery.data} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <AirPollution data={airPollutionQuery.data} />
+            </AnimateIn>
+          </LazyView>
 
           {/* ALLERGY FORECAST */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <AllergyForecast weather={weatherQuery.data} airPollution={airPollutionQuery.data ?? undefined} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <AllergyForecast weather={weatherQuery.data} airPollution={airPollutionQuery.data ?? undefined} />
+            </AnimateIn>
+          </LazyView>
 
           {/* CITY WEBCAMS */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <CityWebcams coordinates={coordinates} locationName={cityName} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <CityWebcams coordinates={coordinates} locationName={cityName} />
+            </AnimateIn>
+          </LazyView>
 
           {/* WEATHER NEWS */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <WeatherNewsFeed locationName={cityName} state={locationQuery.data?.[0]?.state} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <WeatherNewsFeed locationName={cityName} state={locationQuery.data?.[0]?.state} />
+            </AnimateIn>
+          </LazyView>
 
           {/* TRAVEL */}
-          <AnimateIn variant="slideUp" className="col-span-full">
-            <TravelAdvisory weather={weatherQuery.data} />
-          </AnimateIn>
+          <LazyView margin="400px" className="col-span-full">
+            <AnimateIn variant="slideUp">
+              <TravelAdvisory weather={weatherQuery.data} />
+            </AnimateIn>
+          </LazyView>
         </div>
       </div>
     </>
