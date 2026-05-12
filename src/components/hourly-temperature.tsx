@@ -28,6 +28,8 @@ interface ChartData {
   temp: number;
   feels_like: number;
   pop: number;
+  icon: string;
+  description: string;
 }
 
 export const HourlyTemperature = memo(function HourlyTemperature({
@@ -53,9 +55,9 @@ export const HourlyTemperature = memo(function HourlyTemperature({
     return urduFormatted;
   };
 
-  // Get today's forecast data and format for chart
+  // Get forecast data and format for chart/timeline
   const chartData: ChartData[] = data.list
-    .slice(0, 8) // Get next 24 hours (3-hour intervals)
+    .slice(0, 24) // Get next 3 days (3-hour intervals) for great scroll experience
     .map((item) => ({
       time: language === "ur"
         ? formatUrduTime(new Date(item.dt * 1000))
@@ -63,6 +65,8 @@ export const HourlyTemperature = memo(function HourlyTemperature({
       temp: Math.round(convertTemperature(item.main.temp, temperatureUnit)),
       feels_like: Math.round(convertTemperature(item.main.feels_like, temperatureUnit)),
       pop: Math.round((item.pop ?? 0) * 100),
+      icon: item.weather[0].icon,
+      description: item.weather[0].description
     }));
 
   const unitSymbol = temperatureUnit === "celsius" ? "°C" : "°F";
@@ -98,7 +102,33 @@ export const HourlyTemperature = memo(function HourlyTemperature({
             viewport={{ once: true, margin: "-40px" }}
             transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.1 }}
           >
-            <div className="h-[240px] w-full px-2 sm:px-0 mt-4">
+            {/* Horizontal Visual Timeline (Google-like) */}
+            <div className="flex gap-2 overflow-x-auto pb-4 pt-4 px-4 sm:px-0 scrollbar-hide snap-x relative w-full">
+              {chartData.map((d, i) => (
+                <div key={i} className="flex flex-col items-center justify-center min-w-[70px] snap-start hover:bg-muted/50 rounded-xl py-2 transition-colors cursor-default">
+                  <p className="text-xs font-semibold text-muted-foreground whitespace-nowrap">{d.time}</p>
+                  <img 
+                    src={`https://openweathermap.org/img/wn/${d.icon}@2x.png`} 
+                    alt={d.description}
+                    title={d.description}
+                    className="w-10 h-10 my-1 drop-shadow-sm pointer-events-none" 
+                    loading="lazy"
+                  />
+                  <p className="text-sm font-bold">{d.temp}{unitSymbol}</p>
+                  <div className="h-4 flex items-center justify-center mt-0.5">
+                    {d.pop > 0 && (
+                      <span className="text-[10px] font-bold text-sky-500 flex items-center gap-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-sky-500/20 flex items-center justify-center"><span className="w-1 h-1 rounded-full bg-sky-500" /></span>
+                        {d.pop}%
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Recharts Chart View */}
+            <div className="h-[240px] w-full px-2 sm:px-0 mt-4 border-t border-border/30 pt-6">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
                   <defs>
