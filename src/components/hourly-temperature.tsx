@@ -127,13 +127,13 @@ export const HourlyTemperature = memo(function HourlyTemperature({
               ))}
             </div>
 
-            {/* Recharts Chart View */}
+            {/* Recharts Chart View - focused on the next 24 hours */}
             <div className="h-[240px] w-full px-2 sm:px-0 mt-4 border-t border-border/30 pt-6">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={chartData} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
+                <ComposedChart data={chartData.slice(0, 8)} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
                   <defs>
                     <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.35} />
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
                       <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="rainGradient" x1="0" y1="0" x2="0" y2="1">
@@ -239,7 +239,7 @@ export const HourlyTemperature = memo(function HourlyTemperature({
                   {/* Feels Like Line (Background) */}
                   <Area
                     yAxisId="temp"
-                    type="monotone"
+                    type="natural"
                     dataKey="feels_like"
                     stroke="#94a3b8"
                     strokeWidth={2}
@@ -252,13 +252,13 @@ export const HourlyTemperature = memo(function HourlyTemperature({
                   {/* Temperature Area (Foreground) */}
                   <Area
                     yAxisId="temp"
-                    type="monotone"
+                    type="natural"
                     dataKey="temp"
                     stroke="#3b82f6"
-                    strokeWidth={3}
+                    strokeWidth={4}
                     fill="url(#tempGradient)"
-                    dot={{ r: 3, fill: "hsl(var(--background))", stroke: "#3b82f6", strokeWidth: 2 }}
-                    activeDot={{ r: 6, fill: "#3b82f6", stroke: "hsl(var(--background))", strokeWidth: 2, className: "drop-shadow-md" }}
+                    dot={{ r: 4, fill: "hsl(var(--background))", stroke: "#3b82f6", strokeWidth: 2.5 }}
+                    activeDot={{ r: 7, fill: "#3b82f6", stroke: "hsl(var(--background))", strokeWidth: 2.5, className: "drop-shadow-lg" }}
                   />
                 </ComposedChart>
               </ResponsiveContainer>
