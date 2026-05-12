@@ -33,6 +33,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        skipWaiting: true,      // Force new SW to activate immediately
+        clientsClaim: true,     // Claim all tabs as soon as SW activates
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         globIgnores: ["**/sitemap.xml", "**/robots.txt", "**/site.webmanifest", "**/custom-sw.js"], // Don't cache these static files
         importScripts: ["custom-sw.js"], // Import our custom logic
