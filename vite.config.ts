@@ -83,10 +83,7 @@ export default defineConfig({
       compress: {
         passes: 2,
       },
-      mangle: {
-        keep_classnames: true, // CRITICAL: Three.js relies on class names internally
-        keep_fnames: true, // Some libraries use function constructors
-      },
+      mangle: false, // Disable mangling to prevent ANY naming conflicts in Three.js/React-Globe
     },
     rollupOptions: {
       output: {
