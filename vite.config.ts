@@ -75,39 +75,22 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ["react-globe.gl", "three"],
+  },
   build: {
     // Performance optimizations
-    target: "es2020",  // More compatible than esnext — avoids esbuild/Three.js mangling bugs
-    minify: "terser",  // Terser handles Three.js class constructors correctly (esbuild breaks them)
-    terserOptions: {
-      compress: {
-        passes: 2,
-      },
-      mangle: false, // Disable mangling to prevent ANY naming conflicts in Three.js/React-Globe
-    },
+    target: "esnext",
+    minify: "esbuild", // Revert to standard esbuild
+    // Let Rollup handle chunking naturally to prevent CommonJS/execution order bugs
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            if (id.includes("react") || id.includes("react-dom") || id.includes("react-router")) {
-              return "vendor-react";
-            }
-            if (id.includes("framer-motion")) {
-              return "vendor-motion";
-            }
-            if (id.includes("recharts")) {
-              return "vendor-charts";
-            }
-            if (id.includes("three") || id.includes("react-globe.gl")) {
-              return "vendor-3d";
-            }
-            return "vendor";
-          }
-        },
+        // We removed manualChunks to fix "Prop is not a constructor" and "FL is not a constructor"
+        // which occur when circular dependencies in Three.js/Kapsule are split across chunks incorrectly.
       },
     },
     // Optimize chunk size
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 2000,
   },
   // Optimize dev server
   server: {
