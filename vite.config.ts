@@ -85,7 +85,7 @@ export default defineConfig({
       },
       mangle: {
         keep_classnames: true, // CRITICAL: Three.js relies on class names internally
-        keep_fnames: false,
+        keep_fnames: true, // Some libraries use function constructors
       },
     },
     rollupOptions: {
