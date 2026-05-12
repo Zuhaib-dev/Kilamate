@@ -11,7 +11,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
       devOptions: {
-        enabled: true,
+        enabled: false, // Disabled in dev mode to prevent sw.js MIME type errors and HMR issues
         type: "module",
       },
       manifest: {
