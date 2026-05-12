@@ -24,7 +24,7 @@ import {
 import type { WeatherData } from "@/api/types";
 import { useHistoricalWeather } from "@/hooks/use-historical-weather";
 import { usePreferences } from "@/hooks/use-preferences";
-import { convertTemperature } from "@/lib/units";
+import { convertTemperature, convertWindSpeed } from "@/lib/units";
 import { memo } from "react";
 import type { Coordinates } from "@/api/types";
 
@@ -124,15 +124,16 @@ export const WeatherVsHistory = memo(function WeatherVsHistory({
   data,
   coordinates,
 }: WeatherHistoryProps) {
-  const { temperatureUnit } = usePreferences();
+  const { temperatureUnit, windSpeedUnit } = usePreferences();
   const histQuery = useHistoricalWeather(coordinates);
 
   const unitSymbol = temperatureUnit === "celsius" ? "°C" : "°F";
+  const windUnitLabel = { kmh: "km/h", mph: "mph", ms: "m/s" }[windSpeedUnit];
 
   const nowTemp = Math.round(convertTemperature(data.main.temp, temperatureUnit));
   const nowTempMax = Math.round(convertTemperature(data.main.temp_max, temperatureUnit));
   const nowTempMin = Math.round(convertTemperature(data.main.temp_min, temperatureUnit));
-  const nowWindKmh = Math.round(data.wind.speed * 3.6);
+  const nowWindSpeed = Math.round(convertWindSpeed(data.wind.speed, windSpeedUnit));
 
   const hist = histQuery.data;
 
@@ -145,10 +146,11 @@ export const WeatherVsHistory = memo(function WeatherVsHistory({
   const histTempMin = hist
     ? Math.round(convertTemperature(hist.avgTempMin, temperatureUnit))
     : null;
-  const histWindKmh = hist ? hist.avgWindspeed : null;
+  // hist.avgWindspeed is in km/h from Open-Meteo, so convert to m/s first (div by 3.6), then to user preference
+  const histWindSpeed = hist ? Math.round(convertWindSpeed(hist.avgWindspeed / 3.6, windSpeedUnit)) : null;
 
   const tempDelta = hist ? nowTemp - histTempMid! : 0;
-  const windDelta = hist ? nowWindKmh - (histWindKmh ?? 0) : 0;
+  const windDelta = hist ? nowWindSpeed - (histWindSpeed ?? 0) : 0;
 
   // Chart data: last 5 years + today
   const chartData = hist
@@ -260,9 +262,9 @@ export const WeatherVsHistory = memo(function WeatherVsHistory({
               <StatCard
                 icon={<Wind className="h-3.5 w-3.5" />}
                 label="Wind Speed"
-                now={`${nowWindKmh} km/h`}
-                historical={`${histWindKmh} km/h`}
-                unit=" km/h"
+                now={`${nowWindSpeed} ${windUnitLabel}`}
+                historical={`${histWindSpeed} ${windUnitLabel}`}
+                unit={` ${windUnitLabel}`}
                 delta={windDelta}
                 color="#38bdf8"
                 delay={0.3}

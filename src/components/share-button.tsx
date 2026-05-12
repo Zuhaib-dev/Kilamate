@@ -3,9 +3,9 @@ import { Share2, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { formatTemperature } from "@/lib/units";
+import { formatTemperature, convertWindSpeed } from "@/lib/units";
 import type { WeatherData } from "@/api/types";
-import type { TemperatureUnit } from "@/hooks/use-preferences";
+import { usePreferences, type TemperatureUnit, type WindSpeedUnit } from "@/hooks/use-preferences";
 
 interface ShareButtonProps {
   weather?: WeatherData;
@@ -59,6 +59,7 @@ async function generateWeatherCanvas(
   locationName: string,
   country: string,
   temperatureUnit: TemperatureUnit,
+  windSpeedUnit: WindSpeedUnit,
   shareUrl: string,
 ): Promise<HTMLCanvasElement> {
   // Use 1x on mobile to stay within memory limits; 2x on desktop
@@ -239,14 +240,14 @@ async function generateWeatherCanvas(
     // Silently skip icon if it can't load
   }
 
-  // ── STATS GRID (3 × 2) ───────────────────────────────────────────────────
-  const windKmh = Math.round(speed * 3.6);
-  const gustKmh = gust ? Math.round(gust * 3.6) : null;
+  const windSpeedConverted = Math.round(convertWindSpeed(speed, windSpeedUnit));
+  const gustConverted = gust ? Math.round(convertWindSpeed(gust, windSpeedUnit)) : null;
+  const windUnitLabel = { kmh: 'km/h', mph: 'mph', ms: 'm/s' }[windSpeedUnit];
 
   const stats = [
     { label: "Feels like",  value: fmt(feels_like) },
     { label: "Humidity",    value: `${humidity}%` },
-    { label: "Wind",        value: `${windKmh} km/h ${getWindDir(windDeg)}${gustKmh ? ` · G${gustKmh}` : ""}` },
+    { label: "Wind",        value: `${windSpeedConverted} ${windUnitLabel} ${getWindDir(windDeg)}${gustConverted ? ` · G${gustConverted}` : ""}` },
     { label: "Pressure",    value: `${pressure} hPa` },
     { label: "Cloud cover", value: `${clouds.all}%` },
     { label: "Visibility",  value: getVisibility(visibility) },
@@ -326,6 +327,7 @@ async function generateWeatherCanvas(
 // ── Share Button Component ────────────────────────────────────────────────────
 export function ShareButton({ weather, locationName, country = "", temperatureUnit, lat, lon }: ShareButtonProps) {
   const [isSharing, setIsSharing] = useState(false);
+  const { windSpeedUnit } = usePreferences();
 
   const shareUrl = lat && lon
     ? `https://kilamate.netlify.app/city/${encodeURIComponent(locationName)}?lat=${lat}&lon=${lon}`
@@ -344,7 +346,7 @@ export function ShareButton({ weather, locationName, country = "", temperatureUn
 
       try {
         const canvas = await generateWeatherCanvas(
-          weather, locationName, country, temperatureUnit, shareUrl
+          weather, locationName, country, temperatureUnit, windSpeedUnit, shareUrl
         );
         // toBlob can throw SecurityError if canvas is tainted
         blob = await new Promise<Blob | null>((resolve, reject) => {

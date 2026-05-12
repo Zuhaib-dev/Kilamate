@@ -4,6 +4,8 @@ import type { WeatherData } from "@/api/types";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { staggerContainer, slideUp } from "@/lib/animations";
+import { usePreferences } from "@/hooks/use-preferences";
+import { convertTemperature, convertWindSpeed } from "@/lib/units";
 
 interface WeatherStatsProps {
     data: WeatherData;
@@ -11,6 +13,9 @@ interface WeatherStatsProps {
 
 export function WeatherStats({ data }: WeatherStatsProps) {
     const { t } = useTranslation();
+    const { temperatureUnit, windSpeedUnit } = usePreferences();
+    const windUnitLabel = { kmh: 'km/h', mph: 'mph', ms: 'm/s' }[windSpeedUnit];
+    
     const stats: {
         title: string;
         primary: string;
@@ -21,8 +26,8 @@ export function WeatherStats({ data }: WeatherStatsProps) {
     }[] = [
         {
             title: t('weather.feelsLike'),
-            primary: `${Math.round(data.main.feels_like)}`,
-            unit: "°",
+            primary: `${Math.round(convertTemperature(data.main.feels_like, temperatureUnit))}`,
+            unit: temperatureUnit === 'celsius' ? '°C' : '°F',
             icon: Thermometer,
             color: "text-orange-500",
             iconBg: "bg-orange-500/10",
@@ -45,8 +50,8 @@ export function WeatherStats({ data }: WeatherStatsProps) {
         },
         {
             title: t('weather.windSpeed'),
-            primary: `${data.wind.speed}`,
-            unit: " m/s",
+            primary: `${Math.round(convertWindSpeed(data.wind.speed, windSpeedUnit))}`,
+            unit: ` ${windUnitLabel}`,
             icon: Wind,
             color: "text-cyan-500",
             iconBg: "bg-cyan-500/10",
@@ -67,8 +72,8 @@ export function WeatherStats({ data }: WeatherStatsProps) {
         },
         {
             title: t('weather.windGust'),
-            primary: `${data.wind.gust ?? data.wind.speed}`,
-            unit: " m/s",
+            primary: `${Math.round(convertWindSpeed(data.wind.gust ?? data.wind.speed, windSpeedUnit))}`,
+            unit: ` ${windUnitLabel}`,
             icon: Wind,
             color: "text-blue-400",
             iconBg: "bg-blue-400/10",
