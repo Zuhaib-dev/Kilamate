@@ -101,7 +101,7 @@ export const CityWebcams = memo(function CityWebcams({ coordinates, locationName
               key={`${activeCoords.lat}-${activeCoords.lon}`}
               width="100%"
               height="100%"
-              src={`https://embed.windy.com/embed2.html?lat=${activeCoords.lat}&lon=${activeCoords.lon}&zoom=11&level=surface&overlay=webcams&menu=&message=true&marker=true&calendar=now&city=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`}
+              src={`https://embed.windy.com/embed2.html?lat=${activeCoords.lat}&lon=${activeCoords.lon}&zoom=11&level=surface&overlay=webcams&menu=bottom&message=true&marker=true&calendar=default&city=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`}
               frameBorder="0"
               title={`Live Webcams in ${locationName || 'this area'}`}
               allowFullScreen
