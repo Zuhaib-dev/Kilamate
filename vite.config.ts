@@ -79,7 +79,23 @@ export default defineConfig({
     minify: "esbuild", // Revert to faster and more stable esbuild
     rollupOptions: {
       output: {
-        // Rely on Vite's automatic chunking which is more robust for dependency sharing
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("react") || id.includes("react-dom") || id.includes("react-router")) {
+              return "vendor-react";
+            }
+            if (id.includes("framer-motion")) {
+              return "vendor-motion";
+            }
+            if (id.includes("recharts")) {
+              return "vendor-charts";
+            }
+            if (id.includes("three") || id.includes("react-globe.gl")) {
+              return "vendor-3d";
+            }
+            return "vendor";
+          }
+        },
       },
     },
     // Optimize chunk size

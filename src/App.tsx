@@ -186,12 +186,14 @@ function App() {
     <ReactLenis
       root
       options={{
-        lerp: 0.08,
-        duration: 1.2,
+        lerp: 0.05,
+        duration: 1.5,
         smoothWheel: true,
-        wheelMultiplier: 0.8,
-        touchMultiplier: 1.5,
+        wheelMultiplier: 1.2,
+        touchMultiplier: 2,
         infinite: false,
+        syncTouch: true,
+        syncTouchLerp: 0.075,
       }}
     >
       <HelmetProvider>
