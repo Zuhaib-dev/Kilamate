@@ -77,8 +77,17 @@ export default defineConfig({
   },
   build: {
     // Performance optimizations
-    target: "esnext",
-    minify: "esbuild", // Revert to faster and more stable esbuild
+    target: "es2020",  // More compatible than esnext — avoids esbuild/Three.js mangling bugs
+    minify: "terser",  // Terser handles Three.js class constructors correctly (esbuild breaks them)
+    terserOptions: {
+      compress: {
+        passes: 2,
+      },
+      mangle: {
+        keep_classnames: true, // CRITICAL: Three.js relies on class names internally
+        keep_fnames: false,
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {
