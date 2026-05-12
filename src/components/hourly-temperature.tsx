@@ -103,9 +103,9 @@ export const HourlyTemperature = memo(function HourlyTemperature({
             transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.1 }}
           >
             {/* Horizontal Visual Timeline (Google-like) */}
-            <div className="flex gap-2 overflow-x-auto pb-4 pt-4 px-4 sm:px-0 scrollbar-hide snap-x relative w-full">
+            <div className="flex gap-2 overflow-x-auto pb-4 pt-4 px-4 sm:px-0 scrollbar-hide overscroll-x-contain touch-pan-x relative w-full">
               {chartData.map((d, i) => (
-                <div key={i} className="flex flex-col items-center justify-center min-w-[70px] snap-start hover:bg-muted/50 rounded-xl py-2 transition-colors cursor-default">
+                <div key={i} className="flex flex-col items-center justify-center min-w-[70px] hover:bg-muted/50 rounded-xl py-2 transition-colors cursor-default">
                   <p className="text-xs font-semibold text-muted-foreground whitespace-nowrap">{d.time}</p>
                   <img 
                     src={`https://openweathermap.org/img/wn/${d.icon}@2x.png`} 
