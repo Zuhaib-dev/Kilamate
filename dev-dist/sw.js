@@ -76,7 +76,7 @@ define(['./workbox-137dedbd'], (function (workbox) { 'use strict';
   /**
    * The precacheAndRoute() method efficiently caches and responds to
    * requests for URLs in the manifest.
-   * See https://goo.gl/S9QRab
+   * See https://goo.gl/S9QRab 
    */
   workbox.precacheAndRoute([{
     "url": "registerSW.js",
