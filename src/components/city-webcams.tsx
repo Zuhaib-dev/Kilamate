@@ -9,12 +9,11 @@ import {
   CloudRain,
   Gauge,
   Eye,
-  Globe,
+  Cloud,
   RefreshCw,
-  AlertCircle,
 } from "lucide-react";
 import type { Coordinates } from "@/api/types";
-import { memo, useState, useEffect, useRef } from "react";
+import { memo, useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,26 +24,70 @@ interface CityWebcamsProps {
   locationName?: string;
 }
 
-// Windy supports these overlays natively in embed2.html
-const MAP_LAYERS = [
-  { id: "wind",       label: "Wind",        icon: Wind,        color: "text-blue-400",   gradient: "from-blue-500/20 to-cyan-500/10" },
-  { id: "rain",       label: "Rain",        icon: CloudRain,   color: "text-sky-400",    gradient: "from-sky-500/20 to-indigo-500/10" },
-  { id: "temp",       label: "Temperature", icon: Thermometer, color: "text-orange-400", gradient: "from-orange-500/20 to-red-500/10" },
-  { id: "pressure",   label: "Pressure",    icon: Gauge,       color: "text-teal-400",   gradient: "from-teal-500/20 to-green-500/10" },
-  { id: "visibility", label: "Visibility",  icon: Eye,         color: "text-indigo-400", gradient: "from-indigo-500/20 to-purple-500/10" },
-  { id: "clouds",     label: "Clouds",      icon: Globe,       color: "text-slate-400",  gradient: "from-slate-500/20 to-gray-500/10" },
+// All overlays supported natively by embed.windy.com/embed2.html
+const LAYERS = [
+  {
+    id: "webcams",
+    label: "Webcams",
+    icon: Camera,
+    color: "text-violet-400",
+    glow: "bg-violet-500",
+    tip: "Click any camera pin on the map to watch a live feed",
+  },
+  {
+    id: "wind",
+    label: "Wind",
+    icon: Wind,
+    color: "text-blue-400",
+    glow: "bg-blue-500",
+    tip: "Use the ▶ play button inside the map to animate the wind forecast",
+  },
+  {
+    id: "rain",
+    label: "Rain",
+    icon: CloudRain,
+    color: "text-sky-400",
+    glow: "bg-sky-500",
+    tip: "Use the ▶ play button inside the map to animate the rain forecast",
+  },
+  {
+    id: "temp",
+    label: "Temperature",
+    icon: Thermometer,
+    color: "text-orange-400",
+    glow: "bg-orange-500",
+    tip: "Use the ▶ play button inside the map to animate the temperature forecast",
+  },
+  {
+    id: "pressure",
+    label: "Pressure",
+    icon: Gauge,
+    color: "text-teal-400",
+    glow: "bg-teal-500",
+    tip: "Use the ▶ play button inside the map to animate the pressure forecast",
+  },
+  {
+    id: "clouds",
+    label: "Clouds",
+    icon: Cloud,
+    color: "text-slate-400",
+    glow: "bg-slate-400",
+    tip: "Use the ▶ play button inside the map to animate the cloud cover forecast",
+  },
+  {
+    id: "visibility",
+    label: "Visibility",
+    icon: Eye,
+    color: "text-indigo-400",
+    glow: "bg-indigo-500",
+    tip: "Use the ▶ play button inside the map to animate the visibility forecast",
+  },
 ] as const;
 
-type MapLayerId = typeof MAP_LAYERS[number]["id"];
+type LayerId = (typeof LAYERS)[number]["id"];
 
-// Tab for webcam vs map
-const TABS = [
-  { id: "webcams", label: "Live Webcams", icon: Camera },
-  { id: "map",     label: "Weather Map",  icon: Globe },
-] as const;
-type TabId = typeof TABS[number]["id"];
-
-function buildWindyUrl(coords: Coordinates, overlay: MapLayerId): string {
+/** Build a Windy embed2 URL for the given coordinates and overlay */
+function buildWindyUrl(coords: Coordinates, overlay: LayerId): string {
   const params = new URLSearchParams({
     lat: String(coords.lat),
     lon: String(coords.lon),
@@ -65,31 +108,15 @@ function buildWindyUrl(coords: Coordinates, overlay: MapLayerId): string {
   return `https://embed.windy.com/embed2.html?${params.toString()}`;
 }
 
-// Windy Webcams embed (no API key needed for embed)
-function buildWebcamUrl(coords: Coordinates): string {
-  // Use Windy webcams player embed — publicly available
-  const params = new URLSearchParams({
-    lat: String(coords.lat),
-    lng: String(coords.lon),
-    radius: "50",
-    limit: "10",
-    sort: "popularity",
-  });
-  return `https://webcams.windy.com/webcams/map?${params.toString()}`;
-}
-
 export const CityWebcams = memo(function CityWebcams({
   coordinates,
   locationName,
 }: CityWebcamsProps) {
   const [activeCoords, setActiveCoords] = useState<Coordinates>(coordinates);
-  const [activeTab, setActiveTab] = useState<TabId>("webcams");
-  const [activeLayer, setActiveLayer] = useState<MapLayerId>("wind");
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [webcamLoaded, setWebcamLoaded] = useState(false);
-  const [iframeError, setIframeError] = useState(false);
+  const [activeLayer, setActiveLayer] = useState<LayerId>("webcams");
+  /** true = the Windy iframe is mounted and visible */
+  const [isLoaded, setIsLoaded] = useState(false);
   const [waitingForLocate, setWaitingForLocate] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const {
     coordinates: userCoords,
@@ -97,20 +124,17 @@ export const CityWebcams = memo(function CityWebcams({
     isLoading: isLocating,
   } = useGeolocation();
 
-  // When city coordinates change, reset everything
+  // Reset when the city changes
   useEffect(() => {
     setActiveCoords(coordinates);
-    setMapLoaded(false);
-    setWebcamLoaded(false);
-    setIframeError(false);
+    setIsLoaded(false);
   }, [coordinates]);
 
+  // "Near Me" handler
   const handleLocateMe = () => {
     if (userCoords) {
       setActiveCoords({ lat: userCoords.lat, lon: userCoords.lon });
-      setMapLoaded(false);
-      setWebcamLoaded(false);
-      setIframeError(false);
+      setIsLoaded(false);
     } else {
       setWaitingForLocate(true);
       getLocation();
@@ -120,21 +144,15 @@ export const CityWebcams = memo(function CityWebcams({
   useEffect(() => {
     if (waitingForLocate && userCoords && !isLocating) {
       setActiveCoords({ lat: userCoords.lat, lon: userCoords.lon });
-      setMapLoaded(false);
-      setWebcamLoaded(false);
-      setIframeError(false);
+      setIsLoaded(false);
       setWaitingForLocate(false);
     }
   }, [userCoords, isLocating, waitingForLocate]);
 
-  // Each combination gets its own iframe key so Windy reloads properly
-  const mapIframeKey = `map-${activeCoords.lat}-${activeCoords.lon}-${activeLayer}`;
-  const webcamIframeKey = `wcam-${activeCoords.lat}-${activeCoords.lon}`;
+  // Unique key per coords+layer so Windy fully reloads when either changes
+  const iframeKey = `${activeCoords.lat}-${activeCoords.lon}-${activeLayer}`;
 
-  const isLoaded = activeTab === "map" ? mapLoaded : webcamLoaded;
-  const setIsLoaded = activeTab === "map" ? setMapLoaded : setWebcamLoaded;
-
-  const activeLayerMeta = MAP_LAYERS.find((l) => l.id === activeLayer)!;
+  const activeMeta = LAYERS.find((l) => l.id === activeLayer)!;
 
   return (
     <Card className="w-full overflow-hidden border-border/50 bg-card/40 backdrop-blur-md">
@@ -151,27 +169,31 @@ export const CityWebcams = memo(function CityWebcams({
         </div>
 
         <div className="flex items-center gap-2">
-          {isLoaded && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              onClick={() => {
-                setIsLoaded(false);
-                setIframeError(false);
-              }}
-              className="h-9 w-9 flex items-center justify-center rounded-lg border border-border/50 bg-background/50 hover:bg-muted/60 transition-colors"
-              title="Reload"
-            >
-              <RefreshCw className="h-4 w-4 text-muted-foreground" />
-            </motion.button>
-          )}
+          {/* Reload — only shown after map is live */}
+          <AnimatePresence>
+            {isLoaded && (
+              <motion.button
+                key="reload"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.15 }}
+                onClick={() => setIsLoaded(false)}
+                className="h-9 w-9 flex items-center justify-center rounded-lg border border-border/50 bg-background/50 hover:bg-muted/60 transition-colors"
+                title="Reload map"
+              >
+                <RefreshCw className="h-4 w-4 text-muted-foreground" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+
           <Button
             variant="outline"
             size="sm"
             onClick={handleLocateMe}
             disabled={isLocating}
             className="h-9 gap-2 bg-background/50 backdrop-blur-sm shadow-sm"
-            title="Find cameras near me"
+            title="Show cameras near my location"
           >
             {isLocating ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -183,82 +205,43 @@ export const CityWebcams = memo(function CityWebcams({
         </div>
       </CardHeader>
 
-      {/* ── Tab switcher ── */}
-      <div className="flex items-center gap-2 px-4 pb-3">
-        {TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
+      {/* ── Layer pills ── */}
+      <div className="flex items-center gap-1.5 px-4 pb-3 overflow-x-auto scrollbar-hide">
+        {LAYERS.map((layer) => {
+          const Icon = layer.icon;
+          const active = activeLayer === layer.id;
           return (
             <button
-              key={tab.id}
+              key={layer.id}
               onClick={() => {
-                setActiveTab(tab.id);
-                setIframeError(false);
+                if (activeLayer === layer.id) return;
+                setActiveLayer(layer.id);
+                // Keep map shown but reload the iframe for the new layer
+                // isLoaded stays true — iframe remounts via key change
               }}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border",
-                isActive
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 border",
+                active
                   ? "bg-primary text-primary-foreground border-primary shadow-md"
                   : "bg-muted/40 text-muted-foreground border-border/50 hover:bg-muted hover:text-foreground"
               )}
             >
-              <Icon className="h-4 w-4" />
-              {tab.label}
+              <Icon
+                className={cn(
+                  "h-3.5 w-3.5",
+                  active ? "text-primary-foreground" : layer.color
+                )}
+              />
+              {layer.label}
             </button>
           );
         })}
       </div>
 
-      {/* ── Map layer selector (only for map tab) ── */}
-      <AnimatePresence>
-        {activeTab === "map" && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="flex items-center gap-1.5 px-4 pb-3 overflow-x-auto scrollbar-hide">
-              {MAP_LAYERS.map((layer) => {
-                const Icon = layer.icon;
-                const isActive = activeLayer === layer.id;
-                return (
-                  <button
-                    key={layer.id}
-                    onClick={() => {
-                      setActiveLayer(layer.id);
-                      // Don't reset mapLoaded — iframe key changes will handle it
-                      // But we DO want to show the overlay for new layer
-                      setMapLoaded(false);
-                      setIframeError(false);
-                    }}
-                    className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 border",
-                      isActive
-                        ? "bg-primary text-primary-foreground border-primary shadow-md"
-                        : "bg-muted/40 text-muted-foreground border-border/50 hover:bg-muted hover:text-foreground"
-                    )}
-                  >
-                    <Icon
-                      className={cn(
-                        "h-3.5 w-3.5",
-                        isActive ? "text-primary-foreground" : layer.color
-                      )}
-                    />
-                    {layer.label}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── Main content area ── */}
+      {/* ── Map area ── */}
       <CardContent className="p-0">
         <div className="h-[520px] w-full relative bg-muted/20 overflow-hidden">
-          {/* Dot grid background */}
+          {/* Subtle dot grid */}
           <div
             className="absolute inset-0 opacity-[0.03] pointer-events-none"
             style={{
@@ -268,155 +251,91 @@ export const CityWebcams = memo(function CityWebcams({
             }}
           />
 
-          <AnimatePresence mode="wait">
-            {!isLoaded ? (
-              /* ── Placeholder ── */
+          {/* ── Placeholder (shown before user clicks Load) ── */}
+          <AnimatePresence>
+            {!isLoaded && (
               <motion.div
                 key="placeholder"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className={cn(
-                  "absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-br from-muted/80 to-background/95 backdrop-blur-sm border-t border-border/50",
-                  activeTab === "map" && `bg-gradient-to-br ${activeLayerMeta.gradient}`
-                )}
+                exit={{ opacity: 0, transition: { duration: 0.3 } }}
+                className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-br from-muted/80 to-background/95 backdrop-blur-sm border-t border-border/50"
               >
-                {/* Ambient glow */}
+                {/* Ambient glow blob */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div
                     className={cn(
-                      "w-64 h-64 rounded-full opacity-10 blur-3xl",
-                      activeTab === "webcams" ? "bg-violet-500" : "bg-primary"
+                      "w-72 h-72 rounded-full opacity-10 blur-3xl",
+                      activeMeta.glow
                     )}
                   />
                 </div>
 
-                {/* Icon */}
+                {/* Pulsing icon */}
                 <motion.div
-                  animate={{ scale: [1, 1.06, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  className={cn(
-                    "mb-5 p-4 rounded-2xl border backdrop-blur-sm",
-                    activeTab === "webcams"
-                      ? "bg-violet-500/10 border-violet-500/30"
-                      : "bg-primary/10 border-primary/30"
-                  )}
+                  animate={{ scale: [1, 1.07, 1] }}
+                  transition={{
+                    duration: 2.8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="mb-6 p-5 rounded-2xl border border-border/60 bg-background/50 backdrop-blur-sm shadow-xl"
                 >
-                  {activeTab === "webcams" ? (
-                    <Camera className="h-10 w-10 text-violet-400" />
-                  ) : (
-                    <activeLayerMeta.icon
-                      className={cn("h-10 w-10", activeLayerMeta.color)}
-                    />
-                  )}
+                  <activeMeta.icon
+                    className={cn("h-12 w-12", activeMeta.color)}
+                  />
                 </motion.div>
 
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                   <Button
                     size="lg"
                     className="rounded-full shadow-xl gap-3 h-14 px-8 text-base bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
                     onClick={() => setIsLoaded(true)}
                   >
                     <PlayCircle className="h-6 w-6" />
-                    {activeTab === "webcams" ? "Load Webcams" : `Load ${activeLayerMeta.label} Map`}
+                    Load {activeMeta.label} Map
                   </Button>
                 </motion.div>
 
-                <p className="text-xs text-muted-foreground mt-5 max-w-xs text-center font-medium px-4">
-                  {activeTab === "webcams"
-                    ? `Click to load live webcam feeds near ${locationName || "your location"} powered by Windy.`
-                    : `Click to load the interactive ${activeLayerMeta.label.toLowerCase()} map. Use the ▶ button inside to animate the forecast.`}
+                <p className="text-xs text-muted-foreground mt-5 max-w-[280px] text-center font-medium px-4 leading-relaxed">
+                  {activeLayer === "webcams"
+                    ? `Click to load live webcam feeds near ${locationName || "your location"}. Tap any camera pin to watch.`
+                    : `Click to load Windy's interactive ${activeMeta.label.toLowerCase()} map. Use the ▶ button inside to animate the forecast.`}
                 </p>
               </motion.div>
-            ) : iframeError ? (
-              /* ── Error state ── */
-              <motion.div
-                key="error"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-br from-muted/80 to-background/95 backdrop-blur-sm border-t border-border/50 gap-4"
-              >
-                <div className="p-4 rounded-2xl bg-destructive/10 border border-destructive/30">
-                  <AlertCircle className="h-10 w-10 text-destructive" />
-                </div>
-                <div className="text-center">
-                  <p className="font-semibold text-foreground">Failed to load</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Check your connection and try again.
-                  </p>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setIframeError(false);
-                    setIsLoaded(false);
-                  }}
-                >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Try Again
-                </Button>
-              </motion.div>
-            ) : null}
+            )}
           </AnimatePresence>
 
-          {/* ── Webcam iframe (hidden until tab active) ── */}
-          {webcamLoaded && (
+          {/* ── Windy iframe — always rendered once loaded ── */}
+          {isLoaded && (
             <iframe
-              key={webcamIframeKey}
-              ref={activeTab === "webcams" ? iframeRef : undefined}
-              width="100%"
-              height="100%"
-              src={buildWebcamUrl(activeCoords)}
-              frameBorder="0"
-              title={`Live webcams near ${locationName || "your location"}`}
-              allowFullScreen
-              allow="geolocation"
-              className={cn(
-                "absolute inset-0 transition-opacity duration-500",
-                activeTab === "webcams" && !iframeError ? "opacity-100 z-[1]" : "opacity-0 pointer-events-none"
-              )}
-              onError={() => {
-                if (activeTab === "webcams") setIframeError(true);
-              }}
-            />
-          )}
-
-          {/* ── Windy map iframe (hidden until tab active) ── */}
-          {mapLoaded && (
-            <iframe
-              key={mapIframeKey}
-              ref={activeTab === "map" ? iframeRef : undefined}
+              key={iframeKey}
               width="100%"
               height="100%"
               src={buildWindyUrl(activeCoords, activeLayer)}
               frameBorder="0"
-              title={`Windy ${activeLayer} map near ${locationName || "your location"}`}
+              title={`Windy ${activeLayer} map for ${locationName || "your location"}`}
               allowFullScreen
               allow="geolocation"
-              className={cn(
-                "absolute inset-0 transition-opacity duration-500",
-                activeTab === "map" && !iframeError ? "opacity-100 z-[1]" : "opacity-0 pointer-events-none"
-              )}
-              onError={() => {
-                if (activeTab === "map") setIframeError(true);
-              }}
+              className="absolute inset-0 animate-in fade-in duration-500"
             />
           )}
         </div>
 
-        {/* ── Footer hint ── */}
-        {isLoaded && !iframeError && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-[11px] text-center text-muted-foreground py-1.5 bg-muted/20 border-t border-border/30"
-          >
-            {activeTab === "webcams"
-              ? "Live webcam feeds powered by Windy Webcams · Click any camera pin to watch live"
-              : `Use the ▶ play button inside the map to animate the ${activeLayerMeta.label.toLowerCase()} forecast`}
-          </motion.p>
-        )}
+        {/* ── Footer tip ── */}
+        <AnimatePresence>
+          {isLoaded && (
+            <motion.p
+              key="tip"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-[11px] text-center text-muted-foreground py-1.5 bg-muted/20 border-t border-border/30"
+            >
+              {activeMeta.tip}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </CardContent>
     </Card>
   );
