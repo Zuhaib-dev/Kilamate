@@ -30,10 +30,10 @@ function buildWindyUrl(coords: Coordinates, overlay: LayerId): string {
     zoom: "8",
     level: "surface",
     overlay,
-    menu: "true",      // show the full windy sidebar/controls inside iframe
+    menu: "true",
     message: "true",
     marker: "true",
-    calendar: "12",    // allow timeline scrubbing — "12" = 12 hours ahead, play btn works
+    // No `calendar` param = Windy defaults to current+future, timeline & play button both work
     pressure: "true",
     type: "map",
     location: "coordinates",
@@ -135,7 +135,7 @@ export const CityWebcams = memo(function CityWebcams({ coordinates, locationName
       </div>
 
       <CardContent className="p-0">
-        <div className="h-[430px] w-full relative bg-muted/20 overflow-hidden">
+        <div className="h-[520px] w-full relative bg-muted/20 overflow-hidden">
           {!isLoaded ? (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-br from-muted/80 to-background/95 backdrop-blur-sm border-t border-border/50">
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }} />
@@ -172,7 +172,9 @@ export const CityWebcams = memo(function CityWebcams({ coordinates, locationName
 
         {isLoaded && (
           <p className="text-[11px] text-center text-muted-foreground py-1.5 bg-muted/20 border-t border-border/30">
-            Use the ▶ play button inside the map to animate the forecast · Select a layer above to switch views
+            {activeLayer === "webcams"
+              ? "Webcams show live feeds · Switch to Wind, Rain or Temperature to use the ▶ play button"
+              : "Use the ▶ play button inside the map to animate the forecast"}
           </p>
         )}
       </CardContent>
