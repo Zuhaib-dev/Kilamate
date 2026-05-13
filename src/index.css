@@ -211,3 +211,63 @@ html.lenis, html.lenis body {
   pointer-events: none;
 }
 
+/* ── Mesh blob CSS animations (compositor-only, no JS per frame) ─────────── */
+@keyframes mesh-blob-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.15); }
+  66%       { transform: translate(-20px, 20px) scale(0.9); }
+}
+@keyframes mesh-blob-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-50px, 40px) scale(1.1); }
+  66%       { transform: translate(30px, -20px) scale(1.2); }
+}
+@keyframes mesh-blob-3 {
+  0%, 100% { transform: translate(0, 0) scale(0.8); }
+  33%       { transform: translate(60px, 30px) scale(1.2); }
+  66%       { transform: translate(-40px, 50px) scale(1); }
+}
+.animate-mesh-blob-1 {
+  animation: mesh-blob-1 20s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-mesh-blob-2 {
+  animation: mesh-blob-2 25s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-mesh-blob-3 {
+  animation: mesh-blob-3 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ── Accessibility: respect user's reduced-motion preference ─────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-mesh-blob-1,
+  .animate-mesh-blob-2,
+  .animate-mesh-blob-3,
+  .weather-particle-rain,
+  .weather-particle-snow,
+  .weather-particle-star,
+  .weather-lightning {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ── Mobile scroll feel — native momentum, no bounce artifacts ───────────── */
+@media (max-width: 768px) {
+  html {
+    scroll-behavior: auto; /* Never use CSS smooth-scroll on mobile */
+  }
+  /* Reduce shadow/backdrop-blur cost on low-end mobile GPUs */
+  .backdrop-blur-md {
+    backdrop-filter: blur(8px);
+  }
+  .backdrop-blur-xl {
+    backdrop-filter: blur(12px);
+  }
+}
+

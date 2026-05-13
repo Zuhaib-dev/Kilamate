@@ -199,20 +199,19 @@ export const spinAnimation = {
 };
 
 // ─── Page Transition ──────────────────────────────────────────────────────────
-
+// NOTE: filter:blur is removed — it is the single most expensive CSS property
+// on mobile GPUs and causes dropped frames on every route transition.
 export const pageVariants: Variants = {
-  initial: { opacity: 0, y: 20, filter: "blur(4px)" },
+  initial: { opacity: 0, y: 12 },
   animate: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
   },
   exit: {
     opacity: 0,
-    y: -10,
-    filter: "blur(4px)",
-    transition: { duration: 0.25, ease: "easeIn" },
+    y: -8,
+    transition: { duration: 0.18, ease: "easeIn" },
   },
 };
 

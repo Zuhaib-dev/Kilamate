@@ -181,37 +181,51 @@ function AppContent() {
   );
 }
 
+// Detect mobile/touch devices — Lenis adds JS lerp on top of native inertia scroll
+// which causes double-painting and jank on mobile. Let native scroll handle it.
+const isMobileDevice =
+  typeof window !== "undefined" &&
+  /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+
 function App() {
+  const content = (
+    <HelmetProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          >
+            <ThemeProvider defaultTheme="light">
+              <WeatherThemeProvider>
+                <AppContent />
+              </WeatherThemeProvider>
+            </ThemeProvider>
+          </BrowserRouter>
+          {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </HelmetProvider>
+  );
+
+  // On mobile: skip Lenis entirely — native momentum scroll is always 60fps
+  if (isMobileDevice) {
+    return content;
+  }
+
   return (
     <ReactLenis
       root
       options={{
-        lerp: 0.05,
-        duration: 1.5,
+        lerp: 0.08,
+        duration: 1.2,
         smoothWheel: true,
-        wheelMultiplier: 1.2,
-        touchMultiplier: 2,
+        wheelMultiplier: 1.0,
         infinite: false,
-        syncTouch: true,
-        syncTouchLerp: 0.075,
+        // syncTouch disabled — never use Lenis on touch
+        syncTouch: false,
       }}
     >
-      <HelmetProvider>
-        <ErrorBoundary>
-          <QueryClientProvider client={queryClient}>
-            <BrowserRouter
-              future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-            >
-              <ThemeProvider defaultTheme="light">
-                <WeatherThemeProvider>
-                  <AppContent />
-                </WeatherThemeProvider>
-              </ThemeProvider>
-            </BrowserRouter>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
-        </ErrorBoundary>
-      </HelmetProvider>
+      {content}
     </ReactLenis>
   );
 }

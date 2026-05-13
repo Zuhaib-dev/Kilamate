@@ -79,17 +79,41 @@ export default defineConfig({
     include: ["react-globe.gl", "three"],
   },
   build: {
-    // Performance optimizations
     target: "esnext",
-    minify: "esbuild", // Revert to standard esbuild
-    // Let Rollup handle chunking naturally to prevent CommonJS/execution order bugs
+    minify: "esbuild",
     rollupOptions: {
       output: {
-        // We removed manualChunks to fix "Prop is not a constructor" and "FL is not a constructor"
-        // which occur when circular dependencies in Three.js/Kapsule are split across chunks incorrectly.
+        // Split heavy libraries into separate chunks so the main bundle stays lean.
+        // Three.js + react-globe.gl alone are ~2MB — isolating them means users
+        // only download them when the globe component is actually rendered.
+        manualChunks: (id) => {
+          // Three.js / Globe — largest chunk, lazy-load only
+          if (id.includes("three") || id.includes("react-globe")) {
+            return "chunk-three-globe";
+          }
+          // Recharts — only needed for charts
+          if (id.includes("recharts") || id.includes("d3-")) {
+            return "chunk-recharts";
+          }
+          // Leaflet — only needed for map components
+          if (id.includes("leaflet") || id.includes("react-leaflet")) {
+            return "chunk-leaflet";
+          }
+          // Framer Motion — used everywhere but big enough to isolate
+          if (id.includes("framer-motion")) {
+            return "chunk-framer";
+          }
+          // Radix UI primitives
+          if (id.includes("@radix-ui")) {
+            return "chunk-radix";
+          }
+          // React core
+          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
+            return "chunk-react";
+          }
+        },
       },
     },
-    // Optimize chunk size
     chunkSizeWarningLimit: 2000,
   },
   // Optimize dev server
