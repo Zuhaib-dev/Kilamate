@@ -130,7 +130,7 @@ export function CityPage() {
 
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
           {/* AI BRIEFING */}
-          <AnimateIn variant="fadeIn" className="col-span-full">
+          <AnimateIn variant="fadeIn" className="col-span-full h-full">
             <AIWeatherBriefing 
               weather={weatherQuery.data} 
               forecast={forecastQuery.data ?? undefined} 
@@ -139,19 +139,19 @@ export function CityPage() {
           </AnimateIn>
 
           {/* ROW 1 */}
-          <AnimateIn variant="slideInLeft">
+          <AnimateIn variant="slideInLeft" className="h-full">
             <CurrentWeather
               data={weatherQuery.data}
               locationName={{ name: cityName, country, state: "" } as any}
               forecast={forecastQuery.data ?? undefined}
             />
           </AnimateIn>
-          <AnimateIn variant="slideInRight">
+          <AnimateIn variant="slideInRight" className="h-full">
             <HourlyTemperature data={forecastQuery.data} />
           </AnimateIn>
 
           {/* ALERTS */}
-          <AnimateIn variant="fadeIn" className="col-span-full">
+          <AnimateIn variant="fadeIn" className="col-span-full h-full">
             <WeatherAlerts
               data={weatherQuery.data}
               airPollution={airPollutionQuery.data ?? undefined}
@@ -159,12 +159,12 @@ export function CityPage() {
           </AnimateIn>
 
           {/* STATS */}
-          <AnimateIn variant="slideUp" className="col-span-full">
+          <AnimateIn variant="slideUp" className="col-span-full h-full">
             <WeatherStats data={weatherQuery.data} />
           </AnimateIn>
 
           {/* BEST DAY THIS WEEK */}
-          <AnimateIn variant="slideUp" className="col-span-full">
+          <AnimateIn variant="slideUp" className="col-span-full h-full">
             <BestDayThisWeek
               forecast={forecastQuery.data}
               airPollution={airPollutionQuery.data ?? undefined}
@@ -172,42 +172,42 @@ export function CityPage() {
           </AnimateIn>
 
           {/* SUN + MOON */}
-          <LazyView margin="400px">
-            <AnimateIn variant="slideInLeft">
+          <LazyView margin="400px" className="h-full">
+            <AnimateIn variant="slideInLeft" className="h-full">
               <SunTracker data={weatherQuery.data} />
             </AnimateIn>
           </LazyView>
-          <LazyView margin="400px">
-            <AnimateIn variant="slideInRight">
+          <LazyView margin="400px" className="h-full">
+            <AnimateIn variant="slideInRight" className="h-full">
               <MoonPhase />
             </AnimateIn>
           </LazyView>
 
           {weatherQuery.data && (
-            <LazyView margin="400px" className="col-span-full">
-              <AnimateIn variant="slideUp">
+            <LazyView margin="400px" className="col-span-full h-full">
+              <AnimateIn variant="slideUp" className="h-full">
                 <AstroGuide weather={weatherQuery.data} forecast={forecastQuery.data} />
               </AnimateIn>
             </LazyView>
           )}
 
           {/* DETAILS */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <WeatherDetails data={weatherQuery.data} />
             </AnimateIn>
           </LazyView>
 
           {/* NOW VS HISTORY */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <WeatherVsHistory data={weatherQuery.data} coordinates={coordinates} />
             </AnimateIn>
           </LazyView>
 
           {/* DAILY OUTLOOK + COMFORT */}
-          <LazyView margin="400px">
-            <AnimateIn variant="slideInLeft">
+          <LazyView margin="400px" className="h-full">
+            <AnimateIn variant="slideInLeft" className="h-full">
               <DailyOutlook
                 weather={weatherQuery.data}
                 forecast={forecastQuery.data}
@@ -215,34 +215,34 @@ export function CityPage() {
               />
             </AnimateIn>
           </LazyView>
-          <LazyView margin="400px">
-            <AnimateIn variant="slideInRight">
+          <LazyView margin="400px" className="h-full">
+            <AnimateIn variant="slideInRight" className="h-full">
               <ComfortLevel data={weatherQuery.data} />
             </AnimateIn>
           </LazyView>
 
           {/* ADVISORS */}
-          <LazyView margin="400px">
-            <AnimateIn variant="slideInLeft">
+          <LazyView margin="400px" className="h-full">
+            <AnimateIn variant="slideInLeft" className="h-full">
               <ClothingAdvisor data={weatherQuery.data} />
             </AnimateIn>
           </LazyView>
-          <LazyView margin="400px">
-            <AnimateIn variant="slideInRight">
+          <LazyView margin="400px" className="h-full">
+            <AnimateIn variant="slideInRight" className="h-full">
               <ActivityPlanner data={forecastQuery.data} />
             </AnimateIn>
           </LazyView>
 
           {/* FORECAST */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <WeatherForecast data={forecastQuery.data} />
             </AnimateIn>
           </LazyView>
 
           {/* AGRICULTURE */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <AgricultureAdvisor
                 weather={weatherQuery.data}
                 forecast={forecastQuery.data}
@@ -251,8 +251,8 @@ export function CityPage() {
           </LazyView>
 
           {/* SMART HOME */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <SmartHomeAdvisor 
                 weather={weatherQuery.data}
                 forecast={forecastQuery.data ?? undefined}
@@ -261,43 +261,43 @@ export function CityPage() {
           </LazyView>
 
           {/* REGIONAL */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <RegionalOverview state={locationQuery.data?.[0]?.state} />
             </AnimateIn>
           </LazyView>
 
           {/* AQI */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <AirPollution data={airPollutionQuery.data} />
             </AnimateIn>
           </LazyView>
 
           {/* ALLERGY FORECAST */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <AllergyForecast weather={weatherQuery.data} airPollution={airPollutionQuery.data ?? undefined} />
             </AnimateIn>
           </LazyView>
 
           {/* CITY WEBCAMS */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <CityWebcams coordinates={coordinates} locationName={cityName} />
             </AnimateIn>
           </LazyView>
 
           {/* WEATHER NEWS */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <WeatherNewsFeed locationName={cityName} state={locationQuery.data?.[0]?.state} />
             </AnimateIn>
           </LazyView>
 
           {/* TRAVEL */}
-          <LazyView margin="400px" className="col-span-full">
-            <AnimateIn variant="slideUp">
+          <LazyView margin="400px" className="col-span-full h-full">
+            <AnimateIn variant="slideUp" className="h-full">
               <TravelAdvisory weather={weatherQuery.data} />
             </AnimateIn>
           </LazyView>

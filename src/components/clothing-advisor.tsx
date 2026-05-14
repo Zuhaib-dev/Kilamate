@@ -112,9 +112,9 @@ export const ClothingAdvisor = memo(function ClothingAdvisor({ data }: ClothingA
           {t("clothing.title")}
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 p-4">
+      <CardContent className="flex-1 p-4 flex flex-col">
         <motion.div
-          className="grid grid-cols-2 gap-3 h-full"
+          className="grid grid-cols-2 gap-3 flex-1"
           variants={staggerContainerFast}
           initial="hidden"
           whileInView="visible"

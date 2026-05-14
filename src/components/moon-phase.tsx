@@ -54,7 +54,7 @@ export const MoonPhase = memo(() => {
     const nextFullMoon = "14 Days";
 
     return (
-        <Card className="relative overflow-hidden group rounded-2xl border-none bg-card/20 backdrop-blur-md hover:bg-card/40 transition-all border-white/5 h-full">
+        <Card className="relative overflow-hidden group flex flex-col rounded-2xl border-none bg-card/20 backdrop-blur-md hover:bg-card/40 transition-all border-white/5 h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
                 <div className="flex items-center gap-2">
                     <div className="bg-primary/10 p-2 rounded-lg">
@@ -66,7 +66,7 @@ export const MoonPhase = memo(() => {
                     {name}
                 </Badge>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-1 flex flex-col justify-between">
                 <div className="flex flex-col items-center justify-center py-4 relative">
                     {/* Glowing background effect */}
                     <div className="absolute inset-0 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />

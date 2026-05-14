@@ -42,7 +42,7 @@ export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
       transition={{ type: "spring", stiffness: 300, damping: 28 }}
       className="h-full"
     >
-      <Card className="relative overflow-hidden rounded-2xl border-none bg-card/20 backdrop-blur-md border-white/5 h-full">
+      <Card className="relative overflow-hidden flex flex-col rounded-2xl border-none bg-card/20 backdrop-blur-md border-white/5 h-full">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
           <div className="flex items-center gap-2">
             <motion.div
@@ -64,8 +64,8 @@ export const ComfortLevel = memo(({ data, isLoading }: ComfortLevelProps) => {
             {label}
           </motion.div>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-6">
+        <CardContent className="flex-1 flex flex-col justify-center">
+          <div className="flex flex-col gap-6 w-full">
             <div className="flex justify-between items-end">
               <div className="space-y-1">
                 <motion.p

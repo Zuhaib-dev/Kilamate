@@ -75,10 +75,11 @@ export const HourlyTemperature = memo(function HourlyTemperature({
 
   return (
     <motion.div
+      className="h-full"
       whileHover={{ scale: 1.005, y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 28 }}
     >
-      <Card className="flex-1 overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/50 shadow-sm">
+      <Card className="h-full flex flex-col overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/50 shadow-sm">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-bold tracking-tight">{t("weather.hourly")}</CardTitle>
@@ -94,9 +95,9 @@ export const HourlyTemperature = memo(function HourlyTemperature({
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-0 sm:p-6 sm:pt-0">
+        <CardContent className="p-0 sm:p-6 sm:pt-0 flex-1 flex flex-col">
           <motion.div
-            className="flex flex-col gap-0 pt-2"
+            className="flex flex-col gap-0 pt-2 flex-1"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
@@ -131,7 +132,7 @@ export const HourlyTemperature = memo(function HourlyTemperature({
             </div>
 
             {/* Recharts Chart View - focused on the next 24 hours */}
-            <div className="h-[240px] w-full px-2 sm:px-0 mt-4 border-t border-border/30 pt-6">
+            <div className="flex-1 min-h-[200px] w-full px-2 sm:px-0 mt-4 border-t border-border/30 pt-6">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData.slice(0, 8)} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
                   <defs>

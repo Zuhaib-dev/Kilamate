@@ -117,7 +117,7 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
   }
 
   return (
-    <Card className={`overflow-hidden h-full border-border/50 transition-colors duration-1000 ${isGoldenHour ? 'bg-amber-500/10 dark:bg-amber-900/20 border-amber-500/30' : ''}`}>
+    <Card className={`overflow-hidden flex flex-col h-full border-border/50 transition-colors duration-1000 ${isGoldenHour ? 'bg-amber-500/10 dark:bg-amber-900/20 border-amber-500/30' : ''}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base font-bold tracking-tight">
@@ -153,7 +153,7 @@ export const SunTracker = memo(function SunTracker({ data }: SunTrackerProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 pt-4">
+      <CardContent className="space-y-4 pt-4 flex-1 flex flex-col justify-between">
         {/* SVG Arc */}
         <div className="relative w-full" style={{ paddingBottom: "50%" }}>
           <svg

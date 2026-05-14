@@ -110,7 +110,7 @@ export const ActivityPlanner = memo(function ActivityPlanner({ data }: ActivityP
       </CardHeader>
       <CardContent className="flex-1 p-4 space-y-4">
         <motion.div
-          className="space-y-4"
+          className="flex-1 flex flex-col justify-between h-full space-y-4 min-h-[220px]"
           variants={staggerContainerFast}
           initial="hidden"
           whileInView="visible"
