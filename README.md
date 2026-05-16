@@ -247,7 +247,7 @@ This project is licensed under the [MIT License](LICENSE).
 - [ ] Mobile app (React Native)
 
 --- 
-
+ 
 <div align="center">
   Made with ❤️ by Zuhaib Rashid 
 </div>  
