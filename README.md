@@ -72,7 +72,7 @@ Designed with a focus on user experience, it features a beautiful, responsive in
    git clone https://github.com/Zuhaib-dev/Kilamate.git
    cd Kilamate
    ```
-
+ 
 2. **Fix PowerShell Execution Policy (Windows only)**
    
    If you encounter "running scripts is disabled" error, run PowerShell as Administrator:
