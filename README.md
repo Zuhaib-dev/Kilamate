@@ -83,7 +83,7 @@ Designed with a focus on user experience, it features a beautiful, responsive in
 3. **Install dependencies**
    ```bash
    npm install
-   ```
+   ``` 
 
 4. **Set up environment variables**
    
