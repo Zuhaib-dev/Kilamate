@@ -471,5 +471,7 @@ export function getAppleStagesStatus() {
   const currentMonth = new Date().getMonth();
   const progressPct = Math.round(((currentMonth + 1) / 12) * 100);
   
-  return { activeStages: [active], nextStage: next, progressPct, daysUntilNext };
+  const activeIndex = schedule.findIndex(s => s.id === active.id);
+  
+  return { activeStages: [active], nextStage: next, progressPct, daysUntilNext, schedule, activeIndex };
 }
