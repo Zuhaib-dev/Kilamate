@@ -1,4 +1,4 @@
-import { useMemo, memo } from "react";
+import { useMemo, memo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Sprout,
@@ -11,6 +11,8 @@ import {
   Thermometer,
   Clock,
   Snowflake,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Badge } from "./ui/badge";
 import type { WeatherData, ForecastData } from "@/api/types";
@@ -18,7 +20,7 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { formatWindSpeed } from "@/lib/units";
 import { useTranslation } from "react-i18next";
 import { getAppleStagesStatus } from "@/lib/kashmir-apple-stages";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { AnimateIn } from "./motion/AnimateIn";
 import { isInJandK } from "@/lib/location-utils";
 
@@ -133,13 +135,21 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
     };
   }, [weather, forecast, windSpeedUnit, t]);
 
-  const { activeStages, nextStage, progressPct, daysUntilNext } = useMemo(() => {
+  const { progressPct, schedule, activeIndex } = useMemo(() => {
     return getAppleStagesStatus();
   }, []);
 
+  const [currentIndex, setCurrentIndex] = useState(activeIndex ?? 0);
+  const [direction, setDirection] = useState(0);
+
+  const paginate = (newDirection: number) => {
+    setDirection(newDirection);
+    setCurrentIndex((prev) => (prev + newDirection + schedule.length) % schedule.length);
+  };
+
   const sprayWindow  = useMemo(() => getBestSprayWindow(forecast, weather.sys.sunrise, weather.sys.sunset), [forecast, weather]);
   const frostRisk    = useMemo(() => getFrostCountdown(forecast), [forecast]);
-  const isInBloom    = activeStages.some(s => s.id === "flowering");
+  const isInBloom    = schedule[activeIndex ?? 0].id === "flowering";
   const SprayIcon    = insights.spray.icon;
 
   return (
@@ -335,128 +345,139 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
               </div>
             </div>
 
-            {/* Active Stage Cards */}
+            {/* Stage Carousel */}
             <div className="space-y-4">
-              {activeStages.map((stage, idx) => (
-                <motion.div 
-                  key={stage.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 + idx * 0.1 }}
-                  className="relative rounded-2xl p-6 border overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl hover:bg-background/40"
-                  style={{ background: `${stage.accent}08`, borderColor: `${stage.accent}25` }}
+              <div className="flex items-center justify-between mb-2">
+                <button
+                  onClick={() => paginate(-1)}
+                  className="p-2 rounded-full bg-background/50 hover:bg-background/80 border transition-all z-10 hover:scale-110 flex items-center gap-1 shadow-sm"
                 >
-                  <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ background: stage.accent }} />
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <div className="flex items-center gap-4">
-                      <span className="text-3xl leading-none drop-shadow-md">{stage.emoji}</span>
-                      <div>
-                        <h4 className="font-black text-xl tracking-tight uppercase font-heading" style={{ color: stage.accent }}>
-                          {stage.name}
-                        </h4>
-                        <div className="flex items-center gap-3 mt-1.5">
-                           <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-2" style={{ borderColor: `${stage.accent}40`, color: stage.accent }}>
-                             {stage.sprayNo} {t("agricultureAdvisor.stagesUI.sprayBadge")}
-                           </Badge>
-                           <span className="text-[10px] font-bold uppercase tracking-widest opacity-60 flex items-center gap-1.5">
-                             📅 {stage.monthLabel}
-                           </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 self-end sm:self-auto">
-                      <span className="relative flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-40" style={{ background: stage.accent }} />
-                        <span className="relative inline-flex rounded-full h-3 w-3 shadow-sm" style={{ background: stage.accent }} />
-                      </span>
-                      <span className="text-xs font-black uppercase tracking-widest" style={{ color: stage.accent }}>{t("agricultureAdvisor.stagesUI.active")}</span>
-                    </div>
-                  </div>
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="text-[10px] uppercase font-black tracking-widest text-muted-foreground px-4 text-center">
+                  <span className="block opacity-60">Stage {currentIndex + 1} / {schedule.length}</span>
+                  {currentIndex === activeIndex && <span className="text-primary mt-0.5 block">Current Phase</span>}
+                </div>
+                <button
+                  onClick={() => paginate(1)}
+                  className="p-2 rounded-full bg-background/50 hover:bg-background/80 border transition-all z-10 hover:scale-110 flex items-center gap-1 shadow-sm"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-xl border p-4 bg-background/40 hover:bg-background/60 transition-colors">
-                      <p className="text-[10px] text-blue-500 uppercase font-black tracking-widest mb-3 flex items-center gap-2">
-                        <Droplets className="h-3.5 w-3.5" /> {t("agricultureAdvisor.stagesUI.recommendedSprays")}
-                      </p>
-                      <div className="space-y-4">
-                        {stage.fungicide[0] !== "X" && (
-                          <div>
-                            <p className="text-[9px] uppercase font-black text-muted-foreground/60 mb-2">{t("agricultureAdvisor.stagesUI.fungicidesPer100L")}</p>
-                            <ul className="text-[11px] text-foreground/90 space-y-2">
-                              {stage.fungicide.map((f, i) => <li key={i} className="leading-snug bg-blue-500/5 p-2 rounded-lg border border-blue-500/10 font-medium">• {f}</li>)}
-                            </ul>
-                          </div>
-                        )}
-                        {stage.insecticide[0] !== "X" && (
-                          <div>
-                            <p className="text-[9px] uppercase font-black text-muted-foreground/60 mb-2">{t("agricultureAdvisor.stagesUI.insecticidesAcaricides")}</p>
-                            <ul className="text-[11px] text-foreground/90 space-y-2">
-                              {stage.insecticide.map((f, i) => <li key={i} className="leading-snug bg-purple-500/5 p-2 rounded-lg border border-purple-500/10 font-medium">• {f}</li>)}
-                            </ul>
-                          </div>
-                        )}
-                        {stage.fungicide[0] === "X" && stage.insecticide[0] === "X" && (
-                          <p className="text-[11px] font-black text-emerald-500 italic flex items-center gap-2">
-                            <ShieldCheck className="h-4 w-4" /> {t("agricultureAdvisor.stagesUI.noChemicalSprays")}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="rounded-xl border p-4 bg-background/40 hover:bg-background/60 transition-colors">
-                      <p className="text-[10px] text-emerald-500 uppercase font-black tracking-widest mb-3 flex items-center gap-2">
-                        <Sprout className="h-3.5 w-3.5" /> {t("agricultureAdvisor.stagesUI.managementFertilizer")}
-                      </p>
-                      <div className="space-y-4">
-                        {stage.fertilizer[0] !== "X" && (
-                          <div>
-                            <p className="text-[9px] uppercase font-black text-muted-foreground/60 mb-2">{t("agricultureAdvisor.stagesUI.fertilizerDosage")}</p>
-                            <ul className="text-[11px] text-foreground/90 space-y-2">
-                              {stage.fertilizer.map((f, i) => <li key={i} className="leading-snug bg-emerald-500/5 p-2 rounded-lg border border-emerald-500/10 font-medium">• {f}</li>)}
-                            </ul>
-                          </div>
-                        )}
+              <div className="relative overflow-hidden w-full" style={{ minHeight: '400px' }}>
+                <AnimatePresence initial={false} custom={direction} mode="popLayout">
+                  <motion.div
+                    key={currentIndex}
+                    custom={direction}
+                    variants={{
+                      enter: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0 }),
+                      center: { zIndex: 1, x: 0, opacity: 1 },
+                      exit: (dir: number) => ({ zIndex: 0, x: dir < 0 ? '100%' : '-100%', opacity: 0 })
+                    }}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={1}
+                    onDragEnd={(e, { offset, velocity }) => {
+                      const swipe = Math.abs(offset.x) * velocity.x;
+                      if (swipe < -10000) paginate(1);
+                      else if (swipe > 10000) paginate(-1);
+                    }}
+                    className="w-full relative rounded-2xl p-6 border shadow-sm bg-background/40"
+                    style={{ background: `${schedule[currentIndex].accent}08`, borderColor: `${schedule[currentIndex].accent}25` }}
+                  >
+                    <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl" style={{ background: schedule[currentIndex].accent }} />
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pl-2">
+                      <div className="flex items-center gap-4">
+                        <span className="text-3xl leading-none drop-shadow-md">{schedule[currentIndex].emoji}</span>
                         <div>
-                          <p className="text-[9px] uppercase font-black text-muted-foreground/60 mb-2">{t("agricultureAdvisor.stagesUI.culturalPractices")}</p>
-                          <ul className="text-[11px] text-foreground/90 space-y-2">
-                            {stage.practices.map((p, i) => <li key={i} className="leading-snug bg-amber-500/5 p-2 rounded-lg border border-amber-500/10 font-medium">• {p}</li>)}
-                          </ul>
+                          <h4 className="font-black text-xl tracking-tight uppercase font-heading" style={{ color: schedule[currentIndex].accent }}>
+                            {schedule[currentIndex].name}
+                          </h4>
+                          <div className="flex items-center gap-3 mt-1.5">
+                             <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-2" style={{ borderColor: `${schedule[currentIndex].accent}40`, color: schedule[currentIndex].accent }}>
+                               {schedule[currentIndex].sprayNo} {t("agricultureAdvisor.stagesUI.sprayBadge")}
+                             </Badge>
+                             <span className="text-[10px] font-bold uppercase tracking-widest opacity-60 flex items-center gap-1.5">
+                               📅 {schedule[currentIndex].monthLabel}
+                             </span>
+                          </div>
+                        </div>
+                      </div>
+                      {currentIndex === activeIndex && (
+                        <div className="flex items-center gap-3 self-end sm:self-auto bg-background/50 py-1.5 px-3 rounded-full border shadow-sm border-primary/20">
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-40" style={{ background: schedule[currentIndex].accent }} />
+                            <span className="relative inline-flex rounded-full h-2 w-2 shadow-sm" style={{ background: schedule[currentIndex].accent }} />
+                          </span>
+                          <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: schedule[currentIndex].accent }}>
+                            {t("agricultureAdvisor.stagesUI.active")}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2 pl-2">
+                      <div className="rounded-xl border p-4 bg-background/40 hover:bg-background/60 transition-colors">
+                        <p className="text-[10px] text-blue-500 uppercase font-black tracking-widest mb-3 flex items-center gap-2">
+                          <Droplets className="h-3.5 w-3.5" /> {t("agricultureAdvisor.stagesUI.recommendedSprays")}
+                        </p>
+                        <div className="space-y-4">
+                          {schedule[currentIndex].fungicide[0] !== "X" && (
+                            <div>
+                              <p className="text-[9px] uppercase font-black text-muted-foreground/60 mb-2">{t("agricultureAdvisor.stagesUI.fungicidesPer100L")}</p>
+                              <ul className="text-[11px] text-foreground/90 space-y-2">
+                                {schedule[currentIndex].fungicide.map((f, i) => <li key={i} className="leading-snug bg-blue-500/5 p-2 rounded-lg border border-blue-500/10 font-medium">• {f}</li>)}
+                              </ul>
+                            </div>
+                          )}
+                          {schedule[currentIndex].insecticide[0] !== "X" && (
+                            <div>
+                              <p className="text-[9px] uppercase font-black text-muted-foreground/60 mb-2">{t("agricultureAdvisor.stagesUI.insecticidesAcaricides")}</p>
+                              <ul className="text-[11px] text-foreground/90 space-y-2">
+                                {schedule[currentIndex].insecticide.map((f, i) => <li key={i} className="leading-snug bg-purple-500/5 p-2 rounded-lg border border-purple-500/10 font-medium">• {f}</li>)}
+                              </ul>
+                            </div>
+                          )}
+                          {schedule[currentIndex].fungicide[0] === "X" && schedule[currentIndex].insecticide[0] === "X" && (
+                            <p className="text-[11px] font-black text-emerald-500 italic flex items-center gap-2">
+                              <ShieldCheck className="h-4 w-4" /> {t("agricultureAdvisor.stagesUI.noChemicalSprays")}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl border p-4 bg-background/40 hover:bg-background/60 transition-colors">
+                        <p className="text-[10px] text-emerald-500 uppercase font-black tracking-widest mb-3 flex items-center gap-2">
+                          <Sprout className="h-3.5 w-3.5" /> {t("agricultureAdvisor.stagesUI.managementFertilizer")}
+                        </p>
+                        <div className="space-y-4">
+                          {schedule[currentIndex].fertilizer[0] !== "X" && (
+                            <div>
+                              <p className="text-[9px] uppercase font-black text-muted-foreground/60 mb-2">{t("agricultureAdvisor.stagesUI.fertilizerDosage")}</p>
+                              <ul className="text-[11px] text-foreground/90 space-y-2">
+                                {schedule[currentIndex].fertilizer.map((f, i) => <li key={i} className="leading-snug bg-emerald-500/5 p-2 rounded-lg border border-emerald-500/10 font-medium">• {f}</li>)}
+                              </ul>
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-[9px] uppercase font-black text-muted-foreground/60 mb-2">{t("agricultureAdvisor.stagesUI.culturalPractices")}</p>
+                            <ul className="text-[11px] text-foreground/90 space-y-2">
+                              {schedule[currentIndex].practices.map((p, i) => <li key={i} className="leading-snug bg-amber-500/5 p-2 rounded-lg border border-amber-500/10 font-medium">• {p}</li>)}
+                            </ul>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
-
-            {/* Next Stage Preview */}
-            {nextStage && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
-                className="rounded-2xl border border-white/5 bg-background/30 p-5 flex items-center justify-between transition-all hover:bg-background/50 hover:shadow-lg cursor-default"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="bg-muted/40 p-3 rounded-2xl shrink-0 text-3xl">
-                    {nextStage.emoji}
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1" style={{ color: nextStage.accent }}>
-                      {t("agricultureAdvisor.stagesUI.upNext")}
-                    </p>
-                    <h5 className="text-base font-black tracking-tight uppercase font-heading">{nextStage.name}</h5>
-                    <p className="text-[11px] text-muted-foreground font-medium opacity-70">
-                       Starts in approx. <span className="text-foreground">{daysUntilNext} days</span>
-                    </p>
-                  </div>
-                </div>
-                <div className="bg-background/60 border rounded-2xl p-3 text-center min-w-[70px] shadow-sm">
-                  <span className="block text-xl font-black leading-none" style={{ color: nextStage.accent }}>{daysUntilNext}</span>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mt-1 block">Days</span>
-                </div>
-              </motion.div>
-            )}
           </div>
         </AnimateIn>
 
