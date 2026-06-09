@@ -379,14 +379,14 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
+                    transition={{ x: { type: "spring", stiffness: 200, damping: 25 }, opacity: { duration: 0.3 } }}
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={1}
-                    onDragEnd={(e, { offset, velocity }) => {
+                    onDragEnd={(_, { offset, velocity }) => {
                       const swipe = Math.abs(offset.x) * velocity.x;
-                      if (swipe < -10000) paginate(1);
-                      else if (swipe > 10000) paginate(-1);
+                      if (swipe < -5000) paginate(1);
+                      else if (swipe > 5000) paginate(-1);
                     }}
                     className="w-full relative rounded-2xl p-6 border shadow-sm bg-background/40"
                     style={{ background: `${schedule[currentIndex].accent}08`, borderColor: `${schedule[currentIndex].accent}25` }}
