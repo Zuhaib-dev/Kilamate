@@ -1,192 +1,175 @@
 # 🌤️ Kilamate - Advanced Weather & Air Quality App
 
 <div align="center">
-  <img src="https://www.zuhaibrashid.com/Kilamate.png" alt="Kilamate Banner" style="width:100%; border-radius:10px;">
+  <a href="https://kilamate.netlify.app" target="_blank">
+    <img src="https://www.zuhaibrashid.com/Kilamate.png" alt="Kilamate Banner" style="width:100%; max-width:800px; border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  </a>
+  <br/><br/>
   
-  <p><strong>Advanced Weather & Air Quality Forecasting App built with React, Vite, TypeScript, and Shadcn UI.</strong></p>
+  **A next-generation Weather & Air Quality Forecasting application crafted with React, Vite, TypeScript, and Shadcn UI.**
 
-  <p>
+  <p align="center">
     <a href="https://kilamate.netlify.app" target="_blank">
-      <img src="https://img.shields.io/badge/Live_Demo-Visit_Now-blue?style=for-the-badge&logo=vercel" alt="Live Demo" />
+      <img src="https://img.shields.io/badge/Live_Demo-Visit_Now-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
     </a>
     <a href="https://github.com/Zuhaib-dev/Kilamate">
-      <img src="https://img.shields.io/github/stars/Zuhaib-dev/Kilamate?style=for-the-badge" alt="GitHub Stars" />
+      <img src="https://img.shields.io/github/stars/Zuhaib-dev/Kilamate?style=for-the-badge&color=blue" alt="GitHub Stars" />
+    </a>
+    <a href="https://www.zuhaibrashid.com/">
+      <img src="https://img.shields.io/badge/Developer-Zuhaib_Rashid-indigo?style=for-the-badge&logo=react" alt="Developer Portfolio" />
     </a>
   </p>
 </div>
 
 ---
 
-## 📌 About
+## 📌 About Kilamate
 
-**Kilamate** is a modern, high-performance weather forecasting application developed by **Zuhaib Rashid**. It goes beyond basic temperature readings by providing **Real-time Air Quality Index (AQI)** data, detailed pollutant breakdowns, and specialized **Kashmir agricultural insights** for orchard owners and farmers.
+**Kilamate** is a modern, high-performance weather forecasting platform developed by **Zuhaib Rashid**. It goes far beyond standard temperature readings to deliver **Real-time Air Quality Index (AQI)** data, historical weather comparisons, Recharts-powered analytics, and highly specialized **Kashmir agricultural insights** for orchard owners and farmers.
 
-Designed with a focus on user experience, it features a beautiful, responsive interface that works seamlessly across all devices, leveraging the power of **Vite** for lightning-fast performance.
+Designed with an obsession for user experience, Kilamate features a beautiful glassmorphic interface, dynamic weather-based backgrounds, and lightning-fast performance powered by **Vite** and **TanStack Query**.
+
+---
+
+## 🏗️ Architecture & Data Flow
+
+Kilamate uses a robust, modern frontend architecture to deliver real-time data seamlessly.
+
+```mermaid
+graph TD;
+    User((User)) -->|Interacts| UI[React UI / Shadcn];
+    UI -->|Triggers| RQ[TanStack Query];
+    
+    subgraph Frontend [Kilamate Client]
+        UI
+        RQ
+        State[Zustand Store]
+    end
+    
+    RQ -->|Fetch| API[API Services Layer];
+    API -->|Weather & AQI| OWM(OpenWeather API);
+    API -->|Historical Data| OM(Open-Meteo Archive);
+    API -->|Local News| GN(GNews API);
+    
+    OWM -->|JSON Response| API;
+    OM -->|JSON Response| API;
+    GN -->|JSON Response| API;
+    
+    API -->|Formats Data| RQ;
+    RQ -->|Updates Cache| UI;
+    UI -->|Reads Preferences| State;
+```
 
 ---
 
 ## 🚀 Key Features
 
-- 🌍 **Live Weather:** Accurate current weather data for any city worldwide
-- 📰 **Live Weather News:** Real-time, location-based weather & climate news feed via GNews API 
-- 🏆 **Best Day Suggester:** Smart scoring algorithm identifying the optimal day for outdoor activities
-- ⏳ **History vs Now:** Deep comparison of current conditions against 5-year historical averages
-- 🌫️ **Air Quality Index (AQI):** Real-time US AQI scores with color-coded scale and pollutant breakdown
-- 🧭 **Advanced Wind Compass:** Beautifully animated SVG compass rose with Beaufort scale tracking
-- ☀️ **Sun & Golden Hour Tracker:** Interactive arc visualization with photography-focused "Golden Hour" indicators
-- 🎨 **Dynamic Backgrounds:** Immersive, animated weather environments (Rain, Snow, Stars, Lightning)
-- 🍎 **Agriculture Advisor:** Specialized Kashmir Apple phenology tracking and SKUAST-K spray schedules
-- 🌡️ **Unit Preferences:** Toggle between Celsius/Fahrenheit and multiple wind speed units
-- 🔍 **Smart Search:** Search functionality with history, favorite cities, and shareable weather cards
-- 📊 **Interactive Charts:** Temperature, humidity, and precipitation trends using Recharts
-- ⚡ **High Performance:** Optimized API caching with TanStack Query and Framer Motion animations
-- ✨ **Modern UI:** Clean, glassmorphic design using Shadcn UI + Tailwind CSS
+### 🌪️ Core Weather & Analytics
+- **Live Weather Dashboard:** Highly accurate real-time data for any location globally.
+- **Air Quality Index (AQI):** Deep-dive into US AQI scores, localized health warnings, and pollutant breakdowns (PM2.5, CO, NO2).
+- **Interactive Recharts:** Visualizes temperature, humidity, and precipitation trends over the coming days.
+- **History vs. Now:** Compares current weather against 5-year historical averages to identify climate anomalies.
+- **AI-Powered "Best Day" Suggester:** Algorithm scores the week's forecast to recommend the best day for outdoor activities.
+
+### 🍎 Specialized Agriculture Advisor (Kashmir)
+- **SKUAST-K Spray Schedule:** Built-in apple phenology tracker providing duration-based spray schedules.
+- **Smart Disease Tracking:** Algorithms calculate *Mills Period* conditions to warn orchard owners about **Apple Scab** risk based on live temperature and humidity.
+- **Micro-Localized Intelligence:** Bilingual native support translating critical farming insights into Urdu (`ur`) and Hindi (`hi`).
+
+### ✨ Premium UX/UI
+- **Live Dynamic Backgrounds:** The app visually reacts to the weather (e.g., raining, snowing, or rendering twinkling stars).
+- **Golden Hour & Sun Tracker:** Perfect for photographers, visualizing the sun's arc and exact twilight times.
+- **Smart Wind Compass:** An animated SVG compass tracking wind speed against the Beaufort scale.
+- **Glassmorphism Design:** A stunning, modern interface built with Tailwind CSS and Shadcn UI components.
 
 ---
 
 ## 🧪 Tech Stack
 
-- **Framework:** React 18 + Vite
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **UI Components:** Shadcn UI
-- **State Management:** TanStack Query + Zustand
-- **Charts:** Recharts
-- **Icons:** Lucide React
-- **API:** OpenWeather API, GNews API, Open-Meteo Historical API
+| Category | Technology |
+|---|---|
+| **Core Framework** | React 18, Vite, TypeScript |
+| **Styling & UI** | Tailwind CSS, Shadcn UI, Framer Motion |
+| **State & Fetching**| TanStack Query (React Query), Zustand |
+| **Visualizations** | Recharts, Lucide React Icons |
+| **Data Providers** | OpenWeather API, GNews API, Open-Meteo |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- Node.js 18+ and npm
-- OpenWeather API key ([Get one free here](https://openweathermap.org/api))
-- GNews API key ([Get one free here](https://gnews.io/))
+- **Node.js** 18+ and **npm**
+- **OpenWeather API key** ([Get one free here](https://openweathermap.org/api))
+- **GNews API key** ([Get one free here](https://gnews.io/))
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/Zuhaib-dev/Kilamate.git
    cd Kilamate
    ```
 
-2. **Fix PowerShell Execution Policy (Windows only)**
-   
-   If you encounter "running scripts is disabled" error, run PowerShell as Administrator:
+2. **Windows Users (Fix Execution Policy):**
+   If you encounter a "running scripts is disabled" error, run PowerShell as Administrator:
    ```powershell
    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
    ```
 
-3. **Install dependencies**
+3. **Install dependencies:**
    ```bash
    npm install
    ``` 
 
-4. **Set up environment variables**
-   
+4. **Environment Variables:**
    Create a `.env` file in the root directory:
    ```bash
    cp .env.example .env
    ```
-   
-   Edit `.env` and add your OpenWeather API key:
-   ```
+   Add your API keys to the `.env` file:
+   ```env
    VITE_OPENWEATHER_API_KEY=your_openweather_key
    VITE_GNEWS_API_KEY=your_gnews_key
    ```
 
-5. **Start the development server**
+5. **Start Development Server:**
    ```bash
    npm run dev
    ```
-
-6. **Open your browser**
-   
-   Navigate to `http://localhost:5173`
+   Open your browser and navigate to `http://localhost:5173`.
 
 ---
 
-## 📦 Build for Production
+## 👨‍💻 Meet the Developer
 
-```bash
-npm run build
-npm run preview
-```
+<div align="center">
+  <a href="https://www.zuhaibrashid.com/">
+    <img src="https://avatars.githubusercontent.com/u/148768789?v=4" width="120" style="border-radius: 50%; border: 4px solid #4f46e5; margin-bottom: 15px;" alt="Zuhaib Rashid" />
+  </a>
+  
+  ### Zuhaib Rashid
+  **Frontend Web Developer | Class 12 (Medical Stream)**  
+  📍 Srinagar, Jammu and Kashmir, India
 
----
+  *Passionate about building fast, accessible, and beautifully designed web applications. Kilamate is a testament to blending great design with complex data visualization.*
+</div>
 
-## 🎨 Features in Detail
+### 🔗 Connect With Me & View My Portfolio
 
-### Weather Alerts
-Intelligent alerts for:
-- High wind conditions
-- Extreme temperatures (heat/cold)
-- Low visibility (fog/mist)
-- High humidity
-- Temperature perception differences
+If you liked Kilamate, check out my other work!
 
-### User Preferences
-Customize your experience:
-- Temperature units (Celsius/Fahrenheit)
-- Wind speed units (km/h, mph, m/s)
-- Persistent settings across sessions
-
-### Air Quality Monitoring
-- Real-time AQI with color-coded severity
-- 24-hour forecast trends
-- Detailed pollutant breakdown
-- Health recommendations
-
-### 🌟 Premium Data Visualizations
-- **Best Day This Week:** Analyzes rain chance, temperature, AQI, and sky conditions to score the best day for a picnic or photography.
-- **Historical Comparison:** Fetches 5 years of archive data to tell you if today is an anomaly or typical for the season.
-- **Dynamic Weather System:** The app background physically rains, snows, or twinkles with stars based on live conditions.
-- **Sun & Golden Hour:** Specifically tuned for photographers to track the best lighting windows.
-
-### Kashmir Agricultural Insights
-- **SKUAST-K Spray Schedule:** Highly detailed duration-based phenological tracking for apple orchards.
-- **Apple Scab Warnings:** Identifies Mills Period conditions from live meteorological data.
-- **Fungicide & Fertilizer Dosages:** Live chemical advice based on specific apple growth stages (e.g., *Petal Fall, Fruit Let*).
-- **Multi-lingual Native Support:** Translates critical farming terms into Urdu (`ur`) and Hindi (`hi`).
-
----
-
-## 🛠️ Development
-
-### Project Structure
-
-```
-Kilamate/
-├── public/              # Static assets
-├── src/
-│   ├── api/            # API configuration and types
-│   ├── components/     # React components
-│   │   ├── ui/        # Shadcn UI components
-│   │   └── ...        # Feature components
-│   ├── context/       # React context providers
-│   ├── hooks/         # Custom React hooks
-│   ├── lib/           # Utility functions
-│   ├── pages/         # Page components
-│   └── App.tsx        # Main app component
-├── .env.example       # Environment variables template
-└── package.json       # Dependencies
-```
-
-### Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
+- 🌐 **Portfolio / Website:** [**www.zuhaibrashid.com**](https://www.zuhaibrashid.com/) *(Check out my latest projects!)*
+- 💼 **LinkedIn:** [Xuhaib Rashid](https://www.linkedin.com/in/xuhaib-rashid-661345318)  
+- 🐙 **GitHub:** [@Zuhaib-dev](https://github.com/Zuhaib-dev/)  
+- 🐦 **Twitter / X:** [@xuhaib_x9](https://x.com/xuhaib_x9)  
+- 📧 **Email:** [zuhaibrashid01@gmail.com](mailto:zuhaibrashid01@gmail.com)  
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are always welcome! 
 
 1. Fork the project
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -196,58 +179,12 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 🐛 Known Issues
+## 📄 License & Acknowledgements
 
-- PowerShell execution policy may block npm on Windows (see installation steps)
-- Zustand dependency needs manual installation after fixing PowerShell policy
+- This project is licensed under the [MIT License](LICENSE).
+- Special thanks to **Sheryians Coding School**.
 
----
-
-## 🌐 Live Preview
-
-👉 **[Visit Kilamate](https://kilamate.netlify.app)**
-
----
-
-## 👨‍💻 Developed By
-
-**Zuhaib Rashid**  
-Frontend Web Developer | Class 12 (Medical Stream)  
-📍 Srinagar, Jammu and Kashmir, India
-
----
-
-## 🔗 Connect With Me
-
-- 📧 **Email:** [zuhaibrashid01@gmail.com](mailto:zuhaibrashid01@gmail.com)  
-- 💼 **LinkedIn:** [Xuhaib Rashid](https://www.linkedin.com/in/xuhaib-rashid-661345318)  
-- 🐙 **GitHub:** [Zuhaib-dev](https://github.com/Zuhaib-dev/)  
-- 🐦 **Twitter / X:** [@xuhaib_x9](https://x.com/xuhaib_x9)  
-- 🌐 **Portfolio:** [zuhaibrashid.com](https://www.zuhaibrashid.com/)
-
----
-
-## 🙏 Acknowledgements
-
-**Sheryians Coding School**
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## 🎯 Roadmap
-
-- [ ] PWA support with offline mode
-- [ ] Extended 7-14 day forecasts
-- [ ] Voice search integration
-- [ ] Mobile app (React Native)
-
---- 
- 
 <div align="center">
-  Made with ❤️ by Zuhaib Rashid 
-</div>  
+  <br/>
+  Made with ❤️ by <a href="https://www.zuhaibrashid.com/">Zuhaib Rashid</a>
+</div>
