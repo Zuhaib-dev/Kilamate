@@ -105,18 +105,25 @@ export const CurrentWeather = memo(function CurrentWeather({
                 >
                   <motion.span
                     variants={scaleInBounce}
-                    className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${conditionChip.bg} ${conditionChip.color}`}
+                    animate={currentWeather.id >= 200 && currentWeather.id < 300 ? {
+                      scale: [1, 1.05, 1],
+                      boxShadow: ["0px 0px 0px rgba(0,0,0,0)", "0px 0px 10px rgba(234,179,8,0.5)", "0px 0px 0px rgba(0,0,0,0)"]
+                    } : {}}
+                    transition={currentWeather.id >= 200 && currentWeather.id < 300 ? { duration: 1.5, repeat: Infinity } : {}}
+                    className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${conditionChip.bg} ${conditionChip.color} ${currentWeather.id >= 200 && currentWeather.id < 300 ? "border border-yellow-500/50" : ""}`}
                   >
-                    <conditionChip.Icon className="h-3.5 w-3.5" />
+                    <conditionChip.Icon className={`h-3.5 w-3.5 ${currentWeather.id >= 200 && currentWeather.id < 300 ? "animate-pulse" : ""}`} />
                     {conditionChip.label}
                   </motion.span>
 
                   {precipChip && (
                     <motion.span
                       variants={scaleInBounce}
-                      className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${precipChip.bg} ${precipChip.color}`}
+                      animate={upcomingPop >= 0.75 ? { scale: [1, 1.05, 1] } : {}}
+                      transition={upcomingPop >= 0.75 ? { duration: 1.5, repeat: Infinity } : {}}
+                      className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${precipChip.bg} ${precipChip.color} ${upcomingPop >= 0.75 ? "border border-blue-500/50" : ""}`}
                     >
-                      <CloudRain className="h-3.5 w-3.5" />
+                      <CloudRain className={`h-3.5 w-3.5 ${upcomingPop >= 0.75 ? "animate-bounce" : ""}`} />
                       {precipChip.label}
                     </motion.span>
                   )}

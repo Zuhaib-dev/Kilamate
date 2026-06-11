@@ -116,6 +116,22 @@ export function WeatherAlerts({ data, airPollution, forecast }: WeatherAlertsPro
   const alerts = useMemo(() => {
     const list: WeatherAlert[] = [];
 
+    // 0. THUNDERSTORM WARNING
+    if (weatherId >= 200 && weatherId < 300) {
+      list.push({
+        id: "thunderstorm",
+        type: "destructive",
+        category: "weather",
+        severity: "high",
+        icon: Zap,
+        title: "Thunderstorm Warning",
+        message: "Active thunderstorm in your area. Seek shelter indoors, avoid open fields, and unplug sensitive electronics.",
+        color: "text-purple-500",
+        accentBar: "bg-purple-500",
+        bgColor: "bg-purple-500/10",
+      });
+    }
+
     // 1. HIGH WIND (7 m/s ~ 25 km/h is a meaningful threshold for spray ops)
     if (windMs > 7) {
       list.push({
