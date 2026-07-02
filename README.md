@@ -31,6 +31,24 @@ Designed with an obsession for user experience, Kilamate features a beautiful gl
 
 ---
 
+## 📸 App in Action
+
+*(Replace these placeholders with your actual GIFs!)*
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Zuhaib-dev/Kilamate/main/public/og.webp" alt="Kilamate Dashboard" width="800" style="border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 20px;">
+  
+  <br/>
+  
+  <img src="https://via.placeholder.com/800x450.gif?text=Dynamic+Weather+Animations" alt="Weather Animations Demo" width="800" style="border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 20px;">
+  
+  <br/>
+  
+  <img src="https://via.placeholder.com/800x450.gif?text=Interactive+3D+Globe+and+Maps" alt="3D Globe & Maps Demo" width="800" style="border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+</div>
+
+---
+
 ## 🏗️ Architecture & Data Flow
 
 Kilamate uses a robust, modern frontend architecture to deliver real-time data seamlessly.
@@ -68,8 +86,13 @@ graph TD;
 - **Live Weather Dashboard:** Highly accurate real-time data for any location globally.
 - **Air Quality Index (AQI):** Deep-dive into US AQI scores, localized health warnings, and pollutant breakdowns (PM2.5, CO, NO2).
 - **Interactive Recharts:** Visualizes temperature, humidity, and precipitation trends over the coming days.
+- **Interactive 3D Globe & Maps:** Explore weather patterns across the globe with `react-globe.gl` and interactive Leaflet maps.
 - **History vs. Now:** Compares current weather against 5-year historical averages to identify climate anomalies.
 - **AI-Powered "Best Day" Suggester:** Algorithm scores the week's forecast to recommend the best day for outdoor activities.
+
+### 🌐 Global Reach & Accessibility
+- **Progressive Web App (PWA):** Installable on any device for a native-like experience and offline capabilities.
+- **Multi-language Support:** Seamlessly switch between English, Hindi, Urdu, and more using `i18next`.
 
 ### 🍎 Specialized Agriculture Advisor (Kashmir)
 - **SKUAST-K Spray Schedule:** Built-in apple phenology tracker providing duration-based spray schedules.
@@ -91,7 +114,10 @@ graph TD;
 | **Core Framework** | React 18, Vite, TypeScript |
 | **Styling & UI** | Tailwind CSS, Shadcn UI, Framer Motion |
 | **State & Fetching**| TanStack Query (React Query), Zustand |
+| **Maps & 3D** | Leaflet, React-Leaflet, React-Globe.gl, Three.js |
 | **Visualizations** | Recharts, Lucide React Icons |
+| **PWA & i18n** | Vite PWA, Workbox, i18next |
+| **Testing** | Vitest, React Testing Library |
 | **Data Providers** | OpenWeather API, GNews API, Open-Meteo |
 
 ---
