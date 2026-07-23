@@ -135,10 +135,11 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
     };
   }, [weather, forecast, windSpeedUnit, t]);
 
-  const { progressPct, schedule, activeIndex } = useMemo(() => {
+  const { progressPct, schedule, activeIndex, daysUntilNext, nextStage } = useMemo(() => {
     return getAppleStagesStatus();
   }, []);
 
+  const activeStage = schedule[activeIndex ?? 0];
   const [currentIndex, setCurrentIndex] = useState(activeIndex ?? 0);
   const [direction, setDirection] = useState(0);
 
@@ -329,6 +330,63 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
               </Badge>
             </div>
 
+            {/* Dedicated Hero Card for Current Apple Stage */}
+            {activeStage && (
+              <div 
+                className="rounded-2xl p-5 border relative overflow-hidden transition-all duration-300 shadow-md"
+                style={{ 
+                  background: `linear-gradient(135deg, ${activeStage.accent}18 0%, rgba(0,0,0,0) 100%)`, 
+                  borderColor: `${activeStage.accent}40` 
+                }}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div 
+                      className="p-3.5 rounded-2xl text-3xl shrink-0 shadow-sm border"
+                      style={{ background: `${activeStage.accent}25`, borderColor: `${activeStage.accent}40` }}
+                    >
+                      {activeStage.emoji}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: activeStage.accent }} />
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ background: activeStage.accent }} />
+                        </span>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: activeStage.accent }}>
+                          {t("agricultureAdvisor.stagesUI.currentStageTitle")} • {activeStage.sprayNo} {t("agricultureAdvisor.stagesUI.sprayBadge")}
+                        </p>
+                      </div>
+                      <h3 className="font-black text-xl tracking-tight uppercase font-heading text-foreground mt-0.5" style={{ color: activeStage.accent }}>
+                        {activeStage.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground font-medium mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span>📅 {activeStage.monthLabel}</span>
+                        {daysUntilNext > 0 && nextStage && (
+                          <>
+                            <span className="opacity-40">•</span>
+                            <span className="font-bold opacity-90" style={{ color: activeStage.accent }}>
+                              {t("agricultureAdvisor.stagesUI.nextStageIn", { days: daysUntilNext, nextName: nextStage.name })}
+                            </span>
+                          </>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  {currentIndex !== activeIndex && (
+                    <button
+                      onClick={() => setCurrentIndex(activeIndex)}
+                      className="self-start sm:self-auto text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-xl text-white hover:opacity-90 transition-all shadow-md flex items-center gap-2 shrink-0 animate-pulse"
+                      style={{ background: activeStage.accent }}
+                    >
+                      <span>📍</span> {t("agricultureAdvisor.stagesUI.jumpToCurrent")}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Visual Timeline */}
             <div className="space-y-2">
               <div className="relative h-3 w-full rounded-full bg-muted/20 overflow-hidden shadow-inner p-[1px]">
@@ -338,6 +396,11 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
                   transition={{ duration: 2, ease: "circOut" }}
                   className="absolute top-0 left-0 h-full rounded-full shadow-lg"
                   style={{ background: "linear-gradient(to right, #60a5fa, #2dd4bf, #22c55e, #a3e635, #ef4444)" }} 
+                />
+                <motion.div 
+                  animate={{ left: `calc(${progressPct}% - 6px)` }}
+                  className="absolute top-0 h-full w-3 bg-white shadow-xl z-10 rounded-full border-2"
+                  style={{ borderColor: activeStage?.accent ?? "#22c55e" }}
                 />
               </div>
               <div className="flex justify-between text-[9px] text-muted-foreground font-black uppercase tracking-[0.3em] opacity-40 px-1">
@@ -356,7 +419,16 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
                 </button>
                 <div className="text-[10px] uppercase font-black tracking-widest text-muted-foreground px-4 text-center">
                   <span className="block opacity-60">Stage {currentIndex + 1} / {schedule.length}</span>
-                  {currentIndex === activeIndex && <span className="text-primary mt-0.5 block">Current Phase</span>}
+                  {currentIndex === activeIndex ? (
+                    <span className="text-emerald-500 font-bold mt-0.5 block flex items-center justify-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block animate-ping" />
+                      {t("agricultureAdvisor.stagesUI.active")}
+                    </span>
+                  ) : (
+                    <button onClick={() => setCurrentIndex(activeIndex)} className="text-primary hover:underline mt-0.5 block font-bold">
+                      {t("agricultureAdvisor.stagesUI.jumpToCurrent")} →
+                    </button>
+                  )}
                 </div>
                 <button
                   onClick={() => paginate(1)}

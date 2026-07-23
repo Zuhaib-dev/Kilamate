@@ -315,7 +315,7 @@
         "stagesUI": {
             "sprayBadge": "छिड़काव",
             "protectPollinators": "परागणकर्ताओं की रक्षा करें",
-            "active": "सक्रिय",
+            "active": "सक्रिय चरण",
             "recommendedSprays": "अनुशंसित छिड़काव",
             "fungicidesPer100L": "फफूंदनाशक (प्रति 100 लीटर पानी)",
             "insecticidesAcaricides": "कीटनाशक / एकरीसाइड्स",
@@ -325,7 +325,11 @@
             "culturalPractices": "कृषि पद्धतियां",
             "upNext": "अगला",
             "startsInApprox": "लगभग {{days}} दिनों में शुरू होता है",
-            "days": "दिन"
+            "days": "दिन",
+            "currentStageTitle": "वर्तमान सेब विकास चरण",
+            "currentStageSubtitle": "कश्मीर के बागों में सक्रिय चरण",
+            "jumpToCurrent": "वर्तमान चरण पर जाएं",
+            "nextStageIn": "अगला चरण ~{{days}} दिनों में ({{nextName}})"
         }
     },
     "regionalOverview": {

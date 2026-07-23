@@ -315,7 +315,7 @@
         "stagesUI": {
             "sprayBadge": "چھڑکاؤ",
             "protectPollinators": "جرگ آور مکھیوں کی حفاظت کریں",
-            "active": "فعال",
+            "active": "فعال مرحلہ",
             "recommendedSprays": "تجویز کردہ چھڑکاؤ",
             "fungicidesPer100L": "فنجی سائیڈز (فی 100 لیٹر پانی)",
             "insecticidesAcaricides": "کیڑے مار ادویات / ایکری سائیڈز",
@@ -325,7 +325,11 @@
             "culturalPractices": "زرعی طرز عمل",
             "upNext": "اگلا",
             "startsInApprox": "تقریباً {{days}} دنوں میں شروع ہوگا",
-            "days": "دن"
+            "days": "دن",
+            "currentStageTitle": "موجودہ سیب کی نشوونما کا مرحلہ",
+            "currentStageSubtitle": "کشمیر کے باغات میں فعال مرحلہ",
+            "jumpToCurrent": "موجودہ مرحلے پر جائیں",
+            "nextStageIn": "اگلا مرحلہ ~{{days}} دنوں میں ({{nextName}})"
         }
     },
     "regionalOverview": {

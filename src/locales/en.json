@@ -315,7 +315,7 @@
         "stagesUI": {
             "sprayBadge": "Spray",
             "protectPollinators": "Protect Pollinators",
-            "active": "Active",
+            "active": "Active Stage",
             "recommendedSprays": "Recommended Sprays",
             "fungicidesPer100L": "Fungicides (Per 100L Water)",
             "insecticidesAcaricides": "Insecticides / Acaricides",
@@ -325,7 +325,11 @@
             "culturalPractices": "Cultural Practices",
             "upNext": "Up Next",
             "startsInApprox": "Starts in approximately {{days}} days",
-            "days": "Days"
+            "days": "Days",
+            "currentStageTitle": "Current Apple Growth Stage",
+            "currentStageSubtitle": "Active stage in Kashmir orchards",
+            "jumpToCurrent": "Jump to Current Stage",
+            "nextStageIn": "Next stage in ~{{days}} days ({{nextName}})"
         }
     },
     "regionalOverview": {
