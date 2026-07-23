@@ -326,8 +326,8 @@ export const KASHMIR_APPLE_STAGES: PhenologicalStage[] = [
     name: "Pre-harvest",
     sprayNo: "12th",
     emoji: "🧺",
-    months: [7, 8],
-    monthLabel: "August",
+    months: [6, 7],
+    monthLabel: "Late July - August",
     beeFriendly: true,
     accent: "#f59e0b",
     fertilizer: [
@@ -347,7 +347,7 @@ export const KASHMIR_APPLE_STAGES: PhenologicalStage[] = [
       "• Propineb 70 WP (300g)",
       "• Ziram 80 WP (200g)"
     ],
-    durationDays: 20
+    durationDays: 40
   },
   {
     id: "harvesting",
@@ -355,7 +355,7 @@ export const KASHMIR_APPLE_STAGES: PhenologicalStage[] = [
     sprayNo: "13th",
     emoji: "📦",
     months: [8, 9],
-    monthLabel: "September - October",
+    monthLabel: "Late August - October",
     beeFriendly: true,
     accent: "#ea580c",
     fertilizer: ["X"],
@@ -419,9 +419,9 @@ export const KASHMIR_APPLE_STAGES: PhenologicalStage[] = [
   }
 ];
 
-// The anchor date based on the user stating fruit let stage started 2 days ago (April 17, 2026)
-const ANCHOR_DATE_MS = new Date("2026-04-17T00:00:00").getTime();
-const ANCHOR_STAGE_ID = "fruitLet";
+// Anchor date: Pre-harvest stage started July 20 (covers full August)
+const ANCHOR_DATE_MS = new Date("2026-07-20T00:00:00").getTime();
+const ANCHOR_STAGE_ID = "preHarvest";
 
 export interface ScheduledStage extends PhenologicalStage {
   startDate: Date;
