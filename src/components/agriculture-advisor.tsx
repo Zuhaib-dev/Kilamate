@@ -565,4 +565,3 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
     </Card>
   );
 });
-
