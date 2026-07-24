@@ -420,7 +420,7 @@ export const AgricultureAdvisor = memo(function AgricultureAdvisor({ weather, fo
                 <div className="text-[10px] uppercase font-black tracking-widest text-muted-foreground px-4 text-center">
                   <span className="block opacity-60">Stage {currentIndex + 1} / {schedule.length}</span>
                   {currentIndex === activeIndex ? (
-                    <span className="text-emerald-500 font-bold mt-0.5 block flex items-center justify-center gap-1">
+                    <span className="text-emerald-500 font-bold mt-0.5 flex items-center justify-center gap-1">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block animate-ping" />
                       {t("agricultureAdvisor.stagesUI.active")}
                     </span>
