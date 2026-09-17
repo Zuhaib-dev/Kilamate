@@ -18,7 +18,7 @@
     <a href="https://www.zuhaibrashid.com/">
       <img src="https://img.shields.io/badge/Developer-Zuhaib_Rashid-indigo?style=for-the-badge&logo=react" alt="Developer Portfolio" />
     </a>
-  </p>
+  </p> 
 </div>
 
 ---
